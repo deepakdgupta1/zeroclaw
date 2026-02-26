@@ -73,6 +73,9 @@ pub struct ChatResponse {
     /// sent back in subsequent API requests — some providers reject tool-call
     /// history that omits this field.
     pub reasoning_content: Option<String>,
+    /// Quota metadata extracted from response headers (if available).
+    /// Populated by providers that support quota tracking.
+    pub quota_metadata: Option<super::quota_types::QuotaMetadata>,
 }
 
 impl ChatResponse {
@@ -366,6 +369,7 @@ pub trait Provider: Send + Sync {
                     tool_calls: Vec::new(),
                     usage: None,
                     reasoning_content: None,
+                    quota_metadata: None,
                 });
             }
         }
@@ -378,6 +382,7 @@ pub trait Provider: Send + Sync {
             tool_calls: Vec::new(),
             usage: None,
             reasoning_content: None,
+            quota_metadata: None,
         })
     }
 
@@ -413,6 +418,7 @@ pub trait Provider: Send + Sync {
             tool_calls: Vec::new(),
             usage: None,
             reasoning_content: None,
+            quota_metadata: None,
         })
     }
 
@@ -542,6 +548,7 @@ mod tests {
             tool_calls: vec![],
             usage: None,
             reasoning_content: None,
+            quota_metadata: None,
         };
         assert!(!empty.has_tool_calls());
         assert_eq!(empty.text_or_empty(), "");
@@ -555,6 +562,7 @@ mod tests {
             }],
             usage: None,
             reasoning_content: None,
+            quota_metadata: None,
         };
         assert!(with_tools.has_tool_calls());
         assert_eq!(with_tools.text_or_empty(), "Let me check");
@@ -579,6 +587,7 @@ mod tests {
                 cached_tokens: None,
             }),
             reasoning_content: None,
+            quota_metadata: None,
         };
         assert_eq!(resp.usage.as_ref().unwrap().input_tokens, Some(100));
         assert_eq!(resp.usage.as_ref().unwrap().output_tokens, Some(50));

@@ -1464,6 +1464,7 @@ impl Provider for GeminiProvider {
             tool_calls: Vec::new(),
             usage,
             reasoning_content: None,
+            quota_metadata: None,
         })
     }
 
