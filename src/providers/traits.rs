@@ -54,6 +54,9 @@ pub struct ToolCall {
 pub struct TokenUsage {
     pub input_tokens: Option<u64>,
     pub output_tokens: Option<u64>,
+    /// Tokens served from a server-side cache (e.g. Gemini context cache).
+    /// `None` when the provider does not report cache hits.
+    pub cached_tokens: Option<u64>,
 }
 
 /// An LLM response that may contain text, tool calls, or both.
@@ -562,6 +565,7 @@ mod tests {
         let usage = TokenUsage::default();
         assert!(usage.input_tokens.is_none());
         assert!(usage.output_tokens.is_none());
+        assert!(usage.cached_tokens.is_none());
     }
 
     #[test]
@@ -572,6 +576,7 @@ mod tests {
             usage: Some(TokenUsage {
                 input_tokens: Some(100),
                 output_tokens: Some(50),
+                cached_tokens: None,
             }),
             reasoning_content: None,
         };

@@ -420,6 +420,7 @@ impl AnthropicProvider {
         let usage = response.usage.map(|u| TokenUsage {
             input_tokens: u.input_tokens,
             output_tokens: u.output_tokens,
+            cached_tokens: None,
         });
 
         for block in response.content {

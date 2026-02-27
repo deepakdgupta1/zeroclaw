@@ -24,6 +24,11 @@ pub struct GeminiProvider {
     auth_service: Option<AuthService>,
     /// Override profile name for managed auth.
     auth_profile_override: Option<String>,
+    /// Session-scoped context cache (API-key auth only; None for OAuth).
+    context_cache: Arc<tokio::sync::Mutex<Option<GeminiCacheState>>>,
+    /// Whether context caching is enabled for this instance.
+    /// True only for API-key auth paths (ExplicitKey, EnvGeminiKey, EnvGoogleKey).
+    caching_enabled: bool,
 }
 
 /// Mutable OAuth token state — supports runtime refresh for long-lived processes.
@@ -82,6 +87,38 @@ impl GeminiAuth {
 // API REQUEST/RESPONSE TYPES
 // ══════════════════════════════════════════════════════════════════════════════
 
+// ══════════════════════════════════════════════════════════════════════════════
+// CONTEXT CACHE TYPES
+// ══════════════════════════════════════════════════════════════════════════════
+
+/// Tracks the server-side cache resource for this session.
+struct GeminiCacheState {
+    /// Cache resource name returned by the API, e.g. "cachedContents/abc123".
+    name: String,
+    /// When the cache expires (with a 10s safety buffer applied at creation).
+    expires_at: std::time::Instant,
+}
+
+/// Request body for POST /v1beta/cachedContents
+#[derive(Debug, Serialize)]
+struct CreateCachedContentRequest<'a> {
+    model: String,
+    #[serde(rename = "systemInstruction", skip_serializing_if = "Option::is_none")]
+    system_instruction: Option<&'a Content>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    contents: Vec<Content>,
+    ttl: String,
+}
+
+/// Response from POST /v1beta/cachedContents
+#[derive(Debug, Deserialize)]
+struct CachedContentResponse {
+    name: String,
+    #[serde(rename = "expireTime")]
+    #[allow(dead_code)]
+    expire_time: Option<String>,
+}
+
 #[derive(Debug, Serialize, Clone)]
 struct GenerateContentRequest {
     contents: Vec<Content>,
@@ -89,6 +126,8 @@ struct GenerateContentRequest {
     system_instruction: Option<Content>,
     #[serde(rename = "generationConfig")]
     generation_config: GenerationConfig,
+    #[serde(rename = "cachedContent", skip_serializing_if = "Option::is_none")]
+    cached_content: Option<String>,
 }
 
 /// Request envelope for the internal cloudcode-pa API.
@@ -162,6 +201,8 @@ struct GeminiUsageMetadata {
     prompt_token_count: Option<u64>,
     #[serde(default, rename = "candidatesTokenCount")]
     candidates_token_count: Option<u64>,
+    #[serde(default, rename = "cachedContentTokenCount")]
+    cached_content_token_count: Option<u64>,
 }
 
 /// Response envelope for the internal cloudcode-pa API.
@@ -443,6 +484,8 @@ impl GeminiProvider {
                     .map(|state| GeminiAuth::OAuthToken(Arc::new(tokio::sync::Mutex::new(state))))
             });
 
+        let caching_enabled = resolved_auth.as_ref().map_or(false, |a| a.is_api_key());
+
         Self {
             auth: resolved_auth,
             oauth_project: Arc::new(tokio::sync::Mutex::new(None)),
@@ -450,6 +493,8 @@ impl GeminiProvider {
             oauth_index: Arc::new(tokio::sync::Mutex::new(0)),
             auth_service: None,
             auth_profile_override: None,
+            context_cache: Arc::new(tokio::sync::Mutex::new(None)),
+            caching_enabled,
         }
     }
 
@@ -512,6 +557,8 @@ impl GeminiProvider {
             }
         };
 
+        let caching_enabled = auth.as_ref().map_or(false, |a| a.is_api_key());
+
         Self {
             auth,
             oauth_project: Arc::new(tokio::sync::Mutex::new(None)),
@@ -523,6 +570,8 @@ impl GeminiProvider {
                 None
             },
             auth_profile_override: profile_override,
+            context_cache: Arc::new(tokio::sync::Mutex::new(None)),
+            caching_enabled,
         }
     }
 
@@ -930,6 +979,60 @@ impl GeminiProvider {
             || status.is_server_error()
             || error_text.contains("RESOURCE_EXHAUSTED")
     }
+
+    /// Create or reuse a server-side context cache for the given system instruction.
+    ///
+    /// Returns the cache resource name (e.g. `"cachedContents/abc123"`) on success.
+    /// Only called when `caching_enabled` is true (API-key auth paths only).
+    async fn get_or_create_cache(
+        &self,
+        system_instruction: &Content,
+        api_key: &str,
+        model: &str,
+    ) -> anyhow::Result<String> {
+        // Return the existing cache name if still valid.
+        {
+            let guard = self.context_cache.lock().await;
+            if let Some(ref state) = *guard {
+                if state.expires_at > std::time::Instant::now() {
+                    return Ok(state.name.clone());
+                }
+            }
+        }
+
+        // Create a new cache on the public API endpoint.
+        let url = format!("{PUBLIC_API_ENDPOINT}/cachedContents?key={api_key}");
+        let body = CreateCachedContentRequest {
+            model: Self::format_model_name(model),
+            system_instruction: Some(system_instruction),
+            contents: vec![],
+            ttl: "3600s".to_string(),
+        };
+
+        let response = self.http_client().post(&url).json(&body).send().await?;
+
+        if !response.status().is_success() {
+            let status = response.status();
+            let body = response.text().await.unwrap_or_default();
+            let sanitized = super::sanitize_api_error(&body);
+            anyhow::bail!("Gemini cachedContents creation failed (HTTP {status}): {sanitized}");
+        }
+
+        let cached: CachedContentResponse = response.json().await?;
+
+        let state = GeminiCacheState {
+            name: cached.name.clone(),
+            // 10s safety buffer before the 1h TTL expires
+            expires_at: std::time::Instant::now() + std::time::Duration::from_secs(3590),
+        };
+
+        {
+            let mut guard = self.context_cache.lock().await;
+            *guard = Some(state);
+        }
+
+        Ok(cached.name)
+    }
 }
 
 impl GeminiProvider {
@@ -982,13 +1085,37 @@ impl GeminiProvider {
             _ => (None, None),
         };
 
+        // Attempt to use context cache for API-key auth paths.
+        // On any cache error, fall back transparently to the uncached path.
+        let (effective_system, cached_content_name) = if self.caching_enabled {
+            if let Some(ref sys) = system_instruction {
+                let api_key = auth.api_key_credential().to_string();
+                match self.get_or_create_cache(sys, &api_key, model).await {
+                    Ok(name) => {
+                        tracing::debug!("Gemini: using context cache {name}");
+                        // When cachedContent is set the API rejects systemInstruction.
+                        (None, Some(name))
+                    }
+                    Err(e) => {
+                        tracing::warn!("Gemini context cache unavailable, falling back: {e}");
+                        (system_instruction, None)
+                    }
+                }
+            } else {
+                (system_instruction, None)
+            }
+        } else {
+            (system_instruction, None)
+        };
+
         let request = GenerateContentRequest {
             contents,
-            system_instruction,
+            system_instruction: effective_system,
             generation_config: GenerationConfig {
                 temperature,
                 max_output_tokens: 8192,
             },
+            cached_content: cached_content_name,
         };
 
         let url = Self::build_generate_content_url(model, auth);
@@ -1130,6 +1257,7 @@ impl GeminiProvider {
         let usage = result.usage_metadata.map(|u| TokenUsage {
             input_tokens: u.prompt_token_count,
             output_tokens: u.candidates_token_count,
+            cached_tokens: u.cached_content_token_count,
         });
 
         let text = result
@@ -1343,6 +1471,7 @@ mod tests {
     }
 
     fn test_provider(auth: Option<GeminiAuth>) -> GeminiProvider {
+        let caching_enabled = auth.as_ref().map_or(false, |a| a.is_api_key());
         GeminiProvider {
             auth,
             oauth_project: Arc::new(tokio::sync::Mutex::new(None)),
@@ -1350,6 +1479,8 @@ mod tests {
             oauth_index: Arc::new(tokio::sync::Mutex::new(0)),
             auth_service: None,
             auth_profile_override: None,
+            context_cache: Arc::new(tokio::sync::Mutex::new(None)),
+            caching_enabled,
         }
     }
 
@@ -1553,6 +1684,7 @@ mod tests {
                 temperature: 0.7,
                 max_output_tokens: 8192,
             },
+            cached_content: None,
         };
 
         let request = provider
@@ -1594,6 +1726,7 @@ mod tests {
                 temperature: 0.7,
                 max_output_tokens: 8192,
             },
+            cached_content: None,
         };
 
         let request = provider
@@ -1638,6 +1771,7 @@ mod tests {
                 temperature: 0.7,
                 max_output_tokens: 8192,
             },
+            cached_content: None,
         };
 
         let request = provider
@@ -1675,6 +1809,7 @@ mod tests {
                 temperature: 0.7,
                 max_output_tokens: 8192,
             },
+            cached_content: None,
         };
 
         let json = serde_json::to_string(&request).unwrap();
@@ -2123,6 +2258,8 @@ mod tests {
             oauth_index: Arc::new(tokio::sync::Mutex::new(0)),
             auth_service: None, // Missing auth_service
             auth_profile_override: None,
+            context_cache: Arc::new(tokio::sync::Mutex::new(None)),
+            caching_enabled: false,
         };
 
         let result = provider.warmup().await;
