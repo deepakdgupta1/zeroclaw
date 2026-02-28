@@ -95,6 +95,8 @@ When uncertain, classify higher.
 5. **Document impact** — update runtime-contract references if behavior changed. See `docs/CLAUDE.md` for i18n rules.
 6. **Queue hygiene** — `Depends on #...` for stacked PRs. `Supersedes #...` for replacements.
 
+**Note:** `.claude.local.md` is **not** gitignored in this repo. Create session-local context only if you add `.claude.local.md` to `.gitignore` first, or use auto-memory instead.
+
 ## 7) Anti-Patterns (Do Not)
 
 - Add heavy deps for minor convenience (use `format!()`, not a templating crate for one string).
