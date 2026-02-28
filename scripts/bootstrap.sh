@@ -64,7 +64,7 @@ Examples:
   ./bootstrap.sh --docker
 
   # Remote one-liner
-  curl -fsSL https://raw.githubusercontent.com/zeroclaw-labs/zeroclaw/main/scripts/bootstrap.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/deepakdgupta1/zeroclaw/main/scripts/bootstrap.sh | bash
 
 Environment:
   ZEROCLAW_CONTAINER_CLI     Container CLI command (default: docker; auto-fallback: podman)
@@ -279,7 +279,7 @@ install_prebuilt_binary() {
     return 1
   fi
 
-  archive_url="https://github.com/zeroclaw-labs/zeroclaw/releases/latest/download/zeroclaw-${target}.tar.gz"
+  archive_url="https://github.com/deepakdgupta1/zeroclaw/releases/latest/download/zeroclaw-${target}.tar.gz"
   temp_dir="$(mktemp -d -t zeroclaw-prebuilt-XXXXXX)"
   archive_path="$temp_dir/zeroclaw-${target}.tar.gz"
 
@@ -1037,7 +1037,7 @@ run_docker_bootstrap() {
   local -a container_run_user_args container_run_namespace_args
   local -a container_extra_run_args container_extra_env_args docker_build_args daemon_cmd
   docker_image="${ZEROCLAW_DOCKER_IMAGE:-zeroclaw-bootstrap:local}"
-  fallback_image="ghcr.io/zeroclaw-labs/zeroclaw:latest"
+  fallback_image="ghcr.io/deepakdgupta1/zeroclaw:latest"
   docker_build_features="${ZEROCLAW_DOCKER_CARGO_FEATURES:-}"
   docker_browser_runtime_mode="${ZEROCLAW_DOCKER_BROWSER_RUNTIME:-auto}"
   docker_browser_sidecar_name="${ZEROCLAW_DOCKER_BROWSER_SIDECAR_NAME:-zeroclaw-browser-webdriver}"
@@ -1289,7 +1289,7 @@ MSG
 SCRIPT_PATH="${BASH_SOURCE[0]:-$0}"
 SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" >/dev/null 2>&1 && pwd || pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd || pwd)"
-REPO_URL="https://github.com/zeroclaw-labs/zeroclaw.git"
+REPO_URL="https://github.com/deepakdgupta1/zeroclaw.git"
 ORIGINAL_ARG_COUNT=$#
 GUIDED_MODE="auto"
 

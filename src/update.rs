@@ -9,9 +9,9 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 /// GitHub repository for releases
-const GITHUB_REPO: &str = "zeroclaw-labs/zeroclaw";
+const GITHUB_REPO: &str = "deepakdgupta1/zeroclaw";
 const GITHUB_API_RELEASES: &str =
-    "https://api.github.com/repos/zeroclaw-labs/zeroclaw/releases/latest";
+    "https://api.github.com/repos/deepakdgupta1/zeroclaw/releases/latest";
 
 /// Release information from GitHub API
 #[derive(Debug, serde::Deserialize)]

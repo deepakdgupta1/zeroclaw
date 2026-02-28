@@ -4,10 +4,10 @@ ZeroClaw provides prebuilt binaries for Android devices.
 
 ## Supported Architectures
 
-| Target | Android Version | Devices |
-|--------|-----------------|---------|
+| Target                    | Android Version        | Devices                               |
+| ------------------------- | ---------------------- | ------------------------------------- |
 | `armv7-linux-androideabi` | Android 4.1+ (API 16+) | Older 32-bit phones (Galaxy S3, etc.) |
-| `aarch64-linux-android` | Android 5.0+ (API 21+) | Modern 64-bit phones |
+| `aarch64-linux-android`   | Android 5.0+ (API 21+) | Modern 64-bit phones                  |
 
 ## Installation via Termux
 
@@ -28,11 +28,11 @@ uname -m
 
 # Download the appropriate binary
 # For 64-bit (aarch64):
-curl -LO https://github.com/zeroclaw-labs/zeroclaw/releases/latest/download/zeroclaw-aarch64-linux-android.tar.gz
+curl -LO https://github.com/deepakdgupta1/zeroclaw/releases/latest/download/zeroclaw-aarch64-linux-android.tar.gz
 tar xzf zeroclaw-aarch64-linux-android.tar.gz
 
 # For 32-bit (armv7):
-curl -LO https://github.com/zeroclaw-labs/zeroclaw/releases/latest/download/zeroclaw-armv7-linux-androideabi.tar.gz
+curl -LO https://github.com/deepakdgupta1/zeroclaw/releases/latest/download/zeroclaw-armv7-linux-androideabi.tar.gz
 tar xzf zeroclaw-armv7-linux-androideabi.tar.gz
 ```
 

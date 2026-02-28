@@ -87,6 +87,13 @@ module.exports = async ({ github, context, core }) => {
   if (dangerousProblems.length > 0) {
     blockingFindings.push(`Dangerous patch markers found (${dangerousProblems.length})`);
   }
+<<<<<<< HEAD
+=======
+  const promotionAuthorAllowlist = new Set(["willsarg", "deepakdgupta1"]);
+  const shouldRetargetToDev =
+    prBaseRef === "main" && !promotionAuthorAllowlist.has(prAuthor);
+
+>>>>>>> 3b748777 (chore: align repository URLs and authorship with deepakdgupta1 fork)
   if (linearKeys.length === 0) {
     blockingFindings.push(
       "Missing Linear issue key reference (`RMN-<id>`, `CDV-<id>`, or `COM-<id>`) in PR title/body.",

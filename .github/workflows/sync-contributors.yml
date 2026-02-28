@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # Run every Sunday at 00:00 UTC
-    - cron: '0 0 * * 0'
+    - cron: "0 0 * * 0"
 
 concurrency:
   group: update-notice-${{ github.ref }}
@@ -47,7 +47,7 @@ jobs:
           ZeroClaw
           Copyright 2025 ZeroClaw Labs
 
-          This product includes software developed at ZeroClaw Labs (https://github.com/zeroclaw-labs).
+          This product includes software developed at ZeroClaw Labs (https://github.com/deepakdgupta1).
 
           Contributors
           ============

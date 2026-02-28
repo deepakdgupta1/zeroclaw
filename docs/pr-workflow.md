@@ -87,6 +87,10 @@ This workflow is intentionally layered to reduce reviewer load while keeping acc
 3. **Risk-based review depth:** high-risk paths trigger deep review; low-risk paths stay fast.
 4. **Rollback-first merge contract:** every merge path includes concrete recovery steps.
 
+- Additional behavior: rust-cache is partitioned per job role via `prefix-key` to reduce cache churn across lint/test/build/flake-probe lanes.
+- Additional behavior: `lint`, `test`, and `build` run in parallel (all depend only on `changes` job) to minimize critical path duration.
+- Additional behavior: emits `test-flake-probe` artifact from single-retry probe when tests fail; optional blocking can be enabled with repository variable `CI_BLOCK_ON_FLAKE_SUSPECTED=true`.
+
 Automation assists with triage and guardrails, but final merge accountability remains with human maintainers and PR authors.
 
 ---
@@ -99,9 +103,8 @@ Maintain these branch protection rules on `dev` and `main`:
 - Require check `CI Required Gate`.
 - Require pull request reviews before merge.
 - Require CODEOWNERS review for protected paths.
-- For CI/CD-related paths (`.github/workflows/**`, `.github/codeql/**`, `.github/connectivity/**`, `.github/release/**`, `.github/security/**`, `.github/actionlint.yaml`, `.github/dependabot.yml`, `scripts/ci/**`, and CI governance docs), require an explicit approving review from `@chumyin` via `CI Required Gate`.
-- Keep branch/ruleset bypass limited to org owners.
-- Dismiss stale approvals when new commits are pushed.
+- For CI/CD-related paths (`.github/workflows/**`, `.github/codeql/**`, `.github/connectivity/**`, `.github/release/**`, `.github/security/**`, `.github/actionlint.yaml`, `.github/dependabot.yml`, `scripts/ci/**`, and CI governance docs), require owner approval via `CI Required Gate` (`WORKFLOW_OWNER_LOGINS`) and keep branch/ruleset bypass limited to org owners.
+- Default workflow-owner allowlist includes `deepakdgupta1`, `willsarg`, and `chumyin` (plus any comma-separated additions from `WORKFLOW_OWNER_LOGINS`).
 - Restrict force-push on protected branches.
 - Route normal contributor PRs to `main` by default (`dev` is optional for dedicated integration batching).
 - Allow direct merges to `main` once required checks and review policy pass.
@@ -214,10 +217,9 @@ We do **not** require contributors to quantify AI-vs-human line ownership.
 
 ## 8. Review SLA and Queue Discipline
 
-- First maintainer triage target: within 48 hours.
-- If PR is blocked, maintainer leaves one actionable checklist.
-- `stale` automation is used to keep queue healthy; maintainers can apply `no-stale` when needed.
-- `pr-hygiene` automation checks open PRs every 12 hours and posts a nudge when a PR has no new commits for 48+ hours and is either behind `main` or missing/failing `CI Required Gate` on the head commit.
+- `Main Promotion Gate`: PRs to `main` only; requires PR author `willsarg`/`deepakdgupta1` and head branch `dev` in the same repository
+- `Dependabot`: all update PRs target `main` (not `dev`)
+- `PR Intake Checks`: `pull_request_target` on opened/reopened/synchronize/edited/ready_for_review new commits for 48+ hours and is either behind `main` or missing/failing `CI Required Gate` on the head commit.
 
 ### 8.1 Queue budget controls
 

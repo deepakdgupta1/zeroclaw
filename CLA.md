@@ -26,7 +26,7 @@ terms of this CLA.
 - **"You"** means the individual or legal entity submitting a Contribution.
 
 - **"ZeroClaw Labs"** means the maintainers and organization responsible
-  for the ZeroClaw project at https://github.com/zeroclaw-labs/zeroclaw.
+  for the ZeroClaw project at https://github.com/deepakdgupta1/zeroclaw.
 
 ---
 
@@ -124,9 +124,9 @@ and a maintainer will follow up.
 ## 10. Questions
 
 If you have questions about this CLA, open an issue at:
-https://github.com/zeroclaw-labs/zeroclaw/issues
+https://github.com/deepakdgupta1/zeroclaw/issues
 
 ---
 
-*This CLA is based on the Apache Individual Contributor License Agreement
-v2.0, adapted for the ZeroClaw dual-license model.*
+_This CLA is based on the Apache Individual Contributor License Agreement
+v2.0, adapted for the ZeroClaw dual-license model._

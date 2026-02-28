@@ -373,7 +373,7 @@ impl Provider for OpenRouterProvider {
             .header("Authorization", format!("Bearer {credential}"))
             .header(
                 "HTTP-Referer",
-                "https://github.com/theonlyhennygod/zeroclaw",
+                "https://github.com/deepakdgupta1/zeroclaw",
             )
             .header("X-Title", "ZeroClaw")
             .json(&request)
@@ -424,7 +424,7 @@ impl Provider for OpenRouterProvider {
             .header("Authorization", format!("Bearer {credential}"))
             .header(
                 "HTTP-Referer",
-                "https://github.com/theonlyhennygod/zeroclaw",
+                "https://github.com/deepakdgupta1/zeroclaw",
             )
             .header("X-Title", "ZeroClaw")
             .json(&request)
@@ -473,7 +473,7 @@ impl Provider for OpenRouterProvider {
             .header("Authorization", format!("Bearer {credential}"))
             .header(
                 "HTTP-Referer",
-                "https://github.com/theonlyhennygod/zeroclaw",
+                "https://github.com/deepakdgupta1/zeroclaw",
             )
             .header("X-Title", "ZeroClaw")
             .json(&native_request)
@@ -569,7 +569,7 @@ impl Provider for OpenRouterProvider {
             .header("Authorization", format!("Bearer {credential}"))
             .header(
                 "HTTP-Referer",
-                "https://github.com/theonlyhennygod/zeroclaw",
+                "https://github.com/deepakdgupta1/zeroclaw",
             )
             .header("X-Title", "ZeroClaw")
             .json(&native_request)

@@ -19,7 +19,7 @@ ZeroClaw maintainers do not request money or private wallet/financial credential
 
 Use these sources to verify announcements:
 
-- GitHub repository: `zeroclaw-labs/zeroclaw`
+- GitHub repository: `deepakdgupta1/zeroclaw`
 - GitHub Security policy and advisories: [../../SECURITY.md](../../SECURITY.md)
 
 Treat third-party links and social posts as untrusted until confirmed in the GitHub repository.
@@ -36,7 +36,7 @@ If you see impersonation attempts or scam outreach:
 
 1. Do not engage or send funds/data.
 2. Capture evidence (screenshots, usernames, URLs, timestamps).
-3. Open a GitHub issue in `zeroclaw-labs/zeroclaw` with sanitized details.
+3. Open a GitHub issue in `deepakdgupta1/zeroclaw` with sanitized details.
 
 For vulnerability disclosure, use private reporting:
 

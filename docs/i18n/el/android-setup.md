@@ -4,10 +4,10 @@
 
 ## Υποστηριζόμενες Αρχιτεκτονικές
 
-| Στόχος | Έκδοση Android | Συσκευές |
-|--------|----------------|----------|
+| Στόχος                    | Έκδοση Android         | Συσκευές                                 |
+| ------------------------- | ---------------------- | ---------------------------------------- |
 | `armv7-linux-androideabi` | Android 4.1+ (API 16+) | Παλιά 32-bit τηλέφωνα (Galaxy S3, κ.λπ.) |
-| `aarch64-linux-android` | Android 5.0+ (API 21+) | Σύγχρονα 64-bit τηλέφωνα |
+| `aarch64-linux-android`   | Android 5.0+ (API 21+) | Σύγχρονα 64-bit τηλέφωνα                 |
 
 ## Εγκατάσταση μέσω Termux
 
@@ -28,11 +28,11 @@ uname -m
 
 # Λήψη του κατάλληλου binary
 # Για 64-bit (aarch64):
-curl -LO https://github.com/zeroclaw-labs/zeroclaw/releases/latest/download/zeroclaw-aarch64-linux-android.tar.gz
+curl -LO https://github.com/deepakdgupta1/zeroclaw/releases/latest/download/zeroclaw-aarch64-linux-android.tar.gz
 tar xzf zeroclaw-aarch64-linux-android.tar.gz
 
 # Για 32-bit (armv7):
-curl -LO https://github.com/zeroclaw-labs/zeroclaw/releases/latest/download/zeroclaw-armv7-linux-androideabi.tar.gz
+curl -LO https://github.com/deepakdgupta1/zeroclaw/releases/latest/download/zeroclaw-armv7-linux-androideabi.tar.gz
 tar xzf zeroclaw-armv7-linux-androideabi.tar.gz
 ```
 

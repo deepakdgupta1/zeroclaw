@@ -13,7 +13,7 @@ This guide explains how to run ZeroClaw in Docker mode, including bootstrap, onb
 
 ```bash
 # Clone the repository
-git clone https://github.com/zeroclaw-labs/zeroclaw.git
+git clone https://github.com/deepakdgupta1/zeroclaw.git
 cd zeroclaw
 
 # Run bootstrap with Docker mode
@@ -72,10 +72,12 @@ docker run --rm -it \
 ### Data Directory
 
 By default, Docker mode stores data in:
+
 - `~/.zeroclaw-docker/.zeroclaw/` - Configuration files
 - `~/.zeroclaw-docker/workspace/` - Workspace files
 
 Override with environment variable:
+
 ```bash
 ZEROCLAW_DOCKER_DATA_DIR=/custom/path ./bootstrap.sh --docker
 ```
@@ -96,15 +98,15 @@ ZEROCLAW_CONTAINER_CLI=podman ./bootstrap.sh --docker
 
 ## Common Commands
 
-| Task | Command |
-|------|---------|
-| Start daemon | `./zeroclaw_install.sh --docker --docker-daemon` |
-| View daemon logs | `docker logs -f zeroclaw-daemon` |
-| Stop daemon | `docker rm -f zeroclaw-daemon` |
+| Task              | Command                                               |
+| ----------------- | ----------------------------------------------------- |
+| Start daemon      | `./zeroclaw_install.sh --docker --docker-daemon`      |
+| View daemon logs  | `docker logs -f zeroclaw-daemon`                      |
+| Stop daemon       | `docker rm -f zeroclaw-daemon`                        |
 | Run one-off agent | `docker run --rm -it ... zeroclaw agent -m "message"` |
-| Interactive CLI | `docker run --rm -it ... zeroclaw agent` |
-| Check status | `docker run --rm -it ... zeroclaw status` |
-| Start channels | `docker run --rm -it ... zeroclaw channel start` |
+| Interactive CLI   | `docker run --rm -it ... zeroclaw agent`              |
+| Check status      | `docker run --rm -it ... zeroclaw status`             |
+| Start channels    | `docker run --rm -it ... zeroclaw channel start`      |
 
 Replace `...` with the volume mounts shown in [Interactive Mode](#interactive-mode).
 
@@ -117,6 +119,7 @@ To completely reset your Docker ZeroClaw environment:
 ```
 
 This removes:
+
 - Docker containers
 - Docker networks
 - Docker volumes
@@ -150,23 +153,25 @@ Running `./bootstrap.sh --docker` only builds the image and prepares the data di
 ### Container Fails to Start
 
 Check Docker logs for errors:
+
 ```bash
 docker logs zeroclaw-daemon
 ```
 
 Common issues:
+
 - Missing API key: Run onboarding with `--api-key` or edit `config.toml`
 - Permission issues: Ensure Docker has access to the data directory
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `ZEROCLAW_DOCKER_DATA_DIR` | Data directory path | `~/.zeroclaw-docker` |
-| `ZEROCLAW_DOCKER_IMAGE` | Docker image name | `zeroclaw-bootstrap:local` |
-| `ZEROCLAW_CONTAINER_CLI` | Container CLI (docker/podman) | `docker` |
-| `ZEROCLAW_DOCKER_DAEMON_NAME` | Daemon container name | `zeroclaw-daemon` |
-| `ZEROCLAW_DOCKER_CARGO_FEATURES` | Build features | (empty) |
+| Variable                         | Description                   | Default                    |
+| -------------------------------- | ----------------------------- | -------------------------- |
+| `ZEROCLAW_DOCKER_DATA_DIR`       | Data directory path           | `~/.zeroclaw-docker`       |
+| `ZEROCLAW_DOCKER_IMAGE`          | Docker image name             | `zeroclaw-bootstrap:local` |
+| `ZEROCLAW_CONTAINER_CLI`         | Container CLI (docker/podman) | `docker`                   |
+| `ZEROCLAW_DOCKER_DAEMON_NAME`    | Daemon container name         | `zeroclaw-daemon`          |
+| `ZEROCLAW_DOCKER_CARGO_FEATURES` | Build features                | (empty)                    |
 
 ## Related Documentation
 

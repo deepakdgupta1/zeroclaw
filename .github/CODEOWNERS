@@ -1,4 +1,5 @@
 # Default owner for all files
+<<<<<<< HEAD
 * @theonlyhennygod @chumyin
 
 # Important functional modules
@@ -30,3 +31,36 @@
 /CONTRIBUTING.md @chumyin
 /docs/pr-workflow.md @chumyin
 /docs/reviewer-playbook.md @chumyin
+=======
+* @deepakdgupta1
+
+# Important functional modules
+/src/agent/** @deepakdgupta1
+/src/providers/** @deepakdgupta1
+/src/channels/** @deepakdgupta1
+/src/tools/** @deepakdgupta1
+/src/gateway/** @deepakdgupta1
+/src/runtime/** @deepakdgupta1
+/src/memory/** @deepakdgupta1
+/Cargo.toml @deepakdgupta1
+/Cargo.lock @deepakdgupta1
+
+# Security / tests / CI-CD ownership
+/src/security/** @deepakdgupta1
+/tests/** @deepakdgupta1
+/.github/** @deepakdgupta1
+/.github/workflows/** @deepakdgupta1
+/.github/codeql/** @deepakdgupta1
+/.github/dependabot.yml @deepakdgupta1
+/SECURITY.md @deepakdgupta1
+/docs/actions-source-policy.md @deepakdgupta1
+/docs/ci-map.md @deepakdgupta1
+
+# Docs & governance
+/docs/** @deepakdgupta1
+/AGENTS.md @deepakdgupta1
+/CLAUDE.md @deepakdgupta1
+/CONTRIBUTING.md @deepakdgupta1
+/docs/pr-workflow.md @deepakdgupta1
+/docs/reviewer-playbook.md @deepakdgupta1
+>>>>>>> 3b748777 (chore: align repository URLs and authorship with deepakdgupta1 fork)

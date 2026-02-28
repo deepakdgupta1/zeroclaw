@@ -13,18 +13,21 @@ Merge-blocking checks should stay small and deterministic. Optional checks are u
 - `.github/workflows/ci-run.yml` (`CI`)
     - Purpose: Rust validation (`cargo fmt --all -- --check`, `cargo clippy --locked --all-targets -- -D clippy::correctness`, strict delta lint gate on changed Rust lines, `test`, release build smoke) + docs quality checks when docs change (`markdownlint` blocks only issues on changed lines; link check scans only links added on changed lines)
     - Additional behavior: for Rust-impacting PRs and pushes, `CI Required Gate` requires `lint` + `test` + `build` (no PR build-only bypass)
-    - Additional behavior: `lint`, `test`, and `build` run in parallel (all depend only on `changes` job) to minimize critical path duration
-    - Additional behavior: rust-cache is shared between `lint` and `test` via unified `prefix-key` (`ci-run-check`) to reduce redundant compilation; `build` uses a separate key for release-fast profile
-    - Additional behavior: flake detection is integrated into the `test` job via single-retry probe; emits `test-flake-probe` artifact when flake is suspected; optional blocking can be enabled with repository variable `CI_BLOCK_ON_FLAKE_SUSPECTED=true`
-    - Additional behavior: PRs that change CI/CD-governed paths require an explicit approving review from `@chumyin` (`.github/workflows/**`, `.github/codeql/**`, `.github/connectivity/**`, `.github/release/**`, `.github/security/**`, `.github/actionlint.yaml`, `.github/dependabot.yml`, `scripts/ci/**`, and CI governance docs)
+    - Additional behavior: rust-cache is partitioned per job role via `prefix-key` to reduce cache churn across lint/test/build/flake-probe lanes.
+    - Additional behavior: `lint`, `test`, and `build` run in parallel (all depend only on `changes` job) to minimize critical path duration.
+    - Additional behavior: emits `test-flake-probe` artifact from single-retry probe when tests fail; optional blocking can be enabled with repository variable `CI_BLOCK_ON_FLAKE_SUSPECTED=true`.
+    - Additional behavior: PRs that change CI/CD-governed paths (`.github/workflows/**`, `.github/codeql/**`, `.github/connectivity/**`, `.github/release/**`, `.github/security/**`, `.github/actionlint.yaml`, `.github/dependabot.yml`, `scripts/ci/**`, and CI governance docs) require at least one approving review from a login in `WORKFLOW_OWNER_LOGINS` (repository variable fallback: `deepakdgupta1,willsarg,chumyin`).
     - Additional behavior: PRs that change root license files (`LICENSE-APACHE`, `LICENSE-MIT`) must be authored by `willsarg`
     - Additional behavior: when lint/docs gates fail on PRs, CI posts an actionable feedback comment with failing gate names and local fix commands
     - Merge gate: `CI Required Gate`
 - `.github/workflows/workflow-sanity.yml` (`Workflow Sanity`)
     - Purpose: lint GitHub workflow files (`actionlint`, tab checks)
     - Recommended for workflow-changing PRs
-- `.github/workflows/pr-intake-checks.yml` (`PR Intake Checks`)
-    - Purpose: safe pre-CI PR checks (template completeness, added-line tabs/trailing-whitespace/conflict markers) with immediate sticky feedback comment
+- `.github/workflows/pr-intake-checks.yml` (`PR Intake Checks`) - Purpose: safe pre-CI PR checks (template completeness, added-line tabs/trailing-whitespace/conflict markers) with immediate sticky feedback comment
+  <<<<<<< HEAD
+  =======
+- `.github/workflows/main-promotion-gate.yml` (`Main Promotion Gate`) - Purpose: enforce stable-branch policy by allowing only `dev` -> `main` PR promotion authored by `willsarg` or `deepakdgupta1`
+    > > > > > > > 3b748777 (chore: align repository URLs and authorship with deepakdgupta1 fork)
 
 ### Non-Blocking but Important
 
@@ -101,8 +104,9 @@ Merge-blocking checks should stay small and deterministic. Optional checks are u
 - `Security Audit`: push to `dev` and `main`, PRs to `dev` and `main`, weekly schedule
 - `Sec Vorpal Reviewdog`: manual dispatch only
 - `Workflow Sanity`: PR/push when `.github/workflows/**`, `.github/*.yml`, or `.github/*.yaml` change
+- `Main Promotion Gate`: PRs to `main` only; requires PR author `willsarg`/`deepakdgupta1` and head branch `dev` in the same repository
 - `Dependabot`: all update PRs target `main` (not `dev`)
-- `PR Intake Checks`: `pull_request_target` on opened/reopened/synchronize/ready_for_review
+- `PR Intake Checks`: `pull_request_target` on opened/reopened/synchronize/edited/ready_for_review
 - `Label Policy Sanity`: PR/push when `.github/label-policy.json`, `.github/workflows/pr-labeler.yml`, or `.github/workflows/pr-auto-response.yml` changes
 - `PR Labeler`: `pull_request_target` on opened/reopened/synchronize/ready_for_review
 - `PR Auto Responder`: issue opened/labeled, `pull_request_target` opened/labeled
@@ -114,7 +118,7 @@ Merge-blocking checks should stay small and deterministic. Optional checks are u
 
 1. `CI Required Gate` failing: start with `.github/workflows/ci-run.yml`.
 2. Docker failures on PRs: inspect `.github/workflows/pub-docker-img.yml` `pr-smoke` job.
-   - For tag-publish failures, inspect `ghcr-publish-contract.json` / `audit-event-ghcr-publish-contract.json`, `ghcr-vulnerability-gate.json` / `audit-event-ghcr-vulnerability-gate.json`, and Trivy artifacts from `pub-docker-img.yml`.
+    - For tag-publish failures, inspect `ghcr-publish-contract.json` / `audit-event-ghcr-publish-contract.json`, `ghcr-vulnerability-gate.json` / `audit-event-ghcr-vulnerability-gate.json`, and Trivy artifacts from `pub-docker-img.yml`.
 3. Release failures (tag/manual/scheduled): inspect `.github/workflows/pub-release.yml` and the `prepare` job outputs.
 4. Security failures: inspect `.github/workflows/sec-audit.yml` and `deny.toml`.
 5. Workflow syntax/lint failures: inspect `.github/workflows/workflow-sanity.yml`.
