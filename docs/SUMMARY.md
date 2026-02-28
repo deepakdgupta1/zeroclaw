@@ -44,6 +44,7 @@ Last refreshed: **February 25, 2026**.
 - [providers-reference.md](providers-reference.md)
 - [channels-reference.md](channels-reference.md)
 - [nextcloud-talk-setup.md](nextcloud-talk-setup.md)
+- [configuration-guide.md](configuration-guide.md)
 - [config-reference.md](config-reference.md)
 - [wasm-tools-guide.md](wasm-tools-guide.md)
 - [custom-providers.md](custom-providers.md)
