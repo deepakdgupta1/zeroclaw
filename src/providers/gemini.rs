@@ -805,15 +805,42 @@ impl GeminiProvider {
     }
 
     fn format_model_name(model: &str) -> String {
-        if model.starts_with("models/") {
-            model.to_string()
+        let normalized = Self::normalize_model_input(model);
+        if normalized.starts_with("models/") {
+            normalized
         } else {
-            format!("models/{model}")
+            format!("models/{normalized}")
         }
     }
 
     fn format_internal_model_name(model: &str) -> String {
-        model.strip_prefix("models/").unwrap_or(model).to_string()
+        let normalized = Self::normalize_model_input(model);
+        normalized
+            .strip_prefix("models/")
+            .unwrap_or(&normalized)
+            .to_string()
+    }
+
+    /// Normalize incoming model strings before building Gemini URLs/payloads.
+    ///
+    /// ZeroClaw configs may carry OpenRouter-style model IDs such as
+    /// `google/gemini-2.5-pro`. Gemini's native endpoints expect `gemini-*`
+    /// (or `models/gemini-*`) and can fail with server errors otherwise.
+    fn normalize_model_input(model: &str) -> String {
+        let trimmed = model.trim();
+        if let Some((prefix, rest)) = trimmed.split_once('/') {
+            let known_provider_prefix = matches!(
+                prefix.trim().to_ascii_lowercase().as_str(),
+                "google" | "gemini" | "google-gemini"
+            );
+            if known_provider_prefix {
+                let remainder = rest.trim();
+                if !remainder.is_empty() {
+                    return remainder.to_string();
+                }
+            }
+        }
+        trimmed.to_string()
     }
 
     /// Build the API URL based on auth type.
@@ -843,6 +870,39 @@ impl GeminiProvider {
                 }
             }
         }
+    }
+
+    /// Merge consecutive same-role entries and drop empty parts.
+    ///
+    /// Gemini API requires strict user/model role alternation in `contents`.
+    /// The agent's XmlToolDispatcher can produce consecutive "assistant" (→ "model")
+    /// messages when tool call text and `AssistantToolCalls` are both pushed to
+    /// history.  This method collapses them into a single entry per role run.
+    fn coalesce_contents(raw: Vec<Content>) -> Vec<Content> {
+        let mut out: Vec<Content> = Vec::with_capacity(raw.len());
+        for entry in raw {
+            // Skip entries whose text is entirely empty/whitespace.
+            let non_empty_parts: Vec<Part> = entry
+                .parts
+                .into_iter()
+                .filter(|p| !p.text.trim().is_empty())
+                .collect();
+            if non_empty_parts.is_empty() {
+                continue;
+            }
+            let entry = Content {
+                role: entry.role,
+                parts: non_empty_parts,
+            };
+            if let Some(last) = out.last_mut() {
+                if last.role == entry.role {
+                    last.parts.extend(entry.parts);
+                    continue;
+                }
+            }
+            out.push(entry);
+        }
+        out
     }
 
     fn http_client(&self) -> Client {
@@ -1335,6 +1395,8 @@ impl Provider for GeminiProvider {
             }
         }
 
+        let contents = Self::coalesce_contents(contents);
+
         let system_instruction = if system_parts.is_empty() {
             None
         } else {
@@ -1379,6 +1441,8 @@ impl Provider for GeminiProvider {
                 _ => {}
             }
         }
+
+        let contents = Self::coalesce_contents(contents);
 
         let system_instruction = if system_parts.is_empty() {
             None
@@ -1640,6 +1704,22 @@ mod tests {
             GeminiProvider::format_internal_model_name("gemini-2.5-flash"),
             "gemini-2.5-flash"
         );
+        assert_eq!(
+            GeminiProvider::format_model_name("google/gemini-2.5-pro"),
+            "models/gemini-2.5-pro"
+        );
+        assert_eq!(
+            GeminiProvider::format_model_name("google/models/gemini-2.5-pro"),
+            "models/gemini-2.5-pro"
+        );
+        assert_eq!(
+            GeminiProvider::format_internal_model_name("google/gemini-2.5-pro"),
+            "gemini-2.5-pro"
+        );
+        assert_eq!(
+            GeminiProvider::format_internal_model_name("google/models/gemini-2.5-pro"),
+            "gemini-2.5-pro"
+        );
     }
 
     #[test]
@@ -1665,6 +1745,14 @@ mod tests {
         let url = GeminiProvider::build_generate_content_url("gemini-2.0-flash", &auth);
         assert!(url.contains("generativelanguage.googleapis.com/v1beta"));
         assert!(url.contains("models/gemini-2.0-flash"));
+    }
+
+    #[test]
+    fn api_key_url_normalizes_provider_prefixed_model() {
+        let auth = GeminiAuth::ExplicitKey("api-key-123".into());
+        let url = GeminiProvider::build_generate_content_url("google/gemini-2.0-flash", &auth);
+        assert!(url.contains("models/gemini-2.0-flash"));
+        assert!(!url.contains("models/google/"));
     }
 
     #[test]
@@ -1752,6 +1840,48 @@ mod tests {
         assert!(json.get("generationConfig").is_none());
         assert!(json.get("request").is_some());
         assert!(json["request"].get("generationConfig").is_some());
+    }
+
+    #[test]
+    fn oauth_request_normalizes_provider_prefixed_model_in_envelope() {
+        let provider = test_provider(Some(test_oauth_auth("ya29.mock-token")));
+        let auth = test_oauth_auth("ya29.mock-token");
+        let url = GeminiProvider::build_generate_content_url("google/gemini-2.0-flash", &auth);
+        let body = GenerateContentRequest {
+            contents: vec![Content {
+                role: Some("user".into()),
+                parts: vec![Part {
+                    text: "hello".into(),
+                }],
+            }],
+            system_instruction: None,
+            generation_config: GenerationConfig {
+                temperature: 0.7,
+                max_output_tokens: 8192,
+            },
+            cached_content: None,
+        };
+
+        let request = provider
+            .build_generate_content_request(
+                &auth,
+                &url,
+                &body,
+                "google/gemini-2.0-flash",
+                true,
+                Some("test-project"),
+                Some("ya29.mock-token"),
+            )
+            .build()
+            .unwrap();
+
+        let payload = request
+            .body()
+            .and_then(|b| b.as_bytes())
+            .expect("json request body should be bytes");
+        let json: serde_json::Value = serde_json::from_slice(payload).unwrap();
+
+        assert_eq!(json["model"], "gemini-2.0-flash");
     }
 
     #[test]
@@ -2246,6 +2376,59 @@ mod tests {
         let json = r#"{"candidates": [{"content": {"parts": [{"text": "Hello"}]}}]}"#;
         let resp: GenerateContentResponse = serde_json::from_str(json).unwrap();
         assert!(resp.usage_metadata.is_none());
+    }
+
+    #[test]
+    fn coalesce_merges_consecutive_same_role() {
+        let contents = vec![
+            Content {
+                role: Some("user".into()),
+                parts: vec![Part {
+                    text: "hello".into(),
+                }],
+            },
+            Content {
+                role: Some("model".into()),
+                parts: vec![Part {
+                    text: "I'll search".into(),
+                }],
+            },
+            Content {
+                role: Some("model".into()),
+                parts: vec![Part {
+                    text: "<tool_call>...</tool_call>".into(),
+                }],
+            },
+            Content {
+                role: Some("user".into()),
+                parts: vec![Part {
+                    text: "[Tool results]".into(),
+                }],
+            },
+        ];
+        let result = GeminiProvider::coalesce_contents(contents);
+        assert_eq!(result.len(), 3);
+        assert_eq!(result[0].role.as_deref(), Some("user"));
+        assert_eq!(result[1].role.as_deref(), Some("model"));
+        assert_eq!(result[1].parts.len(), 2);
+        assert_eq!(result[2].role.as_deref(), Some("user"));
+    }
+
+    #[test]
+    fn coalesce_drops_empty_parts() {
+        let contents = vec![
+            Content {
+                role: Some("model".into()),
+                parts: vec![Part { text: "".into() }],
+            },
+            Content {
+                role: Some("user".into()),
+                parts: vec![Part { text: "hi".into() }],
+            },
+        ];
+        let result = GeminiProvider::coalesce_contents(contents);
+        assert_eq!(result.len(), 1);
+        assert_eq!(result[0].role.as_deref(), Some("user"));
     }
 
     /// Validates that warmup() for ManagedOAuth requires auth_service.
