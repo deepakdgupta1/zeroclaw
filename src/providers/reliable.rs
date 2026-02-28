@@ -4,9 +4,10 @@ use super::traits::{
 use super::Provider;
 use async_trait::async_trait;
 use futures_util::{stream, StreamExt};
+use parking_lot::RwLock;
 use std::collections::{HashMap, HashSet};
 use std::sync::atomic::{AtomicUsize, Ordering};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 // ── Error Classification ─────────────────────────────────────────────────
 // Errors are split into retryable (transient server/network failures) and
@@ -211,8 +212,182 @@ fn push_failure(
     ));
 }
 
+// ── Provider Cooldown Tracker ─────────────────────────────────────────────
+// Tracks per-provider retry-after deadlines across requests. When a provider
+// fails, its cooldown is set based on the failure reason. Subsequent requests
+// skip providers still on cooldown, preventing wasted latency on known-bad
+// providers.
+//
+// Safety: if ALL providers are on cooldown, the first provider's cooldown is
+// ignored to prevent total lockout.
+
+/// Sentinel file path for hot-fix cooldown reset.
+/// `touch ~/.zeroclaw/reset_cooldowns` clears all cooldowns without redeploy.
+fn cooldown_sentinel_path() -> std::path::PathBuf {
+    dirs::home_dir()
+        .unwrap_or_else(|| std::path::PathBuf::from("."))
+        .join(".zeroclaw")
+        .join("reset_cooldowns")
+}
+
+/// Cross-request cooldown tracker for provider failures.
+struct ProviderCooldown {
+    deadlines: RwLock<HashMap<String, Instant>>,
+}
+
+impl ProviderCooldown {
+    fn new() -> Self {
+        Self {
+            deadlines: RwLock::new(HashMap::new()),
+        }
+    }
+
+    /// Check for the sentinel file and clear all cooldowns if found.
+    fn check_sentinel_reset(&self) {
+        let sentinel = cooldown_sentinel_path();
+        if sentinel.exists() {
+            {
+                let mut deadlines = self.deadlines.write();
+                deadlines.clear();
+            }
+            if let Err(e) = std::fs::remove_file(&sentinel) {
+                tracing::warn!(
+                    path = %sentinel.display(),
+                    error = %e,
+                    "Failed to remove cooldown reset sentinel file"
+                );
+            }
+            tracing::info!("Cooldowns cleared via reset sentinel file");
+        }
+    }
+
+    /// Returns true if the named provider is currently on cooldown.
+    fn is_on_cooldown(&self, provider_name: &str) -> bool {
+        let deadlines = self.deadlines.read();
+        if let Some(deadline) = deadlines.get(provider_name) {
+            Instant::now() < *deadline
+        } else {
+            false
+        }
+    }
+
+    /// Record a cooldown for the named provider based on failure reason.
+    fn record_cooldown(&self, provider_name: &str, err: &anyhow::Error) {
+        let duration = Self::cooldown_duration(err);
+        if duration.is_zero() {
+            return;
+        }
+        let deadline = Instant::now() + duration;
+        let mut deadlines = self.deadlines.write();
+        deadlines.insert(provider_name.to_string(), deadline);
+        tracing::info!(
+            provider = provider_name,
+            cooldown_secs = duration.as_secs(),
+            "Provider placed on cooldown"
+        );
+    }
+
+    /// Clear cooldown for a provider (called on success).
+    fn clear_cooldown(&self, provider_name: &str) {
+        let mut deadlines = self.deadlines.write();
+        if deadlines.remove(provider_name).is_some() {
+            tracing::info!(
+                provider = provider_name,
+                "Provider cooldown cleared (success)"
+            );
+        }
+    }
+
+    /// Determine cooldown duration from the error.
+    fn cooldown_duration(err: &anyhow::Error) -> Duration {
+        let msg = err.to_string().to_lowercase();
+
+        // Context overflow: per-request issue, no cooldown.
+        if is_context_window_exceeded(err) {
+            return Duration::ZERO;
+        }
+
+        // Auth failures (401/403): long cooldown — key revocation won't self-heal.
+        if msg.contains("unauthorized")
+            || msg.contains("forbidden")
+            || msg.contains("invalid api key")
+            || msg.contains("authentication failed")
+            || msg.contains("permission denied")
+            || msg.contains("access denied")
+        {
+            return Duration::from_secs(600);
+        }
+
+        // Check HTTP status codes.
+        if let Some(reqwest_err) = err.downcast_ref::<reqwest::Error>() {
+            if let Some(status) = reqwest_err.status() {
+                return match status.as_u16() {
+                    401 | 403 => Duration::from_secs(600),
+                    429 => {
+                        // Check for quota/billing exhaustion vs transient rate limit.
+                        if msg.contains("quota") || msg.contains("billing") || msg.contains("exceeded") {
+                            Duration::from_secs(300)
+                        } else if let Some(retry_after) = parse_retry_after_ms(err) {
+                            Duration::from_millis(retry_after.max(1000))
+                        } else {
+                            Duration::from_secs(60)
+                        }
+                    }
+                    500..=599 => Duration::from_secs(30),
+                    _ => Duration::from_secs(20),
+                };
+            }
+        }
+
+        // Fallback: parse from stringified errors.
+        for word in msg.split(|c: char| !c.is_ascii_digit()) {
+            if let Ok(code) = word.parse::<u16>() {
+                match code {
+                    401 | 403 => return Duration::from_secs(600),
+                    429 => {
+                        if msg.contains("quota") || msg.contains("billing") {
+                            return Duration::from_secs(300);
+                        }
+                        return Duration::from_secs(60);
+                    }
+                    500..=599 => return Duration::from_secs(30),
+                    _ => {}
+                }
+            }
+        }
+
+        // Model not found: won't self-heal.
+        if msg.contains("not found") || msg.contains("unknown model") || msg.contains("unsupported model") {
+            return Duration::from_secs(3600);
+        }
+
+        // Network/timeout: very transient.
+        if msg.contains("timeout") || msg.contains("timed out") || msg.contains("connection") {
+            return Duration::from_secs(15);
+        }
+
+        // Default: safe fallback.
+        Duration::from_secs(20)
+    }
+
+    /// Returns the number of providers currently on cooldown (for lockout prevention).
+    fn count_on_cooldown(&self, provider_names: &[&str]) -> usize {
+        let now = Instant::now();
+        let deadlines = self.deadlines.read();
+        provider_names
+            .iter()
+            .filter(|name| {
+                deadlines
+                    .get(**name)
+                    .map_or(false, |deadline| now < *deadline)
+            })
+            .count()
+    }
+}
+
 // ── Resilient Provider Wrapper ────────────────────────────────────────────
-// Three-level failover strategy: model chain → provider chain → retry loop.
+// Four-level failover strategy: cooldown check → model chain → provider chain → retry loop.
+//   Pre-check: skip providers whose cooldown hasn't expired yet.
 //   Outer loop:  iterate model fallback chain (original model first, then
 //                configured alternatives).
 //   Middle loop: iterate registered providers in priority order.
@@ -221,7 +396,7 @@ fn push_failure(
 // Loop invariant: `failures` accumulates every failed attempt so the final
 // error message gives operators a complete diagnostic trail.
 
-/// Provider wrapper with retry, fallback, auth rotation, and model failover.
+/// Provider wrapper with retry, fallback, auth rotation, model failover, and cross-request cooldowns.
 pub struct ReliableProvider {
     providers: Vec<(String, Box<dyn Provider>)>,
     max_retries: u32,
@@ -235,6 +410,8 @@ pub struct ReliableProvider {
     provider_model_fallbacks: HashMap<String, Vec<String>>,
     /// Vision support override from config (`None` = defer to provider).
     vision_override: Option<bool>,
+    /// Cross-request cooldown tracker.
+    cooldown: ProviderCooldown,
 }
 
 impl ReliableProvider {
@@ -252,6 +429,7 @@ impl ReliableProvider {
             model_fallbacks: HashMap::new(),
             provider_model_fallbacks: HashMap::new(),
             vision_override: None,
+            cooldown: ProviderCooldown::new(),
         }
     }
 
@@ -368,8 +546,15 @@ impl Provider for ReliableProvider {
         model: &str,
         temperature: f64,
     ) -> anyhow::Result<String> {
+        // Check for sentinel reset before processing.
+        self.cooldown.check_sentinel_reset();
+
         let models = self.model_chain(model);
         let mut failures = Vec::new();
+
+        // Collect provider names for lockout prevention.
+        let provider_names: Vec<&str> = self.providers.iter().map(|(n, _)| n.as_str()).collect();
+        let all_on_cooldown = self.cooldown.count_on_cooldown(&provider_names) >= provider_names.len();
 
         // Outer: model fallback chain. Middle: provider priority. Inner: retries.
         // Each iteration: attempt one (provider, model) call. On success, return
@@ -377,6 +562,15 @@ impl Provider for ReliableProvider {
         // retryable error, sleep with exponential backoff and retry.
         for current_model in &models {
             for (provider_index, (provider_name, provider)) in self.providers.iter().enumerate() {
+                // Skip providers on cooldown (unless all are, to prevent lockout).
+                if !all_on_cooldown && self.cooldown.is_on_cooldown(provider_name) {
+                    tracing::debug!(
+                        provider = provider_name,
+                        "Skipping provider (on cooldown)"
+                    );
+                    continue;
+                }
+
                 let sent_models =
                     self.provider_model_chain(current_model, provider_name, provider_index == 0);
                 for sent_model in sent_models {
@@ -388,6 +582,7 @@ impl Provider for ReliableProvider {
                             .await
                         {
                             Ok(resp) => {
+                                self.cooldown.clear_cooldown(provider_name);
                                 if attempt > 0 || sent_model != model {
                                     tracing::info!(
                                         provider = provider_name,
@@ -628,11 +823,27 @@ impl Provider for ReliableProvider {
         model: &str,
         temperature: f64,
     ) -> anyhow::Result<ChatResponse> {
+        // Check for sentinel reset before processing.
+        self.cooldown.check_sentinel_reset();
+
         let models = self.model_chain(model);
         let mut failures = Vec::new();
 
+        // Collect provider names for lockout prevention.
+        let provider_names: Vec<&str> = self.providers.iter().map(|(n, _)| n.as_str()).collect();
+        let all_on_cooldown = self.cooldown.count_on_cooldown(&provider_names) >= provider_names.len();
+
         for current_model in &models {
             for (provider_index, (provider_name, provider)) in self.providers.iter().enumerate() {
+                // Skip providers on cooldown (unless all are, to prevent lockout).
+                if !all_on_cooldown && self.cooldown.is_on_cooldown(provider_name) {
+                    tracing::debug!(
+                        provider = provider_name,
+                        "Skipping provider (on cooldown)"
+                    );
+                    continue;
+                }
+
                 let sent_models =
                     self.provider_model_chain(current_model, provider_name, provider_index == 0);
                 for sent_model in sent_models {
@@ -643,7 +854,10 @@ impl Provider for ReliableProvider {
                             .chat_with_tools(messages, tools, sent_model, temperature)
                             .await
                         {
-                            Ok(resp) => {
+                            Ok(mut resp) => {
+                                self.cooldown.clear_cooldown(provider_name);
+                                resp.actual_provider = Some(provider_name.clone());
+                                resp.actual_model = Some(sent_model.to_string());
                                 if attempt > 0 || sent_model != model {
                                     tracing::info!(
                                         provider = provider_name,
@@ -743,11 +957,27 @@ impl Provider for ReliableProvider {
         model: &str,
         temperature: f64,
     ) -> anyhow::Result<ChatResponse> {
+        // Check for sentinel reset before processing.
+        self.cooldown.check_sentinel_reset();
+
         let models = self.model_chain(model);
         let mut failures = Vec::new();
 
+        // Collect provider names for lockout prevention.
+        let provider_names: Vec<&str> = self.providers.iter().map(|(n, _)| n.as_str()).collect();
+        let all_on_cooldown = self.cooldown.count_on_cooldown(&provider_names) >= provider_names.len();
+
         for current_model in &models {
             for (provider_index, (provider_name, provider)) in self.providers.iter().enumerate() {
+                // Skip providers on cooldown (unless all are, to prevent lockout).
+                if !all_on_cooldown && self.cooldown.is_on_cooldown(provider_name) {
+                    tracing::debug!(
+                        provider = provider_name,
+                        "Skipping provider (on cooldown)"
+                    );
+                    continue;
+                }
+
                 let sent_models =
                     self.provider_model_chain(current_model, provider_name, provider_index == 0);
                 for sent_model in sent_models {
@@ -759,7 +989,10 @@ impl Provider for ReliableProvider {
                             tools: request.tools,
                         };
                         match provider.chat(req, sent_model, temperature).await {
-                            Ok(resp) => {
+                            Ok(mut resp) => {
+                                self.cooldown.clear_cooldown(provider_name);
+                                resp.actual_provider = Some(provider_name.clone());
+                                resp.actual_model = Some(sent_model.to_string());
                                 if attempt > 0 || sent_model != model {
                                     tracing::info!(
                                         provider = provider_name,
@@ -1807,6 +2040,8 @@ mod tests {
                 tool_calls: self.tool_calls.clone(),
                 usage: None,
                 reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
             })
         }
     }
@@ -2000,6 +2235,8 @@ mod tests {
                 tool_calls: vec![],
                 usage: None,
                 reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
             })
         }
     }

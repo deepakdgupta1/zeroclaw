@@ -73,6 +73,12 @@ pub struct ChatResponse {
     /// sent back in subsequent API requests — some providers reject tool-call
     /// history that omits this field.
     pub reasoning_content: Option<String>,
+    /// The provider that actually served this response (set by `ReliableProvider`
+    /// after fallback resolution). `None` for direct provider calls.
+    pub actual_provider: Option<String>,
+    /// The model that actually served this response (may differ from the
+    /// requested model after model-fallback or provider-scoped remapping).
+    pub actual_model: Option<String>,
 }
 
 impl ChatResponse {
@@ -366,6 +372,8 @@ pub trait Provider: Send + Sync {
                     tool_calls: Vec::new(),
                     usage: None,
                     reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
                 });
             }
         }
@@ -378,6 +386,8 @@ pub trait Provider: Send + Sync {
             tool_calls: Vec::new(),
             usage: None,
             reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
         })
     }
 
@@ -413,6 +423,8 @@ pub trait Provider: Send + Sync {
             tool_calls: Vec::new(),
             usage: None,
             reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
         })
     }
 
@@ -542,6 +554,8 @@ mod tests {
             tool_calls: vec![],
             usage: None,
             reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
         };
         assert!(!empty.has_tool_calls());
         assert_eq!(empty.text_or_empty(), "");
@@ -555,6 +569,8 @@ mod tests {
             }],
             usage: None,
             reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
         };
         assert!(with_tools.has_tool_calls());
         assert_eq!(with_tools.text_or_empty(), "Let me check");
@@ -579,6 +595,8 @@ mod tests {
                 cached_tokens: None,
             }),
             reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
         };
         assert_eq!(resp.usage.as_ref().unwrap().input_tokens, Some(100));
         assert_eq!(resp.usage.as_ref().unwrap().output_tokens, Some(50));

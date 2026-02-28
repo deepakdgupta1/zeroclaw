@@ -301,6 +301,8 @@ impl OpenAiProvider {
             tool_calls,
             usage: None,
             reasoning_content,
+            actual_provider: None,
+            actual_model: None,
         }
     }
 

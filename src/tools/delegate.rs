@@ -880,6 +880,8 @@ mod tests {
                     tool_calls: Vec::new(),
                     usage: None,
                     reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
                 })
             } else {
                 Ok(ChatResponse {
@@ -891,6 +893,8 @@ mod tests {
                     }],
                     usage: None,
                     reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
                 })
             }
         }
@@ -925,6 +929,8 @@ mod tests {
                 }],
                 usage: None,
                 reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
             })
         }
     }
