@@ -32,8 +32,8 @@
 Χρησιμοποιήστε τις παρακάτω εντολές για να επαληθεύσετε την τρέχουσα πολιτική:
 
 ```bash
-gh api repos/zeroclaw-labs/zeroclaw/actions/permissions
-gh api repos/zeroclaw-labs/zeroclaw/actions/permissions/selected-actions
+gh api repos/deepakdgupta1/zeroclaw/actions/permissions
+gh api repos/deepakdgupta1/zeroclaw/actions/permissions/selected-actions
 ```
 
 Κάθε αλλαγή στην πολιτική πρέπει να καταγράφει:

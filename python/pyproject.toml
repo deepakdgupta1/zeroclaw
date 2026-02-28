@@ -51,10 +51,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/zeroclaw-labs/zeroclaw"
-Documentation = "https://github.com/zeroclaw-labs/zeroclaw/tree/main/python"
-Repository = "https://github.com/zeroclaw-labs/zeroclaw"
-Issues = "https://github.com/zeroclaw-labs/zeroclaw/issues"
+Homepage = "https://github.com/deepakdgupta1/zeroclaw"
+Documentation = "https://github.com/deepakdgupta1/zeroclaw/tree/main/python"
+Repository = "https://github.com/deepakdgupta1/zeroclaw"
+Issues = "https://github.com/deepakdgupta1/zeroclaw/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["zeroclaw_tools"]

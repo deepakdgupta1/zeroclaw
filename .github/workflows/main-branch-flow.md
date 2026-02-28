@@ -10,30 +10,30 @@ Use this with:
 
 ## Event Summary
 
-| Event | Main workflows |
-| --- | --- |
-| PR activity (`pull_request_target`) | `pr-intake-checks.yml`, `pr-labeler.yml`, `pr-auto-response.yml` |
-| PR activity (`pull_request`) | `ci-run.yml`, `sec-audit.yml`, `main-promotion-gate.yml` (for `main` PRs), plus path-scoped workflows |
-| Push to `dev`/`main` | `ci-run.yml`, `sec-audit.yml`, plus path-scoped workflows |
-| Tag push (`v*`) | `pub-release.yml` publish mode, `pub-docker-img.yml` publish job |
-| Scheduled/manual | `pub-release.yml` verification mode, `sec-codeql.yml`, `feature-matrix.yml`, `test-fuzz.yml`, `pr-check-stale.yml`, `pr-check-status.yml`, `sync-contributors.yml`, `test-benchmarks.yml`, `test-e2e.yml` |
+| Event                               | Main workflows                                                                                                                                                                                            |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PR activity (`pull_request_target`) | `pr-intake-checks.yml`, `pr-labeler.yml`, `pr-auto-response.yml`                                                                                                                                          |
+| PR activity (`pull_request`)        | `ci-run.yml`, `sec-audit.yml`, `main-promotion-gate.yml` (for `main` PRs), plus path-scoped workflows                                                                                                     |
+| Push to `dev`/`main`                | `ci-run.yml`, `sec-audit.yml`, plus path-scoped workflows                                                                                                                                                 |
+| Tag push (`v*`)                     | `pub-release.yml` publish mode, `pub-docker-img.yml` publish job                                                                                                                                          |
+| Scheduled/manual                    | `pub-release.yml` verification mode, `sec-codeql.yml`, `feature-matrix.yml`, `test-fuzz.yml`, `pr-check-stale.yml`, `pr-check-status.yml`, `sync-contributors.yml`, `test-benchmarks.yml`, `test-e2e.yml` |
 
 ## Runtime and Docker Matrix
 
 Observed averages below are from recent completed runs (sampled from GitHub Actions on February 17, 2026). Values are directional, not SLA.
 
-| Workflow | Typical trigger in main flow | Avg runtime | Docker build? | Docker run? | Docker push? |
-| --- | --- | ---:| --- | --- | --- |
-| `pr-intake-checks.yml` | PR open/update (`pull_request_target`) | 14.5s | No | No | No |
-| `pr-labeler.yml` | PR open/update (`pull_request_target`) | 53.7s | No | No | No |
-| `pr-auto-response.yml` | PR/issue automation | 24.3s | No | No | No |
-| `ci-run.yml` | PR + push to `dev`/`main` | 74.7s | No | No | No |
-| `sec-audit.yml` | PR + push to `dev`/`main` | 127.2s | No | No | No |
-| `workflow-sanity.yml` | Workflow-file changes | 34.2s | No | No | No |
-| `pr-label-policy-check.yml` | Label policy/automation changes | 14.7s | No | No | No |
-| `pub-docker-img.yml` (`pull_request`) | Docker build-input PR changes | 240.4s | Yes | Yes | No |
-| `pub-docker-img.yml` (`push`) | tag push `v*` | 139.9s | Yes | No | Yes |
-| `pub-release.yml` | Tag push `v*` (publish) + manual/scheduled verification (no publish) | N/A in recent sample | No | No | No |
+| Workflow                              | Typical trigger in main flow                                         |          Avg runtime | Docker build? | Docker run? | Docker push? |
+| ------------------------------------- | -------------------------------------------------------------------- | -------------------: | ------------- | ----------- | ------------ |
+| `pr-intake-checks.yml`                | PR open/update (`pull_request_target`)                               |                14.5s | No            | No          | No           |
+| `pr-labeler.yml`                      | PR open/update (`pull_request_target`)                               |                53.7s | No            | No          | No           |
+| `pr-auto-response.yml`                | PR/issue automation                                                  |                24.3s | No            | No          | No           |
+| `ci-run.yml`                          | PR + push to `dev`/`main`                                            |                74.7s | No            | No          | No           |
+| `sec-audit.yml`                       | PR + push to `dev`/`main`                                            |               127.2s | No            | No          | No           |
+| `workflow-sanity.yml`                 | Workflow-file changes                                                |                34.2s | No            | No          | No           |
+| `pr-label-policy-check.yml`           | Label policy/automation changes                                      |                14.7s | No            | No          | No           |
+| `pub-docker-img.yml` (`pull_request`) | Docker build-input PR changes                                        |               240.4s | Yes           | Yes         | No           |
+| `pub-docker-img.yml` (`push`)         | tag push `v*`                                                        |               139.9s | Yes           | No          | Yes          |
+| `pub-release.yml`                     | Tag push `v*` (publish) + manual/scheduled verification (no publish) | N/A in recent sample | No            | No          | No           |
 
 Notes:
 
@@ -48,34 +48,34 @@ Notes:
 
 1. Contributor opens or updates PR against `dev`.
 2. `pull_request_target` automation runs (typical runtime):
-   - `pr-intake-checks.yml` posts intake warnings/errors.
-   - `pr-labeler.yml` sets size/risk/scope labels.
-   - `pr-auto-response.yml` runs first-interaction and label routes.
+    - `pr-intake-checks.yml` posts intake warnings/errors.
+    - `pr-labeler.yml` sets size/risk/scope labels.
+    - `pr-auto-response.yml` runs first-interaction and label routes.
 3. `pull_request` CI workflows start:
-   - `ci-run.yml`
-   - `feature-matrix.yml` (Rust/workflow path scope)
-   - `sec-audit.yml`
-   - `sec-codeql.yml` (if Rust/codeql paths changed)
-     - path-scoped workflows if matching files changed:
-       - `pub-docker-img.yml` (Docker build-input paths only)
-       - `docs-deploy.yml` (docs + README markdown paths; deploy contract guard enforces promotion + rollback ref policy)
-       - `workflow-sanity.yml` (workflow files only)
-     - `pr-label-policy-check.yml` (label-policy files only)
-     - `ci-change-audit.yml` (CI/security path changes)
-     - `ci-provider-connectivity.yml` (probe config/script/workflow changes)
-     - `ci-reproducible-build.yml` (Rust/build reproducibility paths)
+    - `ci-run.yml`
+    - `feature-matrix.yml` (Rust/workflow path scope)
+    - `sec-audit.yml`
+    - `sec-codeql.yml` (if Rust/codeql paths changed)
+        - path-scoped workflows if matching files changed:
+            - `pub-docker-img.yml` (Docker build-input paths only)
+            - `docs-deploy.yml` (docs + README markdown paths; deploy contract guard enforces promotion + rollback ref policy)
+            - `workflow-sanity.yml` (workflow files only)
+        - `pr-label-policy-check.yml` (label-policy files only)
+        - `ci-change-audit.yml` (CI/security path changes)
+        - `ci-provider-connectivity.yml` (probe config/script/workflow changes)
+        - `ci-reproducible-build.yml` (Rust/build reproducibility paths)
 4. In `ci-run.yml`, `changes` computes:
-   - `docs_only`
-   - `docs_changed`
-   - `rust_changed`
-   - `workflow_changed`
+    - `docs_only`
+    - `docs_changed`
+    - `rust_changed`
+    - `workflow_changed`
 5. `build` runs for Rust-impacting changes.
 6. On PRs, full lint/test/docs checks run when PR has label `ci:full`:
-   - `lint`
-   - `lint-strict-delta`
-   - `test`
-   - `flake-probe` (single-retry telemetry; optional block via `CI_BLOCK_ON_FLAKE_SUSPECTED`)
-   - `docs-quality`
+    - `lint`
+    - `lint-strict-delta`
+    - `test`
+    - `flake-probe` (single-retry telemetry; optional block via `CI_BLOCK_ON_FLAKE_SUSPECTED`)
+    - `docs-quality`
 7. If `.github/workflows/**` changed, `workflow-owner-approval` must pass.
 8. If root license files (`LICENSE-APACHE`, `LICENSE-MIT`) changed, `license-file-owner-guard` allows only PR author `willsarg`.
 9. `lint-feedback` posts actionable comment if lint/docs gates fail.
@@ -87,43 +87,43 @@ Notes:
 
 1. External contributor opens PR from `fork/<branch>` into `zeroclaw:dev`.
 2. Immediately on `opened`:
-   - `pull_request_target` workflows start with base-repo context and base-repo token:
-     - `pr-intake-checks.yml`
-     - `pr-labeler.yml`
-     - `pr-auto-response.yml`
-   - `pull_request` workflows are queued for the fork head commit:
-     - `ci-run.yml`
-     - `sec-audit.yml`
-     - path-scoped workflows (`pub-docker-img.yml`, `workflow-sanity.yml`, `pr-label-policy-check.yml`) if changed files match.
+    - `pull_request_target` workflows start with base-repo context and base-repo token:
+        - `pr-intake-checks.yml`
+        - `pr-labeler.yml`
+        - `pr-auto-response.yml`
+    - `pull_request` workflows are queued for the fork head commit:
+        - `ci-run.yml`
+        - `sec-audit.yml`
+        - path-scoped workflows (`pub-docker-img.yml`, `workflow-sanity.yml`, `pr-label-policy-check.yml`) if changed files match.
 3. Fork-specific permission behavior in `pull_request` workflows:
-   - token is restricted (read-focused), so jobs that try to write PR comments/status extras can be limited.
-   - secrets from the base repo are not exposed to fork PR `pull_request` jobs.
+    - token is restricted (read-focused), so jobs that try to write PR comments/status extras can be limited.
+    - secrets from the base repo are not exposed to fork PR `pull_request` jobs.
 4. Approval gate possibility:
-   - if Actions settings require maintainer approval for fork workflows, the `pull_request` run stays in `action_required`/waiting state until approved.
+    - if Actions settings require maintainer approval for fork workflows, the `pull_request` run stays in `action_required`/waiting state until approved.
 5. Event fan-out after labeling:
-   - `pr-labeler.yml` and manual label changes emit `labeled`/`unlabeled` events.
-   - those events retrigger `pull_request_target` automation (`pr-labeler.yml` and `pr-auto-response.yml`), creating extra run volume/noise.
+    - `pr-labeler.yml` and manual label changes emit `labeled`/`unlabeled` events.
+    - those events retrigger `pull_request_target` automation (`pr-labeler.yml` and `pr-auto-response.yml`), creating extra run volume/noise.
 6. When contributor pushes new commits to fork branch (`synchronize`):
-   - reruns: `pr-intake-checks.yml`, `pr-labeler.yml`, `ci-run.yml`, `sec-audit.yml`, and matching path-scoped PR workflows.
-   - does not rerun `pr-auto-response.yml` unless label/open events occur.
+    - reruns: `pr-intake-checks.yml`, `pr-labeler.yml`, `ci-run.yml`, `sec-audit.yml`, and matching path-scoped PR workflows.
+    - does not rerun `pr-auto-response.yml` unless label/open events occur.
 7. `ci-run.yml` execution details for fork PR:
-   - `changes` computes `docs_only`, `docs_changed`, `rust_changed`, `workflow_changed`.
-   - `build` runs for Rust-impacting changes.
-   - `lint`/`lint-strict-delta`/`test`/`docs-quality` run on PR when `ci:full` label exists.
-   - `workflow-owner-approval` runs when `.github/workflows/**` changed.
-   - `CI Required Gate` emits final pass/fail for the PR head.
+    - `changes` computes `docs_only`, `docs_changed`, `rust_changed`, `workflow_changed`.
+    - `build` runs for Rust-impacting changes.
+    - `lint`/`lint-strict-delta`/`test`/`docs-quality` run on PR when `ci:full` label exists.
+    - `workflow-owner-approval` runs when `.github/workflows/**` changed.
+    - `CI Required Gate` emits final pass/fail for the PR head.
 8. Fork PR merge blockers to check first when diagnosing stalls:
-   - run approval pending for fork workflows.
-   - `workflow-owner-approval` failing on workflow-file changes.
-   - `license-file-owner-guard` failing when root license files are modified by non-owner PR author.
-   - `CI Required Gate` failure caused by upstream jobs.
-   - repeated `pull_request_target` reruns from label churn causing noisy signals.
+    - run approval pending for fork workflows.
+    - `workflow-owner-approval` failing on workflow-file changes.
+    - `license-file-owner-guard` failing when root license files are modified by non-owner PR author.
+    - `CI Required Gate` failure caused by upstream jobs.
+    - repeated `pull_request_target` reruns from label churn causing noisy signals.
 9. After merge, normal `push` workflows on `dev` execute (scenario 4).
 
 ### 3) Promotion PR `dev` -> `main`
 
 1. Maintainer opens PR with head `dev` and base `main`.
-2. `main-promotion-gate.yml` runs and fails unless PR author is `willsarg` or `theonlyhennygod`.
+2. `main-promotion-gate.yml` runs and fails unless PR author is `willsarg` or `deepakdgupta1`.
 3. `main-promotion-gate.yml` also fails if head repo/branch is not `<this-repo>:dev`.
 4. `ci-run.yml` and `sec-audit.yml` run on the promotion PR.
 5. Maintainer merges PR once checks and review policy pass.
@@ -139,8 +139,8 @@ Notes:
 6. `ci-supply-chain-provenance.yml` runs on push when Rust/build provenance paths change.
 7. Path-filtered workflows run only if touched files match their filters.
 8. In `ci-run.yml`, push/merge-group behavior differs from PR behavior:
-   - Rust path: `lint`, `lint-strict-delta`, `test`, `build` are expected.
-   - Docs/non-rust paths: fast-path behavior applies.
+    - Rust path: `lint`, `lint-strict-delta`, `test`, `build` are expected.
+    - Docs/non-rust paths: fast-path behavior applies.
 9. `CI Required Gate` computes overall push/merge-group result.
 
 ## Docker Publish Logic
@@ -151,8 +151,8 @@ Workflow: `.github/workflows/pub-docker-img.yml`
 
 1. Triggered on `pull_request` to `dev` or `main` when Docker build-input paths change.
 2. Runs `PR Docker Smoke` job:
-   - Builds local smoke image with Blacksmith builder.
-   - Verifies container with `docker run ... --version`.
+    - Builds local smoke image with Blacksmith builder.
+    - Verifies container with `docker run ... --version`.
 3. Typical runtime in recent sample: ~240.4s.
 4. No registry push happens on PR events.
 
@@ -176,12 +176,12 @@ Important: Docker publish now requires a `v*` tag push; regular `dev`/`main` bra
 Workflow: `.github/workflows/pub-release.yml`
 
 1. Trigger modes:
-   - Tag push `v*` -> publish mode.
-   - Manual dispatch -> verification-only or publish mode (input-driven).
-   - Weekly schedule -> verification-only mode.
+    - Tag push `v*` -> publish mode.
+    - Manual dispatch -> verification-only or publish mode (input-driven).
+    - Weekly schedule -> verification-only mode.
 2. `prepare` resolves release context (`release_ref`, `release_tag`, publish/draft mode) and runs `scripts/ci/release_trigger_guard.py`.
-   - publish mode enforces actor authorization, stable annotated tag policy, `origin/main` ancestry, and `release_tag` == `Cargo.toml` version at the tag commit.
-   - trigger provenance is emitted as `release-trigger-guard` artifacts.
+    - publish mode enforces actor authorization, stable annotated tag policy, `origin/main` ancestry, and `release_tag` == `Cargo.toml` version at the tag commit.
+    - trigger provenance is emitted as `release-trigger-guard` artifacts.
 3. `build-release` builds matrix artifacts across Linux/macOS/Windows targets.
 4. `verify-artifacts` runs `scripts/ci/release_artifact_guard.py` against `.github/release/release-artifact-contract.json` in verify-stage mode (archive contract required; manifest/SBOM/notice checks intentionally skipped) and uploads `release-artifact-guard-verify` evidence.
 5. In publish mode, workflow generates SBOM (`CycloneDX` + `SPDX`), `SHA256SUMS`, and a checksum provenance statement (`zeroclaw.sha256sums.intoto.json`) plus audit-event envelope.

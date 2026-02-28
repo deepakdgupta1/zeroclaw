@@ -125,7 +125,7 @@ After running automated tests, perform these manual checks:
     - Check for unexpected errors
     - Verify proper error handling
 
-6. **Health check timeout**
+7. **Health check timeout**
 
     ```bash
     time zeroclaw channel doctor
@@ -296,19 +296,19 @@ name: Test Telegram Integration
 on: [push, pull_request]
 
 jobs:
-  test:
-    runs-on: blacksmith-2vcpu-ubuntu-2404
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - name: Run tests
-        run: |
-          cargo test telegram --lib
-          cargo clippy --all-targets -- -D warnings
-      - name: Check formatting
-        run: cargo fmt --check
+    test:
+        runs-on: blacksmith-2vcpu-ubuntu-2404
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions-rs/toolchain@v1
+              with:
+                  toolchain: stable
+            - name: Run tests
+              run: |
+                  cargo test telegram --lib
+                  cargo clippy --all-targets -- -D warnings
+            - name: Check formatting
+              run: cargo fmt --check
 ```
 
 ## 📝 Test Checklist
@@ -349,4 +349,4 @@ zeroclaw channel doctor
 - [Telegram Bot API Documentation](https://core.telegram.org/bots/api)
 - [ZeroClaw Main README](README.md)
 - [Contributing Guide](CONTRIBUTING.md)
-- [Issue Tracker](https://github.com/theonlyhennygod/zeroclaw/issues)
+- [Issue Tracker](https://github.com/deepakdgupta1/zeroclaw/issues)

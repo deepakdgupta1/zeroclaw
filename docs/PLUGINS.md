@@ -19,15 +19,15 @@ The plugin system allows extending ZeroClaw with custom tools, hooks, channels, 
 
 ### Comparison to OpenClaw
 
-| OpenClaw (TypeScript)              | ZeroClaw (Rust)                    |
-|------------------------------------|------------------------------------|
-| `openclaw.plugin.json`             | `zeroclaw.plugin.toml`             |
-| `OpenClawPluginDefinition`         | `Plugin` trait                     |
-| `OpenClawPluginApi`                | `PluginApi` struct                 |
-| `PluginRegistry` (class)           | `PluginRegistry` struct            |
+| OpenClaw (TypeScript)                  | ZeroClaw (Rust)                         |
+| -------------------------------------- | --------------------------------------- |
+| `openclaw.plugin.json`                 | `zeroclaw.plugin.toml`                  |
+| `OpenClawPluginDefinition`             | `Plugin` trait                          |
+| `OpenClawPluginApi`                    | `PluginApi` struct                      |
+| `PluginRegistry` (class)               | `PluginRegistry` struct                 |
 | `discover()` → `load()` → `register()` | `discover_plugins()` → `load_plugins()` |
-| Try/catch isolation                | `catch_unwind()` panic isolation   |
-| `[plugins]` config section         | `[plugins]` config section         |
+| Try/catch isolation                    | `catch_unwind()` panic isolation        |
+| `[plugins]` config section             | `[plugins]` config section              |
 
 ## Writing a Plugin
 
@@ -247,4 +247,4 @@ See `extensions/hello-world/` for a complete working example.
 ## References
 
 - [OpenClaw Plugin System](https://github.com/openclaw/openclaw/tree/main/src/plugins)
-- [Issue #1414](https://github.com/zeroclaw-labs/zeroclaw/issues/1414)
+- [Issue #1414](https://github.com/deepakdgupta1/zeroclaw/issues/1414)

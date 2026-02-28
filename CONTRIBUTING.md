@@ -6,18 +6,18 @@ Thanks for your interest in contributing to ZeroClaw! This guide will help you g
 
 Welcome — contributions of all sizes are valued. If this is your first contribution, here is how to get started:
 
-1. **Find an issue.** Look for issues labeled [`good first issue`](https://github.com/zeroclaw-labs/zeroclaw/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) — these are scoped for newcomers and include context to get moving quickly.
+1. **Find an issue.** Look for issues labeled [`good first issue`](https://github.com/deepakdgupta1/zeroclaw/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) — these are scoped for newcomers and include context to get moving quickly.
 
 2. **Pick a scope.** Good first contributions include:
-   - Typo and documentation fixes
-   - Test additions or improvements
-   - Small bug fixes with clear reproduction steps
+    - Typo and documentation fixes
+    - Test additions or improvements
+    - Small bug fixes with clear reproduction steps
 
 3. **Follow the fork → branch → change → test → PR workflow:**
-   - Fork the repository and clone your fork
-   - Create a feature branch (`git checkout -b fix/my-change`)
-   - Make your changes and run `cargo fmt && cargo clippy && cargo test`
-   - Open a PR against `dev` using the PR template
+    - Fork the repository and clone your fork
+    - Create a feature branch (`git checkout -b fix/my-change`)
+    - Make your changes and run `cargo fmt && cargo clippy && cargo test`
+    - Open a PR against `dev` using the PR template
 
 4. **Start with Track A.** ZeroClaw uses three [collaboration tracks](#collaboration-tracks-risk-based) (A/B/C) based on risk. First-time contributors should target **Track A** (docs, tests, chore) — these require lighter review and are the fastest path to a merged PR.
 
@@ -27,7 +27,7 @@ If you get stuck, open a draft PR early and ask questions in the description.
 
 ```bash
 # Clone the repo
-git clone https://github.com/zeroclaw-labs/zeroclaw.git
+git clone https://github.com/deepakdgupta1/zeroclaw.git
 cd zeroclaw
 
 # Enable the pre-push hook (runs fmt, clippy, tests before every push)
@@ -192,11 +192,11 @@ Reference: [GitHub guide: removing sensitive data from a repository](https://doc
 
 To keep review throughput high without lowering quality, every PR should map to one track:
 
-| Track | Typical scope | Required review depth |
-|---|---|---|
-| **Track A (Low risk)** | docs/tests/chore, isolated refactors, no security/runtime/CI impact | 1 maintainer review + green `CI Required Gate` |
-| **Track B (Medium risk)** | providers/channels/memory/tools behavior changes | 1 subsystem-aware review + explicit validation evidence |
-| **Track C (High risk)** | `src/security/**`, `src/runtime/**`, `src/gateway/**`, `.github/workflows/**`, access-control boundaries | 2-pass review (fast triage + deep risk review), rollback plan required |
+| Track                     | Typical scope                                                                                            | Required review depth                                                  |
+| ------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **Track A (Low risk)**    | docs/tests/chore, isolated refactors, no security/runtime/CI impact                                      | 1 maintainer review + green `CI Required Gate`                         |
+| **Track B (Medium risk)** | providers/channels/memory/tools behavior changes                                                         | 1 subsystem-aware review + explicit validation evidence                |
+| **Track C (High risk)**   | `src/security/**`, `src/runtime/**`, `src/gateway/**`, `.github/workflows/**`, access-control boundaries | 2-pass review (fast triage + deep risk review), rollback plan required |
 
 When in doubt, choose the higher track.
 
@@ -214,16 +214,16 @@ To keep docs useful under high PR volume, we use these rules:
 
 ### Documentation System Map
 
-| Doc | Primary purpose | When to update |
-|---|---|---|
-| `docs/README.md` | canonical docs index and taxonomy | add/remove docs or change documentation ownership/navigation |
-| `docs/doc-template.md` | standard skeleton for new operational documentation | when required sections or documentation quality bar changes |
-| `CONTRIBUTING.md` | contributor contract and readiness baseline | contributor expectations or policy changes |
-| `docs/pr-workflow.md` | governance logic and merge contract | workflow/risk/merge gate changes |
-| `docs/reviewer-playbook.md` | reviewer operating checklist | review depth or triage behavior changes |
-| `docs/ci-map.md` | CI ownership and triage entry points | workflow trigger/job ownership changes |
-| `docs/network-deployment.md` | runtime deployment and network operating guide | gateway/channel/tunnel/network runtime behavior changes |
-| `docs/proxy-agent-playbook.md` | agent-operable proxy runbook and rollback recipes | proxy scope/selector/tooling behavior changes |
+| Doc                            | Primary purpose                                     | When to update                                               |
+| ------------------------------ | --------------------------------------------------- | ------------------------------------------------------------ |
+| `docs/README.md`               | canonical docs index and taxonomy                   | add/remove docs or change documentation ownership/navigation |
+| `docs/doc-template.md`         | standard skeleton for new operational documentation | when required sections or documentation quality bar changes  |
+| `CONTRIBUTING.md`              | contributor contract and readiness baseline         | contributor expectations or policy changes                   |
+| `docs/pr-workflow.md`          | governance logic and merge contract                 | workflow/risk/merge gate changes                             |
+| `docs/reviewer-playbook.md`    | reviewer operating checklist                        | review depth or triage behavior changes                      |
+| `docs/ci-map.md`               | CI ownership and triage entry points                | workflow trigger/job ownership changes                       |
+| `docs/network-deployment.md`   | runtime deployment and network operating guide      | gateway/channel/tunnel/network runtime behavior changes      |
+| `docs/proxy-agent-playbook.md` | agent-operable proxy runbook and rollback recipes   | proxy scope/selector/tooling behavior changes                |
 
 ## PR Definition of Ready (DoR)
 

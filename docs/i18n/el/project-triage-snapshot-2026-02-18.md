@@ -6,7 +6,7 @@
 
 ## Μεθοδολογία Συλλογής Δεδομένων
 
-Η άντληση των στοιχείων πραγματοποιήθηκε μέσω του GitHub CLI για το αποθετήριο `zeroclaw-labs/zeroclaw`:
+Η άντληση των στοιχείων πραγματοποιήθηκε μέσω του GitHub CLI για το αποθετήριο `deepakdgupta1/zeroclaw`:
 
 - `gh repo view`: Γενική εικόνα αποθετηρίου.
 - `gh pr list --state open --limit 500`: Ανάλυση ανοιχτών PR.
@@ -35,6 +35,7 @@
 7. `principal contributor` — 6
 
 **Επιπτώσεις στην Τεκμηρίωση**:
+
 - Οι αλλαγές σε CI, ασφάλεια και υπηρεσίες παρουσιάζουν υψηλή μεταβλητότητα.
 - Η τεκμηρίωση για τους διαχειριστές (Operations) πρέπει να εστιάζει στην ορατότητα των αλλαγών και σε ταχείες διαδικασίες αποκατάστασης.
 
@@ -45,16 +46,17 @@
 3. `bug` — 4
 
 **Επιπτώσεις στην Τεκμηρίωση**:
+
 - Τα αιτήματα για νέα χαρακτηριστικά και βελτιστοποίηση απόδοσης υπερτερούν των επεξηγηματικών εγγράφων.
 - Οι οδηγοί αντιμετώπισης προβλημάτων (Troubleshooting) πρέπει να παραμείνουν σε περίοπτη θέση στην πλοήγηση.
 
 ## PR με Άμεσο Αντίκτυπο στην Τεκμηρίωση
 
-- [#716](https://github.com/zeroclaw-labs/zeroclaw/pull/716): Υποστήριξη OpenRC (διαχείριση υπηρεσιών).
-- [#725](https://github.com/zeroclaw-labs/zeroclaw/pull/725): Shell completion commands (τεκμηρίωση CLI).
-- [#732](https://github.com/zeroclaw-labs/zeroclaw/pull/732): Αναβάθμιση ενεργειών CI (ροές εργασίας συνεισφερόντων).
-- [#759](https://github.com/zeroclaw-labs/zeroclaw/pull/759): Διόρθωση απόκρισης daemon/καναλιού (troubleshooting).
-- [#679](https://github.com/zeroclaw-labs/zeroclaw/pull/679): Αλλαγή στη λογική αποκλεισμού (πολιτική ασφαλείας).
+- [#716](https://github.com/deepakdgupta1/zeroclaw/pull/716): Υποστήριξη OpenRC (διαχείριση υπηρεσιών).
+- [#725](https://github.com/deepakdgupta1/zeroclaw/pull/725): Shell completion commands (τεκμηρίωση CLI).
+- [#732](https://github.com/deepakdgupta1/zeroclaw/pull/732): Αναβάθμιση ενεργειών CI (ροές εργασίας συνεισφερόντων).
+- [#759](https://github.com/deepakdgupta1/zeroclaw/pull/759): Διόρθωση απόκρισης daemon/καναλιού (troubleshooting).
+- [#679](https://github.com/deepakdgupta1/zeroclaw/pull/679): Αλλαγή στη λογική αποκλεισμού (πολιτική ασφαλείας).
 
 ## Εκκρεμότητες Τεκμηρίωσης (Προτεραιοποίηση)
 

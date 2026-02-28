@@ -58,8 +58,8 @@ Check-name stability rule:
 
 Verification commands:
 
-- `gh run list --repo zeroclaw-labs/zeroclaw --workflow feature-matrix.yml --limit 3`
-- `gh run view <run_id> --repo zeroclaw-labs/zeroclaw --json jobs --jq '.jobs[].name'`
+- `gh run list --repo deepakdgupta1/zeroclaw --workflow feature-matrix.yml --limit 3`
+- `gh run view <run_id> --repo deepakdgupta1/zeroclaw --json jobs --jq '.jobs[].name'`
 
 ## Failure Triage
 
@@ -70,14 +70,14 @@ Verification commands:
 
 ## High-Frequency Failure Classes
 
-| Failure class | Signal | First response | Escalation trigger |
-| --- | --- | --- | --- |
-| Rust dependency lock drift | `cargo check --locked` fails with lock mismatch | run `cargo update -p <crate>` only when needed; regenerate lockfile in focused PR | same lane fails on 2 consecutive runs |
-| Feature-flag compile drift (`whatsapp-web`) | missing symbols or cfg-gated modules | run the lane command locally and inspect feature-gated module imports | unresolved in 24h |
-| Feature-flag compile drift (`browser-native`) | platform/feature binding compile errors | inspect browser-native cfg paths and recent dependency bumps | unresolved in 24h |
-| System package dependency drift (`nightly-all-features`) | missing `libudev`/`pkg-config` or linker errors | verify apt install step succeeded; rerun in clean container with same deps | recurs 3 times in 7 days |
-| CI environment/runtime regressions | lane timeout or infrastructure transient failure | re-run once, compare with prior successful run, then isolate infra vs code | 2+ lanes impacted in one run |
-| Summary aggregation contract break | `Feature Matrix Summary` fails to parse artifacts | verify artifact names + JSON schema from lane outputs | any merge-gate failure on protected branches |
+| Failure class                                            | Signal                                            | First response                                                                    | Escalation trigger                           |
+| -------------------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------- |
+| Rust dependency lock drift                               | `cargo check --locked` fails with lock mismatch   | run `cargo update -p <crate>` only when needed; regenerate lockfile in focused PR | same lane fails on 2 consecutive runs        |
+| Feature-flag compile drift (`whatsapp-web`)              | missing symbols or cfg-gated modules              | run the lane command locally and inspect feature-gated module imports             | unresolved in 24h                            |
+| Feature-flag compile drift (`browser-native`)            | platform/feature binding compile errors           | inspect browser-native cfg paths and recent dependency bumps                      | unresolved in 24h                            |
+| System package dependency drift (`nightly-all-features`) | missing `libudev`/`pkg-config` or linker errors   | verify apt install step succeeded; rerun in clean container with same deps        | recurs 3 times in 7 days                     |
+| CI environment/runtime regressions                       | lane timeout or infrastructure transient failure  | re-run once, compare with prior successful run, then isolate infra vs code        | 2+ lanes impacted in one run                 |
+| Summary aggregation contract break                       | `Feature Matrix Summary` fails to parse artifacts | verify artifact names + JSON schema from lane outputs                             | any merge-gate failure on protected branches |
 
 ## Debug Data Expectations
 

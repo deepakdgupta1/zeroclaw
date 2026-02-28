@@ -5,25 +5,27 @@ Complete guide to setting up a ZeroClaw-powered robot on Raspberry Pi 5.
 ## Hardware Requirements
 
 ### Minimum Setup
-| Component | Recommended | Notes |
-|-----------|-------------|-------|
-| **Pi 5** | 8GB model | 4GB works but limits model size |
-| **Storage** | 64GB+ NVMe or SD | NVMe recommended for speed |
-| **Power** | 27W USB-C PSU | Official Pi 5 PSU recommended |
-| **Cooling** | Active cooler | Required for sustained inference |
+
+| Component   | Recommended      | Notes                            |
+| ----------- | ---------------- | -------------------------------- |
+| **Pi 5**    | 8GB model        | 4GB works but limits model size  |
+| **Storage** | 64GB+ NVMe or SD | NVMe recommended for speed       |
+| **Power**   | 27W USB-C PSU    | Official Pi 5 PSU recommended    |
+| **Cooling** | Active cooler    | Required for sustained inference |
 
 ### Robot Hardware
-| Component | Model | Connection | Price (approx) |
-|-----------|-------|------------|----------------|
-| **Motor Controller** | L298N or TB6612FNG | GPIO PWM | $5-15 |
-| **Motors** | 4× TT Motors + Omni wheels | Via controller | $30-50 |
-| **LIDAR** | RPLidar A1 | USB `/dev/ttyUSB0` | $100 |
-| **Camera** | Pi Camera 3 or USB webcam | CSI or USB | $25-50 |
-| **Microphone** | USB mic or ReSpeaker | USB | $10-30 |
-| **Speaker** | 3W amp + speaker | I2S or 3.5mm | $10-20 |
-| **E-Stop** | Big red mushroom button | GPIO 4 | $5 |
-| **Bump Sensors** | 2× Microswitches | GPIO 5, 6 | $3 |
-| **LED Matrix** | 8×8 WS2812B | GPIO 18 (PWM) | $10 |
+
+| Component            | Model                      | Connection         | Price (approx) |
+| -------------------- | -------------------------- | ------------------ | -------------- |
+| **Motor Controller** | L298N or TB6612FNG         | GPIO PWM           | $5-15          |
+| **Motors**           | 4× TT Motors + Omni wheels | Via controller     | $30-50         |
+| **LIDAR**            | RPLidar A1                 | USB `/dev/ttyUSB0` | $100           |
+| **Camera**           | Pi Camera 3 or USB webcam  | CSI or USB         | $25-50         |
+| **Microphone**       | USB mic or ReSpeaker       | USB                | $10-30         |
+| **Speaker**          | 3W amp + speaker           | I2S or 3.5mm       | $10-20         |
+| **E-Stop**           | Big red mushroom button    | GPIO 4             | $5             |
+| **Bump Sensors**     | 2× Microswitches           | GPIO 5, 6          | $3             |
+| **LED Matrix**       | 8×8 WS2812B                | GPIO 18 (PWM)      | $10            |
 
 ### Wiring Diagram
 
@@ -171,7 +173,7 @@ sudo usermod -aG dialout $USER
 
 ```bash
 # Clone repo (or copy from USB)
-git clone https://github.com/theonlyhennygod/zeroclaw
+git clone https://github.com/deepakdgupta1/zeroclaw
 cd zeroclaw
 
 # Build robot kit
@@ -449,6 +451,7 @@ journalctl -u zeroclaw-robot -f  # View logs
 ## Troubleshooting
 
 ### LIDAR not detected
+
 ```bash
 ls -la /dev/ttyUSB*
 # If missing, check USB connection
@@ -459,6 +462,7 @@ sudo udevadm control --reload-rules
 ```
 
 ### Audio not working
+
 ```bash
 # List devices
 arecord -l
@@ -470,6 +474,7 @@ aplay -D plughw:0,0 /tmp/test.wav
 ```
 
 ### Ollama slow or OOM
+
 ```bash
 # Check memory
 free -h
@@ -483,6 +488,7 @@ export OLLAMA_MAX_LOADED_MODELS=1
 ```
 
 ### Motors not responding
+
 ```bash
 # Check serial connection
 ls -la /dev/ttyACM*

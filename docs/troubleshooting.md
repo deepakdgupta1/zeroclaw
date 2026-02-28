@@ -208,8 +208,8 @@ Why this happens:
 Preferred fix:
 
 - use purpose-built tools instead of shell fetch:
-  - `http_request` for direct API/HTTP calls
-  - `web_fetch` for page content extraction/summarization
+    - `http_request` for direct API/HTTP calls
+    - `web_fetch` for page content extraction/summarization
 
 Minimal config:
 
@@ -311,8 +311,8 @@ journalctl --user -u zeroclaw.service -f
 Both still work:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/zeroclaw-labs/zeroclaw/main/scripts/bootstrap.sh | bash
-curl -fsSL https://raw.githubusercontent.com/zeroclaw-labs/zeroclaw/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/deepakdgupta1/zeroclaw/main/scripts/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/deepakdgupta1/zeroclaw/main/scripts/install.sh | bash
 ```
 
 `install.sh` is a compatibility entry and forwards/falls back to bootstrap behavior.

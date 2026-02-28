@@ -4,12 +4,12 @@ This document maps merge-critical workflows to expected check names.
 
 ## Merge to `dev` / `main`
 
-| Required check name | Source workflow | Scope |
-| --- | --- | --- |
-| `CI Required Gate` | `.github/workflows/ci-run.yml` | core Rust/doc merge gate |
-| `Security Audit` | `.github/workflows/sec-audit.yml` | dependencies, secrets, governance |
-| `Feature Matrix Summary` | `.github/workflows/feature-matrix.yml` | feature-combination compile matrix |
-| `Workflow Sanity` | `.github/workflows/workflow-sanity.yml` | workflow syntax and lint |
+| Required check name      | Source workflow                         | Scope                              |
+| ------------------------ | --------------------------------------- | ---------------------------------- |
+| `CI Required Gate`       | `.github/workflows/ci-run.yml`          | core Rust/doc merge gate           |
+| `Security Audit`         | `.github/workflows/sec-audit.yml`       | dependencies, secrets, governance  |
+| `Feature Matrix Summary` | `.github/workflows/feature-matrix.yml`  | feature-combination compile matrix |
+| `Workflow Sanity`        | `.github/workflows/workflow-sanity.yml` | workflow syntax and lint           |
 
 Feature matrix lane check names (informational, non-required):
 
@@ -20,27 +20,27 @@ Feature matrix lane check names (informational, non-required):
 
 ## Promotion to `main`
 
-| Required check name | Source workflow | Scope |
-| --- | --- | --- |
+| Required check name   | Source workflow                             | Scope                 |
+| --------------------- | ------------------------------------------- | --------------------- |
 | `Main Promotion Gate` | `.github/workflows/main-promotion-gate.yml` | branch + actor policy |
-| `CI Required Gate` | `.github/workflows/ci-run.yml` | baseline quality gate |
-| `Security Audit` | `.github/workflows/sec-audit.yml` | security baseline |
+| `CI Required Gate`    | `.github/workflows/ci-run.yml`              | baseline quality gate |
+| `Security Audit`      | `.github/workflows/sec-audit.yml`           | security baseline     |
 
 ## Release / Pre-release
 
-| Required check name | Source workflow | Scope |
-| --- | --- | --- |
-| `Verify Artifact Set` | `.github/workflows/pub-release.yml` | release completeness |
-| `Pre-release Guard` | `.github/workflows/pub-prerelease.yml` | stage progression + tag integrity |
-| `Nightly Summary & Routing` | `.github/workflows/feature-matrix.yml` (`profile=nightly`) | overnight integration signal |
+| Required check name         | Source workflow                                            | Scope                             |
+| --------------------------- | ---------------------------------------------------------- | --------------------------------- |
+| `Verify Artifact Set`       | `.github/workflows/pub-release.yml`                        | release completeness              |
+| `Pre-release Guard`         | `.github/workflows/pub-prerelease.yml`                     | stage progression + tag integrity |
+| `Nightly Summary & Routing` | `.github/workflows/feature-matrix.yml` (`profile=nightly`) | overnight integration signal      |
 
 ## Verification Procedure
 
 1. Resolve latest workflow run IDs:
-   - `gh run list --repo zeroclaw-labs/zeroclaw --workflow feature-matrix.yml --limit 1`
-   - `gh run list --repo zeroclaw-labs/zeroclaw --workflow ci-run.yml --limit 1`
+    - `gh run list --repo deepakdgupta1/zeroclaw --workflow feature-matrix.yml --limit 1`
+    - `gh run list --repo deepakdgupta1/zeroclaw --workflow ci-run.yml --limit 1`
 2. Enumerate check/job names and compare to this mapping:
-   - `gh run view <run_id> --repo zeroclaw-labs/zeroclaw --json jobs --jq '.jobs[].name'`
+    - `gh run view <run_id> --repo deepakdgupta1/zeroclaw --json jobs --jq '.jobs[].name'`
 3. If any merge-critical check name changed, update this file before changing branch protection policy.
 
 ## Notes

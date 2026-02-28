@@ -10,7 +10,7 @@
 The following are trademarks of ZeroClaw Labs:
 
 - **ZeroClaw** (word mark)
-- **zeroclaw-labs** (organization name)
+- **deepakdgupta1** (organization name)
 - The ZeroClaw logo and associated visual identity
 
 These marks identify the official ZeroClaw project and distinguish it from
@@ -22,17 +22,18 @@ unauthorized forks, derivatives, or impersonators.
 
 The **only** official ZeroClaw repository is:
 
-> https://github.com/zeroclaw-labs/zeroclaw
+> https://github.com/deepakdgupta1/zeroclaw
 
 Any other repository, organization, domain, or product claiming to be
 "ZeroClaw" or implying affiliation with ZeroClaw Labs is unauthorized and
 may constitute trademark infringement.
 
 **Known unauthorized forks:**
+
 - `openagen/zeroclaw` — not affiliated with ZeroClaw Labs
 
 If you encounter an unauthorized use, please report it by opening an issue
-at https://github.com/zeroclaw-labs/zeroclaw/issues.
+at https://github.com/deepakdgupta1/zeroclaw/issues.
 
 ---
 
@@ -108,7 +109,7 @@ dual MIT + Apache 2.0 license model:
 
 If you believe someone is infringing ZeroClaw trademarks:
 
-1. Open an issue at https://github.com/zeroclaw-labs/zeroclaw/issues
+1. Open an issue at https://github.com/deepakdgupta1/zeroclaw/issues
 2. Include the URL of the infringing content
 3. Describe how it violates this policy
 
@@ -124,6 +125,6 @@ will be committed to the official repository with a clear commit message.
 
 ---
 
-*This trademark policy is separate from and in addition to the MIT and
+_This trademark policy is separate from and in addition to the MIT and
 Apache 2.0 software licenses. The licenses govern use of the source code;
-this policy governs use of the ZeroClaw name and brand.*
+this policy governs use of the ZeroClaw name and brand._

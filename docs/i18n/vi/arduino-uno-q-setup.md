@@ -8,12 +8,12 @@ Chạy ZeroClaw trên phía Linux của Arduino Uno Q. Telegram hoạt động q
 
 ZeroClaw bao gồm mọi thứ cần thiết cho Arduino Uno Q. **Clone repo và làm theo hướng dẫn này — không cần patch hay code tùy chỉnh nào.**
 
-| Thành phần | Vị trí | Mục đích |
-|------------|--------|---------|
-| Bridge app | `firmware/zeroclaw-uno-q-bridge/` | MCU sketch + Python socket server (port 9999) cho GPIO |
-| Bridge tools | `src/peripherals/uno_q_bridge.rs` | Tool `gpio_read` / `gpio_write` giao tiếp với Bridge qua TCP |
-| Setup command | `src/peripherals/uno_q_setup.rs` | `zeroclaw peripheral setup-uno-q` triển khai Bridge qua scp + arduino-app-cli |
-| Config schema | `board = "arduino-uno-q"`, `transport = "bridge"` | Được hỗ trợ trong `config.toml` |
+| Thành phần    | Vị trí                                            | Mục đích                                                                      |
+| ------------- | ------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Bridge app    | `firmware/zeroclaw-uno-q-bridge/`                 | MCU sketch + Python socket server (port 9999) cho GPIO                        |
+| Bridge tools  | `src/peripherals/uno_q_bridge.rs`                 | Tool `gpio_read` / `gpio_write` giao tiếp với Bridge qua TCP                  |
+| Setup command | `src/peripherals/uno_q_setup.rs`                  | `zeroclaw peripheral setup-uno-q` triển khai Bridge qua scp + arduino-app-cli |
+| Config schema | `board = "arduino-uno-q"`, `transport = "bridge"` | Được hỗ trợ trong `config.toml`                                               |
 
 Build với `--features hardware` (hoặc features mặc định) để bao gồm hỗ trợ Uno Q.
 
@@ -35,9 +35,9 @@ Build với `--features hardware` (hoặc features mặc định) để bao gồ
 2. Kết nối Uno Q qua USB, bật nguồn.
 3. Mở App Lab, kết nối với board.
 4. Làm theo hướng dẫn cài đặt:
-   - Đặt username và password (cho SSH)
-   - Cấu hình WiFi (SSID, password)
-   - Áp dụng các bản cập nhật firmware nếu có
+    - Đặt username và password (cho SSH)
+    - Cấu hình WiFi (SSID, password)
+    - Áp dụng các bản cập nhật firmware nếu có
 5. Ghi lại địa chỉ IP hiển thị (ví dụ: `arduino@192.168.1.42`) hoặc tìm sau qua `ip addr show` trong terminal của App Lab.
 
 ### 1.2 Xác nhận truy cập SSH
@@ -66,7 +66,7 @@ sudo apt-get update
 sudo apt-get install -y pkg-config libssl-dev
 
 # Clone zeroclaw (hoặc scp project của bạn)
-git clone https://github.com/theonlyhennygod/zeroclaw.git
+git clone https://github.com/deepakdgupta1/zeroclaw.git
 cd zeroclaw
 
 # Build (~15–30 phút trên Uno Q)
@@ -159,11 +159,13 @@ ZeroClaw bao gồm Bridge app và setup command.
 ### 5.1 Triển khai Bridge App
 
 **Từ Mac** (với repo zeroclaw):
+
 ```bash
 zeroclaw peripheral setup-uno-q --host 192.168.0.48
 ```
 
 **Từ Uno Q** (đã SSH vào):
+
 ```bash
 zeroclaw peripheral setup-uno-q
 ```
@@ -187,24 +189,24 @@ transport = "bridge"
 zeroclaw daemon --host 127.0.0.1 --port 3000
 ```
 
-Giờ khi bạn nhắn tin cho Telegram bot *"Turn on the LED"* hoặc *"Set pin 13 high"*, ZeroClaw dùng `gpio_write` qua Bridge.
+Giờ khi bạn nhắn tin cho Telegram bot _"Turn on the LED"_ hoặc _"Set pin 13 high"_, ZeroClaw dùng `gpio_write` qua Bridge.
 
 ---
 
 ## Tóm tắt: Các lệnh từ đầu đến cuối
 
-| Bước | Lệnh |
-|------|------|
-| 1 | Cấu hình Uno Q trong App Lab (WiFi, SSH) |
-| 2 | `ssh arduino@<IP>` |
-| 3 | `curl -sSf https://sh.rustup.rs \| sh -s -- -y && source ~/.cargo/env` |
-| 4 | `sudo apt-get install -y pkg-config libssl-dev` |
-| 5 | `git clone https://github.com/theonlyhennygod/zeroclaw.git && cd zeroclaw` |
-| 6 | `cargo build --release --no-default-features` |
-| 7 | `zeroclaw onboard --api-key KEY --provider openrouter` |
-| 8 | Chỉnh sửa `~/.zeroclaw/config.toml` (thêm Telegram bot_token) |
-| 9 | `zeroclaw daemon --host 127.0.0.1 --port 3000` |
-| 10 | Nhắn tin cho Telegram bot — nó phản hồi |
+| Bước | Lệnh                                                                     |
+| ---- | ------------------------------------------------------------------------ |
+| 1    | Cấu hình Uno Q trong App Lab (WiFi, SSH)                                 |
+| 2    | `ssh arduino@<IP>`                                                       |
+| 3    | `curl -sSf https://sh.rustup.rs \| sh -s -- -y && source ~/.cargo/env`   |
+| 4    | `sudo apt-get install -y pkg-config libssl-dev`                          |
+| 5    | `git clone https://github.com/deepakdgupta1/zeroclaw.git && cd zeroclaw` |
+| 6    | `cargo build --release --no-default-features`                            |
+| 7    | `zeroclaw onboard --api-key KEY --provider openrouter`                   |
+| 8    | Chỉnh sửa `~/.zeroclaw/config.toml` (thêm Telegram bot_token)            |
+| 9    | `zeroclaw daemon --host 127.0.0.1 --port 3000`                           |
+| 10   | Nhắn tin cho Telegram bot — nó phản hồi                                  |
 
 ---
 

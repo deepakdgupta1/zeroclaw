@@ -6,11 +6,11 @@
 
 Το ZeroClaw παρέχει πλήρη υποστήριξη για το Arduino Uno Q χωρίς να απαιτούνται αλλαγές στον κώδικα.
 
-| Στοιχείο | Τοποθεσία | Περιγραφή |
-|:---|:---|:---|
-| Εφαρμογή Bridge | `firmware/zeroclaw-uno-q-bridge/` | MCU sketch και Python socket server για τη διαχείριση των GPIO. |
-| Εργαλεία Bridge | `src/peripherals/uno_q_bridge.rs` | Εργαλεία `gpio_read` / `gpio_write` για επικοινωνία μέσω TCP. |
-| Εντολή Setup | `src/peripherals/uno_q_setup.rs` | Η εντολή `zeroclaw peripheral setup-uno-q` για την ανάπτυξη του Bridge. |
+| Στοιχείο        | Τοποθεσία                         | Περιγραφή                                                               |
+| :-------------- | :-------------------------------- | :---------------------------------------------------------------------- |
+| Εφαρμογή Bridge | `firmware/zeroclaw-uno-q-bridge/` | MCU sketch και Python socket server για τη διαχείριση των GPIO.         |
+| Εργαλεία Bridge | `src/peripherals/uno_q_bridge.rs` | Εργαλεία `gpio_read` / `gpio_write` για επικοινωνία μέσω TCP.           |
+| Εντολή Setup    | `src/peripherals/uno_q_setup.rs`  | Η εντολή `zeroclaw peripheral setup-uno-q` για την ανάπτυξη του Bridge. |
 
 > **Σημείωση**: Απαιτείται μεταγλώττιση (build) με το feature `hardware` για την υποστήριξη του Uno Q.
 
@@ -29,14 +29,15 @@
 1. Εκκινήστε το **Arduino App Lab**.
 2. Συνδέστε το Uno Q μέσω USB και ενεργοποιήστε τη συσκευή.
 3. Συνδεθείτε στην πλακέτα και ακολουθήστε τις οδηγίες:
-   - Ορίστε διαπιστευτήρια SSH (Όνομα χρήστη και κωδικό πρόσβασης).
-   - Ρυθμίστε τη σύνδεση WiFi.
-   - Ενημερώστε το υλικολογισμικό (firmware) εάν απαιτείται.
+    - Ορίστε διαπιστευτήρια SSH (Όνομα χρήστη και κωδικό πρόσβασης).
+    - Ρυθμίστε τη σύνδεση WiFi.
+    - Ενημερώστε το υλικολογισμικό (firmware) εάν απαιτείται.
 4. Σημειώστε τη διεύθυνση IP της συσκευής (π.χ. `192.168.1.42`).
 
 ### 1.2 Επαλήθευση Πρόσβασης SSH
 
 Επιβεβαιώστε τη σύνδεση μέσω τερματικού:
+
 ```bash
 ssh arduino@<UNO_Q_IP>
 ```
@@ -48,33 +49,37 @@ ssh arduino@<UNO_Q_IP>
 ### Μεταγλώττιση στη Συσκευή (Προτεινόμενο)
 
 1. **Σύνδεση μέσω SSH**:
-   ```bash
-   ssh arduino@<UNO_Q_IP>
-   ```
+
+    ```bash
+    ssh arduino@<UNO_Q_IP>
+    ```
 
 2. **Εγκατάσταση Rust**:
-   ```bash
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-   source ~/.cargo/env
-   ```
+
+    ```bash
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source ~/.cargo/env
+    ```
 
 3. **Εγκατάσταση Εξαρτήσεων**:
-   ```bash
-   sudo apt-get update
-   sudo apt-get install -y pkg-config libssl-dev git
-   ```
+
+    ```bash
+    sudo apt-get update
+    sudo apt-get install -y pkg-config libssl-dev git
+    ```
 
 4. **Λήψη και Μεταγλώττιση**:
-   ```bash
-   git clone https://github.com/theonlyhennygod/zeroclaw.git
-   cd zeroclaw
-   cargo build --release --features hardware
-   ```
+
+    ```bash
+    git clone https://github.com/deepakdgupta1/zeroclaw.git
+    cd zeroclaw
+    cargo build --release --features hardware
+    ```
 
 5. **Εγκατάσταση Εκτελέσιμου**:
-   ```bash
-   sudo cp target/release/zeroclaw /usr/local/bin/
-   ```
+    ```bash
+    sudo cp target/release/zeroclaw /usr/local/bin/
+    ```
 
 ---
 
@@ -95,9 +100,11 @@ zeroclaw onboard --api-key <YOUR_API_KEY> --provider <provider_name>
 ## Βήμα 4: Εκτέλεση του ZeroClaw Daemon
 
 Ξεκινήστε την υπηρεσία ZeroClaw:
+
 ```bash
 zeroclaw daemon --host 127.0.0.1 --port 42617
 ```
+
 Σε αυτό το στάδιο, η επικοινωνία μέσω Telegram είναι ενεργή, αλλά χωρίς έλεγχο των GPIO.
 
 ---
@@ -107,6 +114,7 @@ zeroclaw daemon --host 127.0.0.1 --port 42617
 ### 5.1 Ανάπτυξη της Εφαρμογής Bridge
 
 Από τον υπολογιστή σας ή απευθείας από το Uno Q, εκτελέστε:
+
 ```bash
 zeroclaw peripheral setup-uno-q --host <UNO_Q_IP>
 ```
@@ -127,6 +135,7 @@ transport = "bridge"
 ### 5.3 Επανεκκίνηση
 
 Επανεκκινήστε τον daemon:
+
 ```bash
 zeroclaw daemon --host 127.0.0.1 --port 42617
 ```

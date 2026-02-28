@@ -89,7 +89,7 @@ module.exports = async ({ github, context, core }) => {
   if (dangerousProblems.length > 0) {
     blockingFindings.push(`Dangerous patch markers found (${dangerousProblems.length})`);
   }
-  const promotionAuthorAllowlist = new Set(["willsarg", "theonlyhennygod"]);
+  const promotionAuthorAllowlist = new Set(["willsarg", "deepakdgupta1"]);
   const shouldRetargetToDev =
     prBaseRef === "main" && !promotionAuthorAllowlist.has(prAuthor);
 

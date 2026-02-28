@@ -15,13 +15,13 @@ ZeroClaw uses GitHub's private vulnerability reporting and advisory workflow for
 Preferred reporting paths:
 
 1. If you are a researcher or user:
-   - Go to `Security` -> `Report a vulnerability`.
-   - Private reporting is enabled for this repository.
-   - Use this report template:
-     - English: [`docs/security/private-vulnerability-report-template.md`](docs/security/private-vulnerability-report-template.md)
-     - 中文: [`docs/security/private-vulnerability-report-template.zh-CN.md`](docs/security/private-vulnerability-report-template.zh-CN.md)
+    - Go to `Security` -> `Report a vulnerability`.
+    - Private reporting is enabled for this repository.
+    - Use this report template:
+        - English: [`docs/security/private-vulnerability-report-template.md`](docs/security/private-vulnerability-report-template.md)
+        - 中文: [`docs/security/private-vulnerability-report-template.zh-CN.md`](docs/security/private-vulnerability-report-template.zh-CN.md)
 2. If you are a maintainer/admin opening a draft directly:
-   - <https://github.com/zeroclaw-labs/zeroclaw/security/advisories/new>
+    - <https://github.com/deepakdgupta1/zeroclaw/security/advisories/new>
 
 ### What to Include in a Report
 
@@ -54,18 +54,18 @@ When a report arrives in `Security` -> `Advisories` with `Triage` status:
 
 1. Confirm whether this is a security issue.
 2. Choose one path:
-   - `Accept and open as draft` for likely/confirmed security issues.
-   - `Start a temporary private fork` for embargoed fix collaboration.
-   - Request more details in advisory comments.
-   - Close only when confirmed non-security, with rationale.
+    - `Accept and open as draft` for likely/confirmed security issues.
+    - `Start a temporary private fork` for embargoed fix collaboration.
+    - Request more details in advisory comments.
+    - Close only when confirmed non-security, with rationale.
 
 Maintainers should run the lifecycle checklist:
 
 - English: [`docs/security/advisory-maintainer-checklist.md`](docs/security/advisory-maintainer-checklist.md)
 - 中文: [`docs/security/advisory-maintainer-checklist.zh-CN.md`](docs/security/advisory-maintainer-checklist.zh-CN.md)
 - Advisory metadata template:
-  - English: [`docs/security/advisory-metadata-template.md`](docs/security/advisory-metadata-template.md)
-  - 中文: [`docs/security/advisory-metadata-template.zh-CN.md`](docs/security/advisory-metadata-template.zh-CN.md)
+    - English: [`docs/security/advisory-metadata-template.md`](docs/security/advisory-metadata-template.md)
+    - 中文: [`docs/security/advisory-metadata-template.zh-CN.md`](docs/security/advisory-metadata-template.zh-CN.md)
 
 ### 2. Private fix development and verification
 
@@ -81,12 +81,12 @@ Required verification before disclosure:
 
 - Reproduce the vulnerability and verify the fix.
 - Run full local validation:
-  - `cargo test --workspace --all-targets`
+    - `cargo test --workspace --all-targets`
 - Run targeted security regressions:
-  - `cargo test -- security`
-  - `cargo test -- tools::shell`
-  - `cargo test -- tools::file_read`
-  - `cargo test -- tools::file_write`
+    - `cargo test -- security`
+    - `cargo test -- tools::shell`
+    - `cargo test -- tools::file_read`
+    - `cargo test -- tools::file_write`
 - Ensure no exploit details or secrets leak into public channels.
 
 ### 3. Publish advisory with actionable remediation
@@ -123,12 +123,12 @@ For high-severity security issues (for example sandbox escape, auth bypass, data
 
 These SLAs are target windows for private security handling and may be adjusted based on complexity and dependency constraints.
 
-| Severity | Typical impact examples | Acknowledgment target | Triage target | Initial mitigation target | Fix release target |
-| ------- | ----------------------- | --------------------- | ------------- | ------------------------- | ------------------ |
-| S0 Critical | Active exploitation, unauthenticated RCE, broad data exfiltration | 24 hours | 72 hours | 72 hours | 7 days |
-| S1 High | Auth bypass, privilege escalation, significant data exposure | 24 hours | 5 days | 7 days | 14 days |
-| S2 Medium | Constrained exploit path, partial data/control impact | 48 hours | 7 days | 14 days | 30 days |
-| S3 Low | Limited impact, hard-to-exploit, defense-in-depth gaps | 72 hours | 14 days | As needed | Next planned release |
+| Severity    | Typical impact examples                                           | Acknowledgment target | Triage target | Initial mitigation target | Fix release target   |
+| ----------- | ----------------------------------------------------------------- | --------------------- | ------------- | ------------------------- | -------------------- |
+| S0 Critical | Active exploitation, unauthenticated RCE, broad data exfiltration | 24 hours              | 72 hours      | 72 hours                  | 7 days               |
+| S1 High     | Auth bypass, privilege escalation, significant data exposure      | 24 hours              | 5 days        | 7 days                    | 14 days              |
+| S2 Medium   | Constrained exploit path, partial data/control impact             | 48 hours              | 7 days        | 14 days                   | 30 days              |
+| S3 Low      | Limited impact, hard-to-exploit, defense-in-depth gaps            | 72 hours              | 14 days       | As needed                 | Next planned release |
 
 SLA guidance notes:
 
@@ -140,12 +140,12 @@ SLA guidance notes:
 
 Use the S0-S3 matrix as operational severity. CVSS is an input, not the only decision factor.
 
-| Severity | Typical CVSS range | Assignment guidance |
-| ------- | ------------------ | ------------------- |
-| S0 Critical | 9.0-10.0 | Active exploitation or near-term exploitability with severe impact (for example pre-auth RCE or broad data exfiltration). |
-| S1 High | 7.0-8.9 | High-impact security boundary break with practical exploit path. |
-| S2 Medium | 4.0-6.9 | Meaningful but constrained impact due to required conditions or lower blast radius. |
-| S3 Low | 0.1-3.9 | Limited impact or defense-in-depth gap with hard-to-exploit conditions. |
+| Severity    | Typical CVSS range | Assignment guidance                                                                                                       |
+| ----------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| S0 Critical | 9.0-10.0           | Active exploitation or near-term exploitability with severe impact (for example pre-auth RCE or broad data exfiltration). |
+| S1 High     | 7.0-8.9            | High-impact security boundary break with practical exploit path.                                                          |
+| S2 Medium   | 4.0-6.9            | Meaningful but constrained impact due to required conditions or lower blast radius.                                       |
+| S3 Low      | 0.1-3.9            | Limited impact or defense-in-depth gap with hard-to-exploit conditions.                                                   |
 
 Severity override rules:
 
@@ -204,10 +204,10 @@ cargo test -- tools::file_write
 
 ZeroClaw images follow CIS Docker Benchmark-oriented hardening.
 
-| Control | Implementation |
-| ------- | -------------- |
-| 4.1 Non-root user | Container runs as UID 65534 (distroless nonroot) |
-| 4.2 Minimal base image | `gcr.io/distroless/cc-debian12:nonroot` |
+| Control                   | Implementation                                                  |
+| ------------------------- | --------------------------------------------------------------- |
+| 4.1 Non-root user         | Container runs as UID 65534 (distroless nonroot)                |
+| 4.2 Minimal base image    | `gcr.io/distroless/cc-debian12:nonroot`                         |
 | 5.25 Read-only filesystem | Supported via `docker run --read-only` with `/workspace` volume |
 
 ### Verifying Container Security
@@ -233,10 +233,10 @@ The `docker` job in `.github/workflows/ci.yml` verifies:
 ## References
 
 - How-tos for fixing vulnerabilities:
-  - <https://docs.github.com/en/enterprise-cloud@latest/code-security/how-tos/report-and-fix-vulnerabilities/fix-reported-vulnerabilities>
+    - <https://docs.github.com/en/enterprise-cloud@latest/code-security/how-tos/report-and-fix-vulnerabilities/fix-reported-vulnerabilities>
 - Managing privately reported vulnerabilities:
-  - <https://docs.github.com/en/enterprise-cloud@latest/code-security/how-tos/report-and-fix-vulnerabilities/fix-reported-vulnerabilities/managing-privately-reported-security-vulnerabilities>
+    - <https://docs.github.com/en/enterprise-cloud@latest/code-security/how-tos/report-and-fix-vulnerabilities/fix-reported-vulnerabilities/managing-privately-reported-security-vulnerabilities>
 - Collaborating in temporary private forks:
-  - <https://docs.github.com/en/enterprise-cloud@latest/code-security/tutorials/fix-reported-vulnerabilities/collaborate-in-a-fork>
+    - <https://docs.github.com/en/enterprise-cloud@latest/code-security/tutorials/fix-reported-vulnerabilities/collaborate-in-a-fork>
 - Publishing repository advisories:
-  - <https://docs.github.com/en/enterprise-cloud@latest/code-security/how-tos/report-and-fix-vulnerabilities/fix-reported-vulnerabilities/publishing-a-repository-security-advisory>
+    - <https://docs.github.com/en/enterprise-cloud@latest/code-security/how-tos/report-and-fix-vulnerabilities/fix-reported-vulnerabilities/publishing-a-repository-security-advisory>

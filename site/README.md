@@ -26,31 +26,31 @@ Build output is generated at:
 Notes:
 
 - Output directory is intentionally `gh-pages/` (not `out/`).
-- Vite base is configured to `/zeroclaw/` for `https://zeroclaw-labs.github.io/zeroclaw/`.
+- Vite base is configured to `/zeroclaw/` for `https://deepakdgupta1.github.io/zeroclaw/`.
 - Docs links in UI point to rendered GitHub docs pages for direct reading.
 - Docs Navigator supports:
-  - keyword search with weighted ranking
-  - category and level filters (`Core` / `Advanced`)
-  - quick keyboard shortcuts: `/` to focus search, `Esc` to reset filters
+    - keyword search with weighted ranking
+    - category and level filters (`Core` / `Advanced`)
+    - quick keyboard shortcuts: `/` to focus search, `Esc` to reset filters
 - "Quick Start Paths" provides task-first doc flows for onboarding, channels, and hardening.
 - Command palette is enabled:
-  - open via `Ctrl/Cmd + K`
-  - includes quick actions (jump docs, repo, theme/language switching)
-  - includes direct docs fuzzy search entries
-  - supports keyboard navigation (`↑` / `↓` / `Enter`) with active-item highlighting
-  - supports `Tab` / `Shift+Tab` cycling and live preview panel (desktop)
+    - open via `Ctrl/Cmd + K`
+    - includes quick actions (jump docs, repo, theme/language switching)
+    - includes direct docs fuzzy search entries
+    - supports keyboard navigation (`↑` / `↓` / `Enter`) with active-item highlighting
+    - supports `Tab` / `Shift+Tab` cycling and live preview panel (desktop)
 - Theme system is enabled:
-  - `Auto` / `Dark` / `Light`
-  - preference persisted in `localStorage`
+    - `Auto` / `Dark` / `Light`
+    - preference persisted in `localStorage`
 - i18n is enabled:
-  - UI supports `English` and `简体中文`
-  - language preference persisted in `localStorage`
-  - URL language parameter (`?lang=en` / `?lang=zh`) is synchronized for shareable links
+    - UI supports `English` and `简体中文`
+    - language preference persisted in `localStorage`
+    - URL language parameter (`?lang=en` / `?lang=zh`) is synchronized for shareable links
 - Responsive system is deepened:
-  - improved breakpoints for desktop/tablet/mobile
-  - adaptive topbar controls and panel layouts
-  - container query used for doc-card compact mode
-  - desktop section rail + mobile quick dock for faster long-page navigation
+    - improved breakpoints for desktop/tablet/mobile
+    - adaptive topbar controls and panel layouts
+    - container query used for doc-card compact mode
+    - desktop section rail + mobile quick dock for faster long-page navigation
 
 ## Deployment
 

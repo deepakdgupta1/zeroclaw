@@ -13,18 +13,19 @@ brew install zeroclaw
 ## Επιλογή Α: Τοπικό Σενάριο (Προτεινόμενο)
 
 1. **Κλωνοποίηση του αποθετηρίου**:
-   ```bash
-   git clone https://github.com/zeroclaw-labs/zeroclaw.git
-   cd zeroclaw
-   ```
+    ```bash
+    git clone https://github.com/deepakdgupta1/zeroclaw.git
+    cd zeroclaw
+    ```
 2. **Εκτέλεση του bootstrap**:
-   ```bash
-   ./bootstrap.sh
-   ```
+    ```bash
+    ./bootstrap.sh
+    ```
 
 ### Λειτουργία Σενάριου
 
 Από προεπιλογή, το σενάριο εκτελεί:
+
 1. `cargo build --release --locked`
 2. `cargo install --path . --force --locked`
 
@@ -33,32 +34,35 @@ brew install zeroclaw
 Η μεταγλώττιση από τον πηγαίο κώδικα απαιτεί τουλάχιστον **2GB RAM** και **6GB ελεύθερο χώρο** στον δίσκο. Σε περίπτωση περιορισμένων πόρων, μπορείτε να χρησιμοποιήσετε προ-μεταγλωττισμένα (prebuilt) αρχεία:
 
 - **Χρήση προ-μεταγλωττισμένων (εάν υπάρχουν)**:
-  ```bash
-  ./bootstrap.sh --prefer-prebuilt
-  ```
+    ```bash
+    ./bootstrap.sh --prefer-prebuilt
+    ```
 - **Αποκλειστική χρήση προ-μεταγλωττισμένων**:
-  ```bash
-  ./bootstrap.sh --prebuilt-only
-  ```
+    ```bash
+    ./bootstrap.sh --prebuilt-only
+    ```
 - **Επιβολή μεταγλώττισης από πηγαίο κώδικα**:
-  ```bash
-  ./bootstrap.sh --force-source-build
-  ```
+    ```bash
+    ./bootstrap.sh --force-source-build
+    ```
 
 ## Προετοιμασία Περιβάλλοντος (Dual-mode)
 
 Για νέα συστήματα που δεν διαθέτουν το σύνολο εργαλείων Rust, χρησιμοποιήστε τις παρακάτω σημαίες:
+
 ```bash
 ./bootstrap.sh --install-system-deps --install-rust
 ```
+
 - `--install-system-deps`: Εγκαθιστά τις απαραίτητες εξαρτήσεις συστήματος (ενδέχεται να απαιτεί `sudo`).
 - `--install-rust`: Εγκαθιστά τη Rust μέσω του `rustup`.
 
 ## Επιλογή Β: Απομακρυσμένη Εκτέλεση
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/zeroclaw-labs/zeroclaw/main/scripts/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/deepakdgupta1/zeroclaw/main/scripts/bootstrap.sh | bash
 ```
+
 > [!IMPORTANT]
 > Για περιβάλλοντα υψηλής ασφάλειας, συνιστάται η **Επιλογή Α**, ώστε να μπορείτε να επιθεωρήσετε το σενάριο πριν από την εκτέλεση.
 
@@ -69,6 +73,7 @@ curl -fsSL https://raw.githubusercontent.com/zeroclaw-labs/zeroclaw/main/scripts
 ```bash
 ./bootstrap.sh --docker
 ```
+
 Το σενάριο θα δημιουργήσει μια τοπική εικόνα Docker και θα ξεκινήσει τη διαδικασία onboarding. Οι ρυθμίσεις αποθηκεύονται στον κατάλογο `./.zeroclaw-docker`.
 
 ### Μη Διαδραστική Εισαγωγή
@@ -92,6 +97,7 @@ curl -fsSL https://raw.githubusercontent.com/zeroclaw-labs/zeroclaw/main/scripts
 - `--provider <id>`: Ορισμός παρόχου LLM.
 
 Για την πλήρη λίστα επιλογών, εκτελέστε:
+
 ```bash
 ./bootstrap.sh --help
 ```

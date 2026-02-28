@@ -2,10 +2,10 @@
 name = "zeroclaw-robot-kit"
 version = "0.1.0"
 edition = "2021"
-authors = ["theonlyhennygod"]
+authors = ["deepakdgupta1"]
 license = "MIT OR Apache-2.0"
 description = "Robot control toolkit for ZeroClaw - drive, vision, speech, sensors, safety"
-repository = "https://github.com/zeroclaw-labs/zeroclaw"
+repository = "https://github.com/deepakdgupta1/zeroclaw"
 readme = "README.md"
 keywords = ["robotics", "raspberry-pi", "ai", "agent", "ros2"]
 categories = ["science::robotics", "embedded", "hardware-support"]

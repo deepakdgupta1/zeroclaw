@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="zeroclaw-labs/zeroclaw"
+REPO="deepakdgupta1/zeroclaw"
 API_URL="https://api.github.com/repos/${REPO}/releases/latest"
 RELEASE_BASE="https://github.com/${REPO}/releases/latest/download"
 

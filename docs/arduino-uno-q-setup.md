@@ -8,12 +8,12 @@ Run ZeroClaw on the Arduino Uno Q's Linux side. Telegram works over WiFi; GPIO c
 
 ZeroClaw includes everything needed for Arduino Uno Q. **Clone the repo and follow this guide — no patches or custom code required.**
 
-| Component | Location | Purpose |
-|-----------|----------|---------|
-| Bridge app | `firmware/zeroclaw-uno-q-bridge/` | MCU sketch + Python socket server (port 9999) for GPIO |
-| Bridge tools | `src/peripherals/uno_q_bridge.rs` | `gpio_read` / `gpio_write` tools that talk to the Bridge over TCP |
-| Setup command | `src/peripherals/uno_q_setup.rs` | `zeroclaw peripheral setup-uno-q` deploys the Bridge via scp + arduino-app-cli |
-| Config schema | `board = "arduino-uno-q"`, `transport = "bridge"` | Supported in `config.toml` |
+| Component     | Location                                          | Purpose                                                                        |
+| ------------- | ------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Bridge app    | `firmware/zeroclaw-uno-q-bridge/`                 | MCU sketch + Python socket server (port 9999) for GPIO                         |
+| Bridge tools  | `src/peripherals/uno_q_bridge.rs`                 | `gpio_read` / `gpio_write` tools that talk to the Bridge over TCP              |
+| Setup command | `src/peripherals/uno_q_setup.rs`                  | `zeroclaw peripheral setup-uno-q` deploys the Bridge via scp + arduino-app-cli |
+| Config schema | `board = "arduino-uno-q"`, `transport = "bridge"` | Supported in `config.toml`                                                     |
 
 Build with `--features hardware` to include Uno Q support.
 
@@ -35,9 +35,9 @@ Build with `--features hardware` to include Uno Q support.
 2. Connect Uno Q via USB, power it on.
 3. Open App Lab, connect to the board.
 4. Follow the setup wizard:
-   - Set username and password (for SSH)
-   - Configure WiFi (SSID, password)
-   - Apply any firmware updates
+    - Set username and password (for SSH)
+    - Configure WiFi (SSID, password)
+    - Apply any firmware updates
 5. Note the IP address shown (e.g. `arduino@192.168.1.42`) or find it later via `ip addr show` in App Lab's terminal.
 
 ### 1.2 Verify SSH Access
@@ -66,7 +66,7 @@ sudo apt-get update
 sudo apt-get install -y pkg-config libssl-dev
 
 # Clone zeroclaw (or scp your project)
-git clone https://github.com/theonlyhennygod/zeroclaw.git
+git clone https://github.com/deepakdgupta1/zeroclaw.git
 cd zeroclaw
 
 # Build (takes ~15–30 min on Uno Q)
@@ -159,11 +159,13 @@ ZeroClaw includes the Bridge app and setup command.
 ### 5.1 Deploy Bridge App
 
 **From your Mac** (with zeroclaw repo):
+
 ```bash
 zeroclaw peripheral setup-uno-q --host 192.168.0.48
 ```
 
 **From the Uno Q** (SSH'd in):
+
 ```bash
 zeroclaw peripheral setup-uno-q
 ```
@@ -187,24 +189,24 @@ transport = "bridge"
 zeroclaw daemon --host 127.0.0.1 --port 42617
 ```
 
-Now when you message your Telegram bot *"Turn on the LED"* or *"Set pin 13 high"*, ZeroClaw uses `gpio_write` via the Bridge.
+Now when you message your Telegram bot _"Turn on the LED"_ or _"Set pin 13 high"_, ZeroClaw uses `gpio_write` via the Bridge.
 
 ---
 
 ## Summary: Commands Start to End
 
-| Step | Command |
-|------|---------|
-| 1 | Configure Uno Q in App Lab (WiFi, SSH) |
-| 2 | `ssh arduino@<IP>` |
-| 3 | `curl -sSf https://sh.rustup.rs \| sh -s -- -y && source ~/.cargo/env` |
-| 4 | `sudo apt-get install -y pkg-config libssl-dev` |
-| 5 | `git clone https://github.com/theonlyhennygod/zeroclaw.git && cd zeroclaw` |
-| 6 | `cargo build --release --features hardware` |
-| 7 | `zeroclaw onboard --api-key KEY --provider openrouter` |
-| 8 | Edit `~/.zeroclaw/config.toml` (add Telegram bot_token) |
-| 9 | `zeroclaw daemon --host 127.0.0.1 --port 42617` |
-| 10 | Message your Telegram bot — it responds |
+| Step | Command                                                                  |
+| ---- | ------------------------------------------------------------------------ |
+| 1    | Configure Uno Q in App Lab (WiFi, SSH)                                   |
+| 2    | `ssh arduino@<IP>`                                                       |
+| 3    | `curl -sSf https://sh.rustup.rs \| sh -s -- -y && source ~/.cargo/env`   |
+| 4    | `sudo apt-get install -y pkg-config libssl-dev`                          |
+| 5    | `git clone https://github.com/deepakdgupta1/zeroclaw.git && cd zeroclaw` |
+| 6    | `cargo build --release --features hardware`                              |
+| 7    | `zeroclaw onboard --api-key KEY --provider openrouter`                   |
+| 8    | Edit `~/.zeroclaw/config.toml` (add Telegram bot_token)                  |
+| 9    | `zeroclaw daemon --host 127.0.0.1 --port 42617`                          |
+| 10   | Message your Telegram bot — it responds                                  |
 
 ---
 

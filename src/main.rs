@@ -124,7 +124,7 @@ enum EstopLevelArg {
 /// `ZeroClaw` - Zero overhead. Zero compromise. 100% Rust.
 #[derive(Parser, Debug)]
 #[command(name = "zeroclaw")]
-#[command(author = "theonlyhennygod")]
+#[command(author = "deepakdgupta1")]
 #[command(version)]
 #[command(about = "The fastest, smallest AI assistant.", long_about = None)]
 struct Cli {

@@ -1,6 +1,6 @@
 # zeroclaw-tools
 
-Python companion package for [ZeroClaw](https://github.com/zeroclaw-labs/zeroclaw) — LangGraph-based tool calling for consistent LLM agent execution.
+Python companion package for [ZeroClaw](https://github.com/deepakdgupta1/zeroclaw) — LangGraph-based tool calling for consistent LLM agent execution.
 
 ## Why This Package?
 
@@ -40,12 +40,12 @@ async def main():
         api_key="your-api-key",
         base_url="https://api.z.ai/api/coding/paas/v4"
     )
-    
+
     # Execute a task
     result = await agent.ainvoke({
         "messages": [HumanMessage(content="List files in /tmp directory")]
     })
-    
+
     print(result["messages"][-1].content)
 
 asyncio.run(main())
@@ -82,15 +82,15 @@ bot.run()
 
 ## Available Tools
 
-| Tool | Description |
-|------|-------------|
-| `shell` | Execute shell commands |
-| `file_read` | Read file contents |
-| `file_write` | Write content to files |
-| `web_search` | Search the web (requires Brave API key) |
-| `http_request` | Make HTTP requests |
-| `memory_store` | Store data in memory |
-| `memory_recall` | Recall stored data |
+| Tool            | Description                             |
+| --------------- | --------------------------------------- |
+| `shell`         | Execute shell commands                  |
+| `file_read`     | Read file contents                      |
+| `file_write`    | Write content to files                  |
+| `web_search`    | Search the web (requires Brave API key) |
+| `http_request`  | Make HTTP requests                      |
+| `memory_store`  | Store data in memory                    |
+| `memory_recall` | Recall stored data                      |
 
 ## Creating Custom Tools
 
@@ -139,13 +139,13 @@ Works with any OpenAI-compatible provider:
 
 ## Comparison with Rust ZeroClaw
 
-| Feature | Rust ZeroClaw | zeroclaw-tools |
-|---------|---------------|----------------|
-| **Binary size** | ~3.4 MB | Python package |
-| **Memory** | <5 MB | ~50 MB |
-| **Startup** | <10ms | ~500ms |
+| Feature              | Rust ZeroClaw   | zeroclaw-tools       |
+| -------------------- | --------------- | -------------------- |
+| **Binary size**      | ~3.4 MB         | Python package       |
+| **Memory**           | <5 MB           | ~50 MB               |
+| **Startup**          | <10ms           | ~500ms               |
 | **Tool consistency** | Model-dependent | LangGraph guarantees |
-| **Extensibility** | Rust traits | Python decorators |
+| **Extensibility**    | Rust traits     | Python decorators    |
 
 Use **Rust ZeroClaw** for production edge deployments. Use **zeroclaw-tools** when you need guaranteed tool calling consistency or Python ecosystem integration.
 

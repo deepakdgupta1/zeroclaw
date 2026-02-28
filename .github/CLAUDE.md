@@ -17,8 +17,8 @@
 
 ## Assignee-First Gate (Required)
 
-- For any GitHub issue or PR selected for active handling, the first action is to ensure `@chumyin` is an assignee.
-- This is additive ownership: keep existing assignees and add `@chumyin` if missing.
+- For any GitHub issue or PR selected for active handling, the first action is to ensure `@deepakdgupta1` is an assignee.
+- This is additive ownership: keep existing assignees and add `@deepakdgupta1` if missing.
 - Do not start triage/review/implementation/merge work before assignee assignment is confirmed.
 - Queue safety rule: assign only the currently active target; do not pre-assign future queued targets.
 

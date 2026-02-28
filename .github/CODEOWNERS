@@ -1,32 +1,32 @@
 # Default owner for all files
-* @theonlyhennygod
+* @deepakdgupta1
 
 # Important functional modules
-/src/agent/** @theonlyhennygod
-/src/providers/** @theonlyhennygod
-/src/channels/** @theonlyhennygod
-/src/tools/** @theonlyhennygod
-/src/gateway/** @theonlyhennygod
-/src/runtime/** @theonlyhennygod
-/src/memory/** @theonlyhennygod
-/Cargo.toml @theonlyhennygod
-/Cargo.lock @theonlyhennygod
+/src/agent/** @deepakdgupta1
+/src/providers/** @deepakdgupta1
+/src/channels/** @deepakdgupta1
+/src/tools/** @deepakdgupta1
+/src/gateway/** @deepakdgupta1
+/src/runtime/** @deepakdgupta1
+/src/memory/** @deepakdgupta1
+/Cargo.toml @deepakdgupta1
+/Cargo.lock @deepakdgupta1
 
 # Security / tests / CI-CD ownership
-/src/security/** @theonlyhennygod
-/tests/** @theonlyhennygod
-/.github/** @theonlyhennygod
-/.github/workflows/** @theonlyhennygod
-/.github/codeql/** @theonlyhennygod
-/.github/dependabot.yml @theonlyhennygod
-/SECURITY.md @theonlyhennygod
-/docs/actions-source-policy.md @theonlyhennygod
-/docs/ci-map.md @theonlyhennygod
+/src/security/** @deepakdgupta1
+/tests/** @deepakdgupta1
+/.github/** @deepakdgupta1
+/.github/workflows/** @deepakdgupta1
+/.github/codeql/** @deepakdgupta1
+/.github/dependabot.yml @deepakdgupta1
+/SECURITY.md @deepakdgupta1
+/docs/actions-source-policy.md @deepakdgupta1
+/docs/ci-map.md @deepakdgupta1
 
 # Docs & governance
-/docs/** @theonlyhennygod
-/AGENTS.md @theonlyhennygod
-/CLAUDE.md @theonlyhennygod
-/CONTRIBUTING.md @theonlyhennygod
-/docs/pr-workflow.md @theonlyhennygod
-/docs/reviewer-playbook.md @theonlyhennygod
+/docs/** @deepakdgupta1
+/AGENTS.md @deepakdgupta1
+/CLAUDE.md @deepakdgupta1
+/CONTRIBUTING.md @deepakdgupta1
+/docs/pr-workflow.md @deepakdgupta1
+/docs/reviewer-playbook.md @deepakdgupta1

@@ -4,14 +4,14 @@ A complete toolkit for building AI-powered robots with ZeroClaw. Designed for Ra
 
 ## Features
 
-| Tool | Description |
-|------|-------------|
-| `drive` | Omni-directional movement (forward, strafe, rotate) |
-| `look` | Camera capture + vision model description |
-| `listen` | Speech-to-text via Whisper.cpp |
-| `speak` | Text-to-speech via Piper TTS |
-| `sense` | LIDAR, motion sensors, ultrasonic distance |
-| `emote` | LED expressions and sound effects |
+| Tool     | Description                                         |
+| -------- | --------------------------------------------------- |
+| `drive`  | Omni-directional movement (forward, strafe, rotate) |
+| `look`   | Camera capture + vision model description           |
+| `listen` | Speech-to-text via Whisper.cpp                      |
+| `speak`  | Text-to-speech via Piper TTS                        |
+| `sense`  | LIDAR, motion sensors, ultrasonic distance          |
+| `emote`  | LED expressions and sound effects                   |
 
 ## Architecture
 
@@ -38,6 +38,7 @@ A complete toolkit for building AI-powered robots with ZeroClaw. Designed for Ra
 ## Hardware Requirements
 
 ### Minimum
+
 - Raspberry Pi 4 (4GB) or Pi 5
 - USB webcam
 - USB microphone
@@ -46,6 +47,7 @@ A complete toolkit for building AI-powered robots with ZeroClaw. Designed for Ra
 - 4 DC motors + omni wheels
 
 ### Recommended
+
 - Raspberry Pi 5 (8GB)
 - RPLidar A1 for obstacle avoidance
 - LED matrix (8x8) for expressions
@@ -88,7 +90,7 @@ pip install piper-tts
 
 ```bash
 # Clone and build
-git clone https://github.com/zeroclaw-labs/zeroclaw
+git clone https://github.com/deepakdgupta1/zeroclaw
 cd zeroclaw
 cargo build -p zeroclaw-robot-kit --release
 ```
