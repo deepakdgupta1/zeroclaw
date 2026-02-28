@@ -401,6 +401,8 @@ impl CopilotProvider {
             usage,
             reasoning_content: None,
             quota_metadata: None,
+            actual_provider: None,
+            actual_model: None,
         })
     }
 

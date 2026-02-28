@@ -651,6 +651,8 @@ impl Provider for OllamaProvider {
                 usage,
                 reasoning_content: None,
                 quota_metadata: None,
+                actual_provider: None,
+                actual_model: None,
             });
         }
 
@@ -670,6 +672,8 @@ impl Provider for OllamaProvider {
             usage,
             reasoning_content: None,
             quota_metadata: None,
+            actual_provider: None,
+            actual_model: None,
         })
     }
 
@@ -718,6 +722,8 @@ impl Provider for OllamaProvider {
             usage: None,
             reasoning_content: None,
             quota_metadata: None,
+            actual_provider: None,
+            actual_model: None,
         })
     }
 }

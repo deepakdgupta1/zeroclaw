@@ -303,6 +303,8 @@ impl OpenRouterProvider {
             usage: None,
             reasoning_content,
             quota_metadata: None,
+            actual_provider: None,
+            actual_model: None,
         }
     }
 

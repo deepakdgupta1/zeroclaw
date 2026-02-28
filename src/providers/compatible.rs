@@ -937,6 +937,8 @@ fn parse_responses_chat_response(response: ResponsesResponse) -> ProviderChatRes
         usage: None,
         reasoning_content: None,
         quota_metadata: None,
+        actual_provider: None,
+        actual_model: None,
     }
 }
 
@@ -1580,6 +1582,8 @@ impl OpenAiCompatibleProvider {
             usage: None,
             reasoning_content,
             quota_metadata: None,
+            actual_provider: None,
+            actual_model: None,
         }
     }
 
@@ -1949,6 +1953,8 @@ impl Provider for OpenAiCompatibleProvider {
                     usage: None,
                     reasoning_content: None,
                     quota_metadata: None,
+                    actual_provider: None,
+                    actual_model: None,
                 });
             }
         };
@@ -2006,6 +2012,8 @@ impl Provider for OpenAiCompatibleProvider {
             usage,
             reasoning_content,
             quota_metadata: None,
+            actual_provider: None,
+            actual_model: None,
         })
     }
 
@@ -2103,6 +2111,8 @@ impl Provider for OpenAiCompatibleProvider {
                     usage: None,
                     reasoning_content: None,
                     quota_metadata: None,
+                    actual_provider: None,
+                    actual_model: None,
                 });
             }
 
@@ -2886,6 +2896,8 @@ mod tests {
                 parameters: None,
             }]),
             reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
         };
 
         let parsed = OpenAiCompatibleProvider::parse_native_response(message);
@@ -3492,6 +3504,8 @@ mod tests {
         let message = ResponseMessage {
             content: Some("answer".to_string()),
             reasoning_content: Some("thinking step".to_string()),
+            actual_provider: None,
+            actual_model: None,
             tool_calls: Some(vec![ToolCall {
                 id: Some("call_1".to_string()),
                 kind: Some("function".to_string()),
@@ -3516,6 +3530,8 @@ mod tests {
         let message = ResponseMessage {
             content: Some("hello".to_string()),
             reasoning_content: None,
+                    actual_provider: None,
+                    actual_model: None,
             tool_calls: None,
         };
 

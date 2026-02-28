@@ -76,6 +76,12 @@ pub struct ChatResponse {
     /// Quota metadata extracted from response headers (if available).
     /// Populated by providers that support quota tracking.
     pub quota_metadata: Option<super::quota_types::QuotaMetadata>,
+    /// The provider that actually served this response (set by `ReliableProvider`
+    /// after fallback resolution). `None` for direct provider calls.
+    pub actual_provider: Option<String>,
+    /// The model that actually served this response (may differ from the
+    /// requested model after model-fallback or provider-scoped remapping).
+    pub actual_model: Option<String>,
 }
 
 impl ChatResponse {
@@ -370,6 +376,8 @@ pub trait Provider: Send + Sync {
                     usage: None,
                     reasoning_content: None,
                     quota_metadata: None,
+                    actual_provider: None,
+                    actual_model: None,
                 });
             }
         }
@@ -383,6 +391,8 @@ pub trait Provider: Send + Sync {
             usage: None,
             reasoning_content: None,
             quota_metadata: None,
+            actual_provider: None,
+            actual_model: None,
         })
     }
 
@@ -419,6 +429,8 @@ pub trait Provider: Send + Sync {
             usage: None,
             reasoning_content: None,
             quota_metadata: None,
+            actual_provider: None,
+            actual_model: None,
         })
     }
 
@@ -549,6 +561,8 @@ mod tests {
             usage: None,
             reasoning_content: None,
             quota_metadata: None,
+            actual_provider: None,
+            actual_model: None,
         };
         assert!(!empty.has_tool_calls());
         assert_eq!(empty.text_or_empty(), "");
@@ -563,6 +577,8 @@ mod tests {
             usage: None,
             reasoning_content: None,
             quota_metadata: None,
+            actual_provider: None,
+            actual_model: None,
         };
         assert!(with_tools.has_tool_calls());
         assert_eq!(with_tools.text_or_empty(), "Let me check");
@@ -588,6 +604,8 @@ mod tests {
             }),
             reasoning_content: None,
             quota_metadata: None,
+            actual_provider: None,
+            actual_model: None,
         };
         assert_eq!(resp.usage.as_ref().unwrap().input_tokens, Some(100));
         assert_eq!(resp.usage.as_ref().unwrap().output_tokens, Some(50));
