@@ -1171,6 +1171,7 @@ mod tests {
         assert!(err.to_string().contains("unsupported delivery channel"));
     }
 
+<<<<<<< HEAD
     #[cfg(feature = "channel-matrix")]
     #[tokio::test]
     async fn deliver_if_configured_matrix_missing_config() {
@@ -1208,6 +1209,8 @@ mod tests {
             .to_string()
             .contains("matrix delivery channel requires `channel-matrix` feature"));
     }
+=======
+>>>>>>> b287b242 (fix(cron): avoid merge conflict in matrix scheduler tests)
     #[tokio::test]
     async fn deliver_if_configured_skips_no_reply_sentinel() {
         let tmp = TempDir::new().unwrap();
