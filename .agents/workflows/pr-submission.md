@@ -8,8 +8,8 @@ description: PR submission, worktree workflow, validation, and handoff
 
 1. Create and work from a non-`main` branch.
 2. Commit changes with clear, scoped commit messages using conventional commit titles.
-3. Open a PR to `dev`; do not push directly to `dev` or `main`.
-4. `main` is reserved for release promotion PRs from `dev`.
+3. Open a PR to `main` by default (`dev` is optional for integration batching); do not push directly to `dev` or `main`.
+4. `main` accepts direct PR merges after required checks and review policy pass.
 5. Wait for required checks and review outcomes before merging.
 6. Merge via PR controls (squash/rebase/merge as repository policy allows).
 7. After merge/close, clean up task branches/worktrees.
