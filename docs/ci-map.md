@@ -24,10 +24,7 @@ Merge-blocking checks should stay small and deterministic. Optional checks are u
     - Purpose: lint GitHub workflow files (`actionlint`, tab checks)
     - Recommended for workflow-changing PRs
 - `.github/workflows/pr-intake-checks.yml` (`PR Intake Checks`) - Purpose: safe pre-CI PR checks (template completeness, added-line tabs/trailing-whitespace/conflict markers) with immediate sticky feedback comment
-  <<<<<<< HEAD
-  =======
 - `.github/workflows/main-promotion-gate.yml` (`Main Promotion Gate`) - Purpose: enforce stable-branch policy by allowing only `dev` -> `main` PR promotion authored by `willsarg` or `deepakdgupta1`
-    > > > > > > > 3b748777 (chore: align repository URLs and authorship with deepakdgupta1 fork)
 
 ### Non-Blocking but Important
 

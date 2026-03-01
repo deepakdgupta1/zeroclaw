@@ -296,21 +296,6 @@ name: Test Telegram Integration
 on: [push, pull_request]
 
 jobs:
-<<<<<<< HEAD
-  test:
-    runs-on: [self-hosted, aws-india]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - name: Run tests
-        run: |
-          cargo test telegram --lib
-          cargo clippy --all-targets -- -D warnings
-      - name: Check formatting
-        run: cargo fmt --check
-=======
     test:
         runs-on: blacksmith-2vcpu-ubuntu-2404
         steps:
@@ -324,7 +309,6 @@ jobs:
                   cargo clippy --all-targets -- -D warnings
             - name: Check formatting
               run: cargo fmt --check
->>>>>>> 3b748777 (chore: align repository URLs and authorship with deepakdgupta1 fork)
 ```
 
 ## 📝 Test Checklist
