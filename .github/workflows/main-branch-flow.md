@@ -10,15 +10,6 @@ Use this with:
 
 ## Event Summary
 
-<<<<<<< HEAD
-| Event | Main workflows |
-| --- | --- |
-| PR activity (`pull_request_target`) | `pr-intake-checks.yml`, `pr-labeler.yml`, `pr-auto-response.yml` |
-| PR activity (`pull_request`) | `ci-run.yml`, `sec-audit.yml`, plus path-scoped workflows |
-| Push to `dev`/`main` | `ci-run.yml`, `sec-audit.yml`, plus path-scoped workflows |
-| Tag push (`v*`) | `pub-release.yml` publish mode, `pub-docker-img.yml` publish job |
-| Scheduled/manual | `pub-release.yml` verification mode, `sec-codeql.yml`, `feature-matrix.yml`, `test-fuzz.yml`, `pr-check-stale.yml`, `pr-check-status.yml`, `ci-queue-hygiene.yml`, `sync-contributors.yml`, `test-benchmarks.yml`, `test-e2e.yml` |
-=======
 | Event                               | Main workflows                                                                                                                                                                                            |
 | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | PR activity (`pull_request_target`) | `pr-intake-checks.yml`, `pr-labeler.yml`, `pr-auto-response.yml`                                                                                                                                          |
@@ -26,7 +17,6 @@ Use this with:
 | Push to `dev`/`main`                | `ci-run.yml`, `sec-audit.yml`, plus path-scoped workflows                                                                                                                                                 |
 | Tag push (`v*`)                     | `pub-release.yml` publish mode, `pub-docker-img.yml` publish job                                                                                                                                          |
 | Scheduled/manual                    | `pub-release.yml` verification mode, `sec-codeql.yml`, `feature-matrix.yml`, `test-fuzz.yml`, `pr-check-stale.yml`, `pr-check-status.yml`, `sync-contributors.yml`, `test-benchmarks.yml`, `test-e2e.yml` |
->>>>>>> 3b748777 (chore: align repository URLs and authorship with deepakdgupta1 fork)
 
 ## Runtime and Docker Matrix
 
@@ -81,18 +71,6 @@ Notes:
     - `workflow_changed`
 5. `build` runs for Rust-impacting changes.
 6. On PRs, full lint/test/docs checks run when PR has label `ci:full`:
-<<<<<<< HEAD
-   - `lint`
-   - `lint-strict-delta`
-   - `test`
-   - `flake-probe` (single-retry telemetry; optional block via `CI_BLOCK_ON_FLAKE_SUSPECTED`)
-   - `docs-quality`
-7. If root license files (`LICENSE-APACHE`, `LICENSE-MIT`) changed, `license-file-owner-guard` allows only PR author `willsarg`.
-8. `lint-feedback` posts actionable comment if lint/docs gates fail.
-9. `CI Required Gate` aggregates results to final pass/fail.
-10. Maintainer merges PR once checks and review policy are satisfied.
-11. Merge emits a `push` event on `dev` (see scenario 4).
-=======
     - `lint`
     - `lint-strict-delta`
     - `test`
@@ -104,7 +82,6 @@ Notes:
 10. `CI Required Gate` aggregates results to final pass/fail.
 11. Maintainer merges PR once checks and review policy are satisfied.
 12. Merge emits a `push` event on `dev` (see scenario 4).
->>>>>>> 3b748777 (chore: align repository URLs and authorship with deepakdgupta1 fork)
 
 ### 2) PR from fork -> `dev`
 
@@ -124,28 +101,12 @@ Notes:
 4. Approval gate possibility:
     - if Actions settings require maintainer approval for fork workflows, the `pull_request` run stays in `action_required`/waiting state until approved.
 5. Event fan-out after labeling:
-<<<<<<< HEAD
-   - manual label changes emit `labeled`/`unlabeled` events.
-   - those events retrigger only label-driven `pull_request_target` automation (`pr-auto-response.yml`); `pr-labeler.yml` now runs only on PR lifecycle events (`opened`/`reopened`/`synchronize`/`ready_for_review`) to reduce churn.
-=======
     - `pr-labeler.yml` and manual label changes emit `labeled`/`unlabeled` events.
     - those events retrigger `pull_request_target` automation (`pr-labeler.yml` and `pr-auto-response.yml`), creating extra run volume/noise.
->>>>>>> 3b748777 (chore: align repository URLs and authorship with deepakdgupta1 fork)
 6. When contributor pushes new commits to fork branch (`synchronize`):
     - reruns: `pr-intake-checks.yml`, `pr-labeler.yml`, `ci-run.yml`, `sec-audit.yml`, and matching path-scoped PR workflows.
     - does not rerun `pr-auto-response.yml` unless label/open events occur.
 7. `ci-run.yml` execution details for fork PR:
-<<<<<<< HEAD
-   - `changes` computes `docs_only`, `docs_changed`, `rust_changed`, `workflow_changed`.
-   - `build` runs for Rust-impacting changes.
-   - `lint`/`lint-strict-delta`/`test`/`docs-quality` run on PR when `ci:full` label exists.
-   - `CI Required Gate` emits final pass/fail for the PR head.
-8. Fork PR merge blockers to check first when diagnosing stalls:
-   - run approval pending for fork workflows.
-   - `license-file-owner-guard` failing when root license files are modified by non-owner PR author.
-   - `CI Required Gate` failure caused by upstream jobs.
-   - repeated `pull_request_target` reruns from label churn causing noisy signals.
-=======
     - `changes` computes `docs_only`, `docs_changed`, `rust_changed`, `workflow_changed`.
     - `build` runs for Rust-impacting changes.
     - `lint`/`lint-strict-delta`/`test`/`docs-quality` run on PR when `ci:full` label exists.
@@ -157,24 +118,16 @@ Notes:
     - `license-file-owner-guard` failing when root license files are modified by non-owner PR author.
     - `CI Required Gate` failure caused by upstream jobs.
     - repeated `pull_request_target` reruns from label churn causing noisy signals.
->>>>>>> 3b748777 (chore: align repository URLs and authorship with deepakdgupta1 fork)
 9. After merge, normal `push` workflows on `dev` execute (scenario 4).
 
 ### 3) PR to `main` (direct or from `dev`)
 
-<<<<<<< HEAD
-1. Contributor or maintainer opens PR with base `main`.
-2. `ci-run.yml` and `sec-audit.yml` run on the PR, plus any path-scoped workflows.
-3. Maintainer merges PR once checks and review policy pass.
-4. Merge emits a `push` event on `main`.
-=======
 1. Maintainer opens PR with head `dev` and base `main`.
 2. `main-promotion-gate.yml` runs and fails unless PR author is `willsarg` or `deepakdgupta1`.
 3. `main-promotion-gate.yml` also fails if head repo/branch is not `<this-repo>:dev`.
 4. `ci-run.yml` and `sec-audit.yml` run on the promotion PR.
 5. Maintainer merges PR once checks and review policy pass.
 6. Merge emits a `push` event on `main`.
->>>>>>> 3b748777 (chore: align repository URLs and authorship with deepakdgupta1 fork)
 
 ### 4) Push/Merge Queue to `dev` or `main` (including after merge)
 
@@ -198,13 +151,8 @@ Workflow: `.github/workflows/pub-docker-img.yml`
 
 1. Triggered on `pull_request` to `dev` or `main` when Docker build-input paths change.
 2. Runs `PR Docker Smoke` job:
-<<<<<<< HEAD
-   - Builds local smoke image with Buildx builder.
-   - Verifies container with `docker run ... --version`.
-=======
     - Builds local smoke image with Blacksmith builder.
     - Verifies container with `docker run ... --version`.
->>>>>>> 3b748777 (chore: align repository URLs and authorship with deepakdgupta1 fork)
 3. Typical runtime in recent sample: ~240.4s.
 4. No registry push happens on PR events.
 
