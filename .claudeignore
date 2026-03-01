@@ -1,0 +1,288 @@
+# =============================================================================
+# AI AGENT IGNORE FILE - ZeroClaw Project
+# =============================================================================
+# This file specifies files and directories that AI agents should ignore
+# to reduce token consumption and focus on relevant code.
+#
+# Usage:
+# - Claude: Add to .clinerules or reference in CLAUDE.md
+# - GitHub Copilot: Add patterns to .gitignore (already supported)
+# - Other agents: Load this file and respect the patterns
+# =============================================================================
+
+# =============================================================================
+# 1. INTERNATIONALIZATION (i18n) - Non-English Translations Only
+# =============================================================================
+# User only needs English (en) - ignoring all other language translations
+
+# Greek translations
+docs/i18n/el/
+
+# French translations
+docs/i18n/fr/
+
+# Japanese translations
+docs/i18n/ja/
+
+# Russian translations
+docs/i18n/ru/
+
+# Vietnamese translations
+docs/i18n/vi/
+
+# Chinese Simplified translations
+docs/i18n/zh-CN/
+
+# Language summary files (non-English)
+docs/SUMMARY.el.md
+docs/SUMMARY.fr.md
+docs/SUMMARY.ja.md
+docs/SUMMARY.ru.md
+docs/SUMMARY.vi.md
+docs/SUMMARY.zh-CN.md
+
+# Vietnamese-specific docs
+docs/commands-reference.vi.md
+docs/config-reference.vi.md
+docs/troubleshooting.vi.md
+docs/one-click-bootstrap.vi.md
+docs/vi/
+
+# Chinese-specific docs outside i18n tree
+docs/security/advisory-maintainer-checklist.zh-CN.md
+docs/security/advisory-metadata-template.zh-CN.md
+docs/security/private-vulnerability-report-template.zh-CN.md
+
+# Root-level non-English docs
+CONTRIBUTING.el.md
+
+# =============================================================================
+# 2. OPENCLAW MIGRATION
+# =============================================================================
+# User doesn't need OpenCLAW migration support
+
+docs/migration/openclaw-migration-guide.md
+scripts/convert-openclaw-config.py
+
+# =============================================================================
+# 3. HARDWARE SUPPORT
+# =============================================================================
+# User only needs Linux and MacOS - ignoring all hardware/firmware support
+
+# Arduino firmware
+firmware/zeroclaw-arduino/
+firmware/zeroclaw-uno-q-bridge/
+
+# ESP32 firmware
+firmware/zeroclaw-esp32/
+firmware/zeroclaw-esp32-ui/
+
+# Nucleo firmware
+firmware/zeroclaw-nucleo/
+
+# Hardware documentation
+docs/arduino-uno-q-setup.md
+docs/nucleo-setup.md
+docs/hardware/raspberry-pi-zero-w-build.md
+docs/hardware-peripherals-design.md
+docs/adding-boards-and-tools.md
+docs/network-deployment.md
+
+# Hardware datasheets
+docs/datasheets/arduino-uno.md
+docs/datasheets/esp32.md
+docs/datasheets/nucleo-f401re.md
+docs/datasheets/README.md
+
+# Hardware i18n translations
+docs/i18n/el/arduino-uno-q-setup.md
+docs/i18n/el/nucleo-setup.md
+docs/i18n/fr/arduino-uno-q-setup.md
+docs/i18n/fr/nucleo-setup.md
+docs/i18n/ja/arduino-uno-q-setup.md
+docs/i18n/ja/nucleo-setup.md
+docs/i18n/ru/arduino-uno-q-setup.md
+docs/i18n/ru/nucleo-setup.md
+docs/i18n/vi/arduino-uno-q-setup.md
+docs/i18n/vi/nucleo-setup.md
+docs/i18n/zh-CN/arduino-uno-q-setup.md
+docs/i18n/zh-CN/nucleo-setup.md
+docs/i18n/el/datasheets/
+docs/i18n/vi/datasheets/
+
+# Robot kit (Raspberry Pi based)
+crates/robot-kit/
+docs/robot-kit/
+
+# Hardware runtime and peripherals
+src/hardware/
+src/peripherals/arduino_flash.rs
+src/peripherals/arduino_upload.rs
+src/peripherals/nucleo_flash.rs
+src/tools/hardware_board_info.rs
+src/tools/hardware_memory_map.rs
+src/tools/hardware_memory_read.rs
+
+# =============================================================================
+# 4. API PROVIDERS - Keeping only Gemini and OpenRouter
+# =============================================================================
+# User only needs Gemini and OpenRouter providers
+
+# Anthropic
+src/providers/anthropic.rs
+
+# AWS Bedrock
+src/providers/bedrock.rs
+
+# OpenAI Compatible (includes Ollama, LM Studio, etc.)
+src/providers/compatible.rs
+src/providers/ollama.rs
+
+# GitHub Copilot
+src/providers/copilot.rs
+
+# OpenAI (standard)
+src/providers/openai.rs
+src/providers/openai_codex.rs
+
+# Cursor CLI provider
+src/providers/cursor.rs
+
+# Zhipu GLM provider
+src/providers/glm.rs
+
+# Telnyx AI provider
+src/providers/telnyx.rs
+
+# Provider docs not needed for Gemini/OpenRouter-only setup
+docs/custom-providers.md
+docs/providers-reference.md
+docs/zai-glm-setup.md
+docs/qwen-provider-test-report.md
+
+# =============================================================================
+# 5. CHANNELS - Keeping only WhatsApp and Discord
+# =============================================================================
+# User only needs WhatsApp and Discord channels
+
+# Telegram
+src/channels/telegram.rs
+
+# Slack
+src/channels/slack.rs
+
+# Email
+src/channels/email_channel.rs
+
+# Signal
+src/channels/signal.rs
+
+# Matrix
+src/channels/matrix.rs
+
+# Mattermost
+src/channels/mattermost.rs
+
+# DingTalk
+src/channels/dingtalk.rs
+
+# GitHub
+src/channels/github.rs
+
+# iMessage
+src/channels/imessage.rs
+
+# IRC
+src/channels/irc.rs
+
+# Lark
+src/channels/lark.rs
+
+# Linq
+src/channels/linq.rs
+
+# MQTT
+src/channels/mqtt.rs
+
+# NapCat
+src/channels/napcat.rs
+
+# Nextcloud Talk
+src/channels/nextcloud_talk.rs
+
+# Nostr
+src/channels/nostr.rs
+
+# QQ
+src/channels/qq.rs
+
+# Wati
+src/channels/wati.rs
+
+# ClawDTalk
+src/channels/clawdtalk.rs
+
+# CLI channel
+src/channels/cli.rs
+
+# Channel docs/tests not needed for WhatsApp+Discord-only setup
+docs/matrix-e2ee-guide.md
+docs/mattermost-setup.md
+docs/nextcloud-talk-setup.md
+TESTING_TELEGRAM.md
+test_telegram_integration.sh
+
+# =============================================================================
+# 6. PLATFORM SUPPORT - Keeping only Linux and MacOS
+# =============================================================================
+# User only needs Linux and MacOS - ignoring Android and Windows
+
+# Android client
+clients/android/
+clients/android-bridge/
+
+# Android documentation
+docs/android-setup.md
+docs/i18n/el/android-setup.md
+docs/i18n/fr/android-setup.md
+docs/i18n/ja/android-setup.md
+docs/i18n/ru/android-setup.md
+docs/i18n/vi/android-setup.md
+docs/i18n/zh-CN/android-setup.md
+
+# =============================================================================
+# 7. BUILD AND CI ARTIFACTS
+# =============================================================================
+# Standard build artifacts that agents don't need to read
+
+/target/
+firmware/*/target/
+*.db
+*.db-journal
+.DS_Store
+__pycache__/
+*.pyc
+.idea/
+.vscode/
+*.iml
+
+# =============================================================================
+# 8. VARIOUS CONFIGURATIONS (Optional - can be kept or ignored)
+# =============================================================================
+# These are optional depending on agent use case
+
+# Docker configurations
+Dockerfile
+docker-compose*.yml
+
+# GitHub workflows
+.github/
+
+# Nix/Flakes
+flake.nix
+flake.lock
+
+# Development scripts
+scripts/ci/
+scripts/android/
+scripts/test_*.sh

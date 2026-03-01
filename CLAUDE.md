@@ -13,6 +13,8 @@ Scope: entire repository.
 
 ## 1) Quick Start for Agents
 
+**Important:** Before starting any task, check [`.claudeignore`](.claudeignore) for files that can be safely ignored to reduce token consumption. This repo contains many optional features (hardware, providers, channels, i18n) that may not be relevant to your task.
+
 1. **Architecture is trait-driven.** Add features by implementing a trait + registering in a factory. Do not restructure modules for isolated features.
 2. **Security is first-class.** Gateway, tools, and runtime can execute real-world actions. Default to deny. Never log secrets. Never silently broaden permissions.
 3. **Binary size is a product goal.** The project compiles with `opt-level = "z"` and `lto = "fat"`. Avoid adding crate dependencies unless strongly justified.
