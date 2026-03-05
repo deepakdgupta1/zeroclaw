@@ -314,6 +314,8 @@ impl OpenRouterProvider {
             quota_metadata: None,
             stop_reason,
             raw_stop_reason,
+            actual_provider: None,
+            actual_model: None,
         }
     }
 
@@ -488,6 +490,7 @@ impl Provider for OpenRouterProvider {
         let usage = native_response.usage.map(|u| TokenUsage {
             input_tokens: u.prompt_tokens,
             output_tokens: u.completion_tokens,
+            cached_tokens: None,
         });
         let choice = native_response
             .choices
@@ -579,6 +582,7 @@ impl Provider for OpenRouterProvider {
         let usage = native_response.usage.map(|u| TokenUsage {
             input_tokens: u.prompt_tokens,
             output_tokens: u.completion_tokens,
+            cached_tokens: None,
         });
         let choice = native_response
             .choices

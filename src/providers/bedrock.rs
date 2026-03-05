@@ -948,6 +948,7 @@ impl BedrockProvider {
         let usage = response.usage.map(|u| TokenUsage {
             input_tokens: u.input_tokens,
             output_tokens: u.output_tokens,
+            cached_tokens: None,
         });
 
         if let Some(output) = response.output {
@@ -987,6 +988,8 @@ impl BedrockProvider {
             quota_metadata: None,
             stop_reason,
             raw_stop_reason,
+            actual_provider: None,
+            actual_model: None,
         }
     }
 

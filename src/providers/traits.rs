@@ -63,6 +63,7 @@ pub struct ToolCall {
 pub struct TokenUsage {
     pub input_tokens: Option<u64>,
     pub output_tokens: Option<u64>,
+    pub cached_tokens: Option<u64>,
 }
 
 /// Provider-agnostic stop reasons used by the agent loop.
@@ -149,6 +150,12 @@ pub struct ChatResponse {
     pub stop_reason: Option<NormalizedStopReason>,
     /// Raw provider-native stop reason string for diagnostics.
     pub raw_stop_reason: Option<String>,
+    /// The provider that actually served this response (set by `ReliableProvider`
+    /// after fallback resolution). `None` for direct provider calls.
+    pub actual_provider: Option<String>,
+    /// The model that actually served this response (may differ from the
+    /// requested model after model-fallback or provider-scoped remapping).
+    pub actual_model: Option<String>,
 }
 
 impl ChatResponse {
@@ -445,6 +452,8 @@ pub trait Provider: Send + Sync {
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
                 });
             }
         }
@@ -460,6 +469,8 @@ pub trait Provider: Send + Sync {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
         })
     }
 
@@ -498,6 +509,8 @@ pub trait Provider: Send + Sync {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
         })
     }
 
@@ -630,6 +643,8 @@ mod tests {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
         };
         assert!(!empty.has_tool_calls());
         assert_eq!(empty.text_or_empty(), "");
@@ -646,6 +661,8 @@ mod tests {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
         };
         assert!(with_tools.has_tool_calls());
         assert_eq!(with_tools.text_or_empty(), "Let me check");
@@ -666,11 +683,14 @@ mod tests {
             usage: Some(TokenUsage {
                 input_tokens: Some(100),
                 output_tokens: Some(50),
+                cached_tokens: None,
             }),
             reasoning_content: None,
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
         };
         assert_eq!(resp.usage.as_ref().unwrap().input_tokens, Some(100));
         assert_eq!(resp.usage.as_ref().unwrap().output_tokens, Some(50));

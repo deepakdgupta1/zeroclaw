@@ -238,6 +238,8 @@ impl Provider for CursorProvider {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
         })
     }
 }

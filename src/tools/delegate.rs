@@ -1016,6 +1016,8 @@ max_concurrent = {subagents_max_concurrent}
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
                 })
             } else {
                 Ok(ChatResponse {
@@ -1030,6 +1032,8 @@ max_concurrent = {subagents_max_concurrent}
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
                 })
             }
         }
@@ -1067,6 +1071,8 @@ max_concurrent = {subagents_max_concurrent}
                 quota_metadata: None,
                 stop_reason: None,
                 raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
             })
         }
     }

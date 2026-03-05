@@ -69,6 +69,8 @@ impl Provider for MockProvider {
                 quota_metadata: None,
                 stop_reason: None,
                 raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
             });
         }
         Ok(guard.remove(0))
@@ -198,6 +200,8 @@ impl Provider for RecordingProvider {
                 quota_metadata: None,
                 stop_reason: None,
                 raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
             });
         }
         Ok(guard.remove(0))
@@ -250,6 +254,8 @@ fn text_response(text: &str) -> ChatResponse {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     }
 }
 
@@ -262,6 +268,8 @@ fn tool_response(calls: Vec<ToolCall>) -> ChatResponse {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     }
 }
 
@@ -390,6 +398,8 @@ async fn e2e_xml_dispatcher_tool_call() {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
+            actual_provider: None,
+            actual_model: None,
         },
         text_response("XML tool executed"),
     ]));
@@ -1031,6 +1041,8 @@ async fn e2e_agent_research_prompt_guided() {
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
+                    actual_provider: None,
+                    actual_model: None,
                 });
             }
             Ok(guard.remove(0))
@@ -1052,6 +1064,8 @@ async fn e2e_agent_research_prompt_guided() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     // Response 2: Research complete
@@ -1063,6 +1077,8 @@ async fn e2e_agent_research_prompt_guided() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     // Response 3: Main turn response

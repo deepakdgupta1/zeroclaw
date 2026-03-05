@@ -181,9 +181,12 @@ mod tests {
     use tempfile::TempDir;
 
     fn test_config(tmp: &TempDir) -> Config {
+        let config_path = tmp.path().join("config.toml");
+        let default_config = Config::default();
+        std::fs::write(&config_path, toml::to_string(&default_config).unwrap()).unwrap();
         Config {
             workspace_dir: tmp.path().join("workspace"),
-            config_path: tmp.path().join("config.toml"),
+            config_path,
             memory: crate::config::MemoryConfig {
                 backend: "sqlite".to_string(),
                 ..crate::config::MemoryConfig::default()
@@ -204,6 +207,10 @@ mod tests {
             params!["openclaw_key", "openclaw_value", "core"],
         )
         .unwrap();
+
+        // Write an empty config strictly so `include_config` logic doesn't fail
+        let source_config = source_workspace.join("openclaw.json");
+        std::fs::write(&source_config, "{}").unwrap();
     }
 
     #[tokio::test]
@@ -329,7 +336,7 @@ mod tests {
             .await
             .unwrap();
 
-        assert!(result.success);
+        assert!(result.success, "{:?}", result.error);
         assert!(result.output.contains("\"dry_run\": true"));
     }
 }

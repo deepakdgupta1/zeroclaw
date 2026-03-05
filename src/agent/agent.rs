@@ -911,6 +911,8 @@ mod tests {
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
                 });
             }
             Ok(guard.remove(0))
@@ -951,6 +953,8 @@ mod tests {
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
                 });
             }
             Ok(guard.remove(0))
@@ -993,6 +997,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: None,
                 raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
             }]),
         });
 
@@ -1036,6 +1042,8 @@ mod tests {
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
                 },
                 crate::providers::ChatResponse {
                     text: Some("done".into()),
@@ -1045,6 +1053,8 @@ mod tests {
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
                 },
             ]),
         });
@@ -1089,6 +1099,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: None,
                 raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
             }]),
             seen_models: seen_models.clone(),
         });

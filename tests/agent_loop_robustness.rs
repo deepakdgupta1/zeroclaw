@@ -64,6 +64,8 @@ impl Provider for MockProvider {
                 quota_metadata: None,
                 stop_reason: None,
                 raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
             });
         }
         Ok(guard.remove(0))
@@ -189,6 +191,8 @@ fn text_response(text: &str) -> ChatResponse {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     }
 }
 
@@ -201,6 +205,8 @@ fn tool_response(calls: Vec<ToolCall>) -> ChatResponse {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     }
 }
 
@@ -373,6 +379,8 @@ async fn agent_handles_empty_provider_response() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     }]));
 
     let mut agent = build_agent(provider, vec![Box::new(EchoTool)]);
@@ -391,6 +399,8 @@ async fn agent_handles_none_text_response() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     }]));
 
     let mut agent = build_agent(provider, vec![Box::new(EchoTool)]);

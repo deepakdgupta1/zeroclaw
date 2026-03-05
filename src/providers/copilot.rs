@@ -390,6 +390,7 @@ impl CopilotProvider {
         let usage = api_response.usage.map(|u| TokenUsage {
             input_tokens: u.prompt_tokens,
             output_tokens: u.completion_tokens,
+            cached_tokens: None,
         });
         // Copilot may split text and tool calls across multiple choices.
         let (text, tool_calls) = Self::merge_response_choices(api_response.choices)?;
@@ -402,6 +403,8 @@ impl CopilotProvider {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
         })
     }
 

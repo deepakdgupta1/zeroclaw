@@ -1205,6 +1205,7 @@ impl GeminiProvider {
         let usage = result.usage_metadata.map(|u| TokenUsage {
             input_tokens: u.prompt_token_count,
             output_tokens: u.candidates_token_count,
+            cached_tokens: None,
         });
 
         let candidate = result
@@ -1350,6 +1351,8 @@ impl Provider for GeminiProvider {
             quota_metadata: None,
             stop_reason,
             raw_stop_reason,
+            actual_provider: None,
+            actual_model: None,
         })
     }
 

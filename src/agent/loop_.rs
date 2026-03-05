@@ -3889,6 +3889,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: None,
                 raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
             })
         }
     }
@@ -3917,6 +3919,8 @@ mod tests {
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
                 })
                 .collect();
             Self::from_scripted_responses(scripted)
@@ -4004,6 +4008,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: None,
                 raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
             })
         }
     }
@@ -5318,6 +5324,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
             ChatResponse {
                 text: Some(String::new()),
@@ -5331,6 +5339,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::ToolCall),
                 raw_stop_reason: Some("tool_calls".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
             ChatResponse {
                 text: Some("done after native retry".to_string()),
@@ -5340,6 +5350,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::EndTurn),
                 raw_stop_reason: Some("stop".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
         ])
         .with_native_tool_support();
@@ -5416,6 +5428,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
             ChatResponse {
                 text: Some(String::new()),
@@ -5429,6 +5443,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::ToolCall),
                 raw_stop_reason: Some("tool_calls".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
             ChatResponse {
                 text: Some("done after safe retry".to_string()),
@@ -5438,6 +5454,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::EndTurn),
                 raw_stop_reason: Some("stop".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
         ])
         .with_native_tool_support();
@@ -5509,6 +5527,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
             ChatResponse {
                 text: Some("done after valid native tool".to_string()),
@@ -5518,6 +5538,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::EndTurn),
                 raw_stop_reason: Some("stop".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
         ])
         .with_native_tool_support();
@@ -5579,6 +5601,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
             ChatResponse {
                 text: Some("part 2".to_string()),
@@ -5588,6 +5612,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::EndTurn),
                 raw_stop_reason: Some("stop".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
         ]);
 
@@ -5637,6 +5663,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
             ChatResponse {
                 text: Some("B".to_string()),
@@ -5646,6 +5674,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
             ChatResponse {
                 text: Some("C".to_string()),
@@ -5655,6 +5685,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
             ChatResponse {
                 text: Some("D".to_string()),
@@ -5664,6 +5696,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
         ]);
 
@@ -5714,6 +5748,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
             ChatResponse {
                 text: Some(oversized_chunk),
@@ -5723,6 +5759,8 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::EndTurn),
                 raw_stop_reason: Some("stop".to_string()),
+                actual_provider: None,
+                actual_model: None,
             },
         ]);
 

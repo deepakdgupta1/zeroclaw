@@ -9,6 +9,8 @@ pub struct TokenUsage {
     pub input_tokens: u64,
     /// Output/completion tokens
     pub output_tokens: u64,
+    /// Cached tokens
+    pub cached_tokens: u64,
     /// Total tokens
     pub total_tokens: u64,
     /// Calculated cost in USD
@@ -48,6 +50,7 @@ impl TokenUsage {
             model,
             input_tokens,
             output_tokens,
+            cached_tokens: 0,
             total_tokens,
             cost_usd,
             timestamp: chrono::Utc::now(),

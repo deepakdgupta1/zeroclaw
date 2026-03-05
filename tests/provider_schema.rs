@@ -158,6 +158,8 @@ fn chat_response_text_only() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     assert_eq!(resp.text_or_empty(), "Hello world");
@@ -178,6 +180,8 @@ fn chat_response_with_tool_calls() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     assert!(resp.has_tool_calls());
@@ -195,6 +199,8 @@ fn chat_response_text_or_empty_handles_none() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     assert_eq!(resp.text_or_empty(), "");
@@ -221,6 +227,8 @@ fn chat_response_multiple_tool_calls() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     assert!(resp.has_tool_calls());
