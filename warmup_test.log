@@ -1,0 +1,61 @@
+[2m2026-03-07T00:53:05.987826629+05:30[0m [32m INFO[0m [2mzeroclaw::config::schema[0m[2m:[0m Config loaded [3mpath[0m[2m=[0m/home/deeog/.zeroclaw/.zeroclaw/config.toml [3mworkspace[0m[2m=[0m/home/deeog/.zeroclaw/.zeroclaw/workspace [3msource[0m[2m=[0m"active_workspace.toml" [3minitialized[0m[2m=[0mtrue [3mcreated[0m[2m=[0mfalse
+[2m2026-03-07T00:53:05.987953830+05:30[0m [32m INFO[0m [2mzeroclaw[0m[2m:[0m 🧠 Starting ZeroClaw Daemon on 127.0.0.1:42617
+🧠 ZeroClaw daemon started
+   Gateway:  http://127.0.0.1:42617
+   Components: gateway, channels, heartbeat, scheduler
+   Ctrl+C or SIGTERM to stop
+[2m2026-03-07T00:53:05.989400416+05:30[0m [32m INFO[0m [2mzeroclaw::providers::reliable[0m[2m:[0m Warming up provider connection pool [3mprovider[0m[2m=[0m"gemini"
+🦀 ZeroClaw Gateway listening on http://127.0.0.1:42617
+  🌐 Web Dashboard: http://127.0.0.1:42617/
+  POST /pair      — pair a new client (X-Pairing-Code header)
+  POST /webhook   — {"message": "your prompt"}
+  POST /api/chat  — {"message": "...", "context": [...]} (tools-enabled, OpenClaw compat)
+  POST /v1/chat/completions — OpenAI-compatible (full agent loop)
+  GET  /v1/models — list available models
+  GET  /api/*     — REST API (bearer token required)
+  GET  /ws/chat   — WebSocket agent chat
+  GET  /health    — health check
+  GET  /metrics   — Prometheus metrics
+  🔒 Pairing: ACTIVE (bearer token required)
+  Press Ctrl+C to stop.
+
+[2m2026-03-07T00:53:06.326447251+05:30[0m [33m WARN[0m [2mzeroclaw::providers::reliable[0m[2m:[0m Warmup failed (non-fatal) [3mprovider[0m[2m=[0m"gemini" [3merror[0m[2m=[0mHTTP status client error (400 Bad Request) for url (https://generativelanguage.googleapis.com/v1beta/models?key=env:GOOGLE_API_KEY_1)
+[2m2026-03-07T00:53:06.326693715+05:30[0m [32m INFO[0m [2mzeroclaw::providers::reliable[0m[2m:[0m Warming up provider connection pool [3mprovider[0m[2m=[0m"openrouter"
+[2m2026-03-07T00:53:06.381747905+05:30[0m [33m WARN[0m [2mzeroclaw::providers::reliable[0m[2m:[0m Warmup failed (non-fatal) [3mprovider[0m[2m=[0m"openrouter" [3merror[0m[2m=[0mHTTP status client error (401 Unauthorized) for url (https://openrouter.ai/api/v1/auth/key)
+[2m2026-03-07T00:53:06.381843375+05:30[0m [32m INFO[0m [2mzeroclaw::providers::reliable[0m[2m:[0m Warming up provider connection pool [3mprovider[0m[2m=[0m"gemini:gemini-secondary"
+🦀 ZeroClaw Channel Server
+  🤖 Model:    gemini-3-flash-preview
+  🧠 Memory:   sqlite (auto-save: on)
+  📡 Channels: discord
+
+  Listening for messages... (Ctrl+C to stop)
+
+  🚦 In-flight message limit: 8
+[2m2026-03-07T00:53:06.890380012+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:53:07.453596832+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:53:07.862147566+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:53:07.862323017+05:30[0m [31mERROR[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord error: Discord authentication failed (token invalid). Please check your DISCORD_TOKEN.; restarting
+[2m2026-03-07T00:53:10.320809936+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:53:10.832198705+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:53:11.243875750+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:53:11.244032798+05:30[0m [31mERROR[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord error: Discord authentication failed (token invalid). Please check your DISCORD_TOKEN.; restarting
+[2m2026-03-07T00:53:15.647910116+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:53:16.130867631+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:53:16.442404376+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:53:16.442541638+05:30[0m [31mERROR[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord error: Discord authentication failed (token invalid). Please check your DISCORD_TOKEN.; restarting
+[2m2026-03-07T00:53:24.862359018+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:53:25.373549334+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:53:25.765997068+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:53:25.766145723+05:30[0m [31mERROR[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord error: Discord authentication failed (token invalid). Please check your DISCORD_TOKEN.; restarting
+[2m2026-03-07T00:53:42.103233461+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:53:42.599502409+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:53:42.895255588+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:53:42.895417231+05:30[0m [31mERROR[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord error: Discord authentication failed (token invalid). Please check your DISCORD_TOKEN.; restarting
+[2m2026-03-07T00:54:15.240962485+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:54:15.886083332+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:54:16.238791886+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:54:16.238931793+05:30[0m [31mERROR[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord error: Discord authentication failed (token invalid). Please check your DISCORD_TOKEN.; restarting
+[2m2026-03-07T00:55:16.863285967+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:55:17.325302721+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:55:17.634731356+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:55:17.634861693+05:30[0m [31mERROR[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord error: Discord authentication failed (token invalid). Please check your DISCORD_TOKEN.; restarting

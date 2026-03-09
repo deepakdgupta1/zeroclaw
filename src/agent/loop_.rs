@@ -2148,8 +2148,6 @@ pub async fn run_tool_call_loop(
                         arguments: tool_args.clone(),
                     };
 
-                    // Only prompt interactively on CLI; deny on other channels
-                    // (remote channels cannot provide interactive approval).
                     let decision = if channel_name == "cli" {
                         mgr.prompt_cli(&request)
                     } else if let Some(ctx) = non_cli_approval_context.as_ref() {
@@ -2180,26 +2178,13 @@ pub async fn run_tool_call_loop(
                         )
                         .await
                     } else {
-                        tracing::warn!(
-                            tool = %tool_name,
-                            channel = %channel_name,
-                            "Tool requires approval but channel cannot prompt — denied"
-                        );
                         ApprovalResponse::No
                     };
 
                     mgr.record_decision(&tool_name, &tool_args, decision, channel_name);
 
                     if decision == ApprovalResponse::No {
-                        let denied = if channel_name == "cli" {
-                            "Denied by user.".to_string()
-                        } else {
-                            format!(
-                                "Tool '{}' requires approval but channel '{}' cannot prompt interactively. \
-                                 Configure auto_approve or set autonomy level to Full to allow.",
-                                tool_name, channel_name
-                            )
-                        };
+                        let denied = "Denied by user.".to_string();
                         runtime_trace::record_event(
                             "tool_call_result",
                             Some(channel_name),
@@ -3889,8 +3874,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: None,
                 raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
             })
         }
     }
@@ -3919,8 +3902,6 @@ mod tests {
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
                 })
                 .collect();
             Self::from_scripted_responses(scripted)
@@ -4008,8 +3989,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: None,
                 raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
             })
         }
     }
@@ -5324,8 +5303,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
             ChatResponse {
                 text: Some(String::new()),
@@ -5339,8 +5316,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::ToolCall),
                 raw_stop_reason: Some("tool_calls".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
             ChatResponse {
                 text: Some("done after native retry".to_string()),
@@ -5350,8 +5325,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::EndTurn),
                 raw_stop_reason: Some("stop".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
         ])
         .with_native_tool_support();
@@ -5428,8 +5401,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
             ChatResponse {
                 text: Some(String::new()),
@@ -5443,8 +5414,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::ToolCall),
                 raw_stop_reason: Some("tool_calls".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
             ChatResponse {
                 text: Some("done after safe retry".to_string()),
@@ -5454,8 +5423,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::EndTurn),
                 raw_stop_reason: Some("stop".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
         ])
         .with_native_tool_support();
@@ -5527,8 +5494,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
             ChatResponse {
                 text: Some("done after valid native tool".to_string()),
@@ -5538,8 +5503,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::EndTurn),
                 raw_stop_reason: Some("stop".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
         ])
         .with_native_tool_support();
@@ -5601,8 +5564,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
             ChatResponse {
                 text: Some("part 2".to_string()),
@@ -5612,8 +5573,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::EndTurn),
                 raw_stop_reason: Some("stop".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
         ]);
 
@@ -5663,8 +5622,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
             ChatResponse {
                 text: Some("B".to_string()),
@@ -5674,8 +5631,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
             ChatResponse {
                 text: Some("C".to_string()),
@@ -5685,8 +5640,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
             ChatResponse {
                 text: Some("D".to_string()),
@@ -5696,8 +5649,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
         ]);
 
@@ -5748,8 +5699,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::MaxTokens),
                 raw_stop_reason: Some("length".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
             ChatResponse {
                 text: Some(oversized_chunk),
@@ -5759,8 +5708,6 @@ mod tests {
                 quota_metadata: None,
                 stop_reason: Some(NormalizedStopReason::EndTurn),
                 raw_stop_reason: Some("stop".to_string()),
-                actual_provider: None,
-                actual_model: None,
             },
         ]);
 
@@ -7653,6 +7600,7 @@ Let me check the result."#;
         assert!(should_emit_tool_progress(ProgressMode::Compact));
         assert!(!should_emit_tool_progress(ProgressMode::Off));
     }
+
     #[test]
     fn progress_tracker_renders_in_place_block() {
         let mut tracker = ProgressTracker::default();

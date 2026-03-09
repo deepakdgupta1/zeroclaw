@@ -41,11 +41,12 @@ enum Step {
     ChannelDiagnostics,
     Tunnel,
     TunnelDiagnostics,
+    Fallback,
     Review,
 }
 
 impl Step {
-    const ORDER: [Self; 10] = [
+    const ORDER: [Self; 11] = [
         Self::Welcome,
         Self::Workspace,
         Self::Provider,
@@ -55,6 +56,7 @@ impl Step {
         Self::ChannelDiagnostics,
         Self::Tunnel,
         Self::TunnelDiagnostics,
+        Self::Fallback,
         Self::Review,
     ];
 
@@ -69,6 +71,7 @@ impl Step {
             Self::ChannelDiagnostics => "Channel Diagnostics",
             Self::Tunnel => "Tunnel",
             Self::TunnelDiagnostics => "Tunnel Diagnostics",
+            Self::Fallback => "Fallback Model",
             Self::Review => "Review & Apply",
         }
     }
@@ -84,6 +87,7 @@ impl Step {
             Self::ChannelDiagnostics => "Run channel checks before writing config.",
             Self::Tunnel => "Optional: expose gateway with Cloudflare or ngrok.",
             Self::TunnelDiagnostics => "Probe tunnel credentials before apply.",
+            Self::Fallback => "Optional: configure a secondary fallback model.",
             Self::Review => "Validate final config and apply onboarding.",
         }
     }
@@ -157,6 +161,10 @@ enum FieldKey {
     NgrokProbeDetails,
     NgrokProbeRemediation,
     AllowFailedDiagnostics,
+    EnableFallback,
+    FallbackProvider,
+    FallbackApiKey,
+    FallbackModel,
     Apply,
 }
 
@@ -224,6 +232,10 @@ struct TuiOnboardPlan {
     ngrok_auth_token: String,
     ngrok_domain: String,
     allow_failed_diagnostics: bool,
+    pub enable_fallback: bool,
+    pub fallback_provider_idx: usize,
+    pub fallback_api_key: String,
+    pub fallback_model: String,
 }
 
 impl TuiOnboardPlan {
@@ -250,11 +262,19 @@ impl TuiOnboardPlan {
             ngrok_auth_token: String::new(),
             ngrok_domain: String::new(),
             allow_failed_diagnostics: false,
+            enable_fallback: false,
+            fallback_provider_idx: 0,
+            fallback_api_key: String::new(),
+            fallback_model: String::new(),
         }
     }
 
-    fn provider(&self) -> &str {
+    pub fn provider(&self) -> &str {
         PROVIDER_OPTIONS[self.provider_idx]
+    }
+
+    pub fn fallback_provider(&self) -> &str {
+        PROVIDER_OPTIONS[self.fallback_provider_idx]
     }
 
     fn memory_backend(&self) -> &str {
@@ -703,6 +723,43 @@ impl TuiState {
                     editable: false,
                 }],
             },
+            Step::Fallback => {
+                let mut rows = vec![FieldView {
+                    key: FieldKey::EnableFallback,
+                    label: "Enable fallback model",
+                    value: bool_label(self.plan.enable_fallback),
+                    hint: "Used automatically when the primary provider fails.",
+                    required: false,
+                    editable: true,
+                }];
+                if self.plan.enable_fallback {
+                    rows.push(FieldView {
+                        key: FieldKey::FallbackProvider,
+                        label: "Fallback provider",
+                        value: self.plan.fallback_provider().to_string(),
+                        hint: "Select a resilient secondary provider.",
+                        required: true,
+                        editable: true,
+                    });
+                    rows.push(FieldView {
+                        key: FieldKey::FallbackApiKey,
+                        label: "Fallback API key",
+                        value: display_value(&self.plan.fallback_api_key, true),
+                        hint: "Optional if using local/already-authed provider.",
+                        required: false,
+                        editable: true,
+                    });
+                    rows.push(FieldView {
+                        key: FieldKey::FallbackModel,
+                        label: "Fallback model",
+                        value: display_value(&self.plan.fallback_model, false),
+                        hint: "Default fallback model for chosen provider.",
+                        required: false,
+                        editable: true,
+                    });
+                }
+                rows
+            }
             Step::Review => vec![
                 FieldView {
                     key: FieldKey::AllowFailedDiagnostics,
@@ -792,6 +849,7 @@ impl TuiState {
                 _ => Ok(()),
             },
             Step::TunnelDiagnostics => Ok(()),
+            Step::Fallback => Ok(()),
             Step::Review => {
                 self.validate_all()?;
                 let failures = self.blocking_diagnostic_failures();
@@ -824,6 +882,7 @@ impl TuiState {
             Step::ChannelDiagnostics,
             Step::Tunnel,
             Step::TunnelDiagnostics,
+            Step::Fallback,
         ] {
             self.validate_step(step)?;
         }
@@ -1128,6 +1187,8 @@ impl TuiState {
             FieldKey::CloudflareToken => (self.plan.cloudflare_token.clone(), true),
             FieldKey::NgrokAuthToken => (self.plan.ngrok_auth_token.clone(), true),
             FieldKey::NgrokDomain => (self.plan.ngrok_domain.clone(), false),
+            FieldKey::FallbackApiKey => (self.plan.fallback_api_key.clone(), true),
+            FieldKey::FallbackModel => (self.plan.fallback_model.clone(), false),
             _ => return,
         };
 
@@ -1183,6 +1244,8 @@ impl TuiState {
                 self.plan.ngrok_domain = value;
                 self.ngrok_probe = CheckStatus::NotRun;
             }
+            FieldKey::FallbackApiKey => self.plan.fallback_api_key = value,
+            FieldKey::FallbackModel => self.plan.fallback_model = value,
             _ => {}
         }
         self.status = "Field updated".to_string();
@@ -1236,6 +1299,13 @@ impl TuiState {
             }
             FieldKey::AllowFailedDiagnostics => {
                 self.plan.allow_failed_diagnostics = !self.plan.allow_failed_diagnostics;
+            }
+            FieldKey::EnableFallback => {
+                self.plan.enable_fallback = !self.plan.enable_fallback;
+            }
+            FieldKey::FallbackProvider => {
+                self.plan.fallback_provider_idx =
+                    advance_index(self.plan.fallback_provider_idx, PROVIDER_OPTIONS.len(), direction);
             }
             _ => {}
         }
@@ -1439,6 +1509,14 @@ impl TuiState {
                 "enabled"
             }
         ));
+
+        if self.plan.enable_fallback {
+            lines.push(format!(
+                "Fallback: {} ({})",
+                self.plan.fallback_provider(),
+                self.plan.fallback_model.trim().if_empty("(default)")
+            ));
+        }
 
         let mut channel_notes = vec!["CLI".to_string()];
         if self.plan.enable_telegram {
@@ -1865,6 +1943,7 @@ pub async fn run_wizard_tui_with_migration(
 
     apply_channel_overrides(&mut config, &plan);
     apply_tunnel_overrides(&mut config, &plan);
+    apply_fallback_overrides(&mut config, &plan);
     config.save().await?;
 
     if plan.autostart_channels && has_launchable_channels(&config.channels_config) {
@@ -1898,6 +1977,14 @@ pub async fn run_wizard_tui_with_migration(
         style("Tunnel:").cyan().bold(),
         style(tunnel_summary).green()
     );
+    if plan.enable_fallback {
+        println!(
+            "  {} {} ({})",
+            style("Fallback:").cyan().bold(),
+            style(plan.fallback_provider()).green(),
+            style(plan.fallback_model.trim().if_empty("(default)")).green()
+        );
+    }
     println!(
         "  {} {}",
         style("Config:").cyan().bold(),
@@ -2334,6 +2421,37 @@ fn apply_tunnel_overrides(config: &mut Config, plan: &TuiOnboardPlan) {
     };
 }
 
+fn apply_fallback_overrides(config: &mut Config, plan: &TuiOnboardPlan) {
+    if !plan.enable_fallback {
+        return;
+    }
+
+    let provider = plan.fallback_provider();
+    config
+        .reliability
+        .fallback_providers
+        .push(provider.to_string());
+
+    let model = plan.fallback_model.trim();
+    let model_id = if !model.is_empty() {
+        model.to_string()
+    } else {
+        default_model_fallback_for_provider(Some(provider)).to_string()
+    };
+    config
+        .reliability
+        .model_fallbacks
+        .insert(provider.to_string(), vec![model_id]);
+
+    let api_key = plan.fallback_api_key.trim();
+    if !api_key.is_empty() {
+        config
+            .reliability
+            .fallback_api_keys
+            .insert(provider.to_string(), api_key.to_string());
+    }
+}
+
 fn has_launchable_channels(channels: &ChannelsConfig) -> bool {
     channels
         .channels_except_webhook()
@@ -2355,6 +2473,8 @@ fn is_text_input_field(field_key: FieldKey) -> bool {
             | FieldKey::CloudflareToken
             | FieldKey::NgrokAuthToken
             | FieldKey::NgrokDomain
+            | FieldKey::FallbackApiKey
+            | FieldKey::FallbackModel
     )
 }
 

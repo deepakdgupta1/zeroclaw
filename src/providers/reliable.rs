@@ -361,8 +361,8 @@ impl Provider for ReliableProvider {
     async fn warmup(&self) -> anyhow::Result<()> {
         for (name, provider) in &self.providers {
             tracing::info!(provider = name, "Warming up provider connection pool");
-            if provider.warmup().await.is_err() {
-                tracing::warn!(provider = name, "Warmup failed (non-fatal)");
+            if let Err(e) = provider.warmup().await {
+                tracing::warn!(provider = name, error=%e, "Warmup failed (non-fatal)");
             }
         }
         Ok(())

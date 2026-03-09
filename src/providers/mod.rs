@@ -940,6 +940,9 @@ fn resolve_provider_credential(name: &str, credential_override: Option<&str>) ->
     if let Some(raw_override) = credential_override {
         let trimmed_override = raw_override.trim();
         if !trimmed_override.is_empty() {
+            if let Some(env_var_name) = trimmed_override.strip_prefix("env:") {
+                return std::env::var(env_var_name).ok();
+            }
             if is_minimax_alias(name) && is_minimax_oauth_placeholder(trimmed_override) {
                 minimax_oauth_placeholder_requested = true;
                 if let Some(credential) = resolve_minimax_static_credential() {

@@ -44,6 +44,8 @@ impl BenchProvider {
                 quota_metadata: None,
                 stop_reason: None,
                 raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
             }]),
         }
     }
@@ -63,6 +65,8 @@ impl BenchProvider {
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
+                    actual_provider: None,
+                    actual_model: None,
                 },
                 ChatResponse {
                     text: Some("done".into()),
@@ -72,6 +76,8 @@ impl BenchProvider {
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
+                    actual_provider: None,
+                    actual_model: None,
                 },
             ]),
         }
@@ -106,6 +112,8 @@ impl Provider for BenchProvider {
                 quota_metadata: None,
                 stop_reason: None,
                 raw_stop_reason: None,
+                actual_provider: None,
+                actual_model: None,
             });
         }
         Ok(guard.remove(0))
@@ -176,6 +184,8 @@ Let me know if you need more."#
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     let multi_tool = ChatResponse {
@@ -197,6 +207,8 @@ Let me know if you need more."#
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     c.bench_function("xml_parse_single_tool_call", |b| {
@@ -234,6 +246,8 @@ fn bench_native_parsing(c: &mut Criterion) {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     c.bench_function("native_parse_tool_calls", |b| {

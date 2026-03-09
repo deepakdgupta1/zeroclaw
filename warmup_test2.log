@@ -1,0 +1,5 @@
+[2m2026-03-07T00:55:37.135967016+05:30[0m [32m INFO[0m [2mzeroclaw::config::schema[0m[2m:[0m Config loaded [3mpath[0m[2m=[0m/home/deeog/.zeroclaw/.zeroclaw/config.toml [3mworkspace[0m[2m=[0m/home/deeog/.zeroclaw/.zeroclaw/workspace [3msource[0m[2m=[0m"active_workspace.toml" [3minitialized[0m[2m=[0mtrue [3mcreated[0m[2m=[0mfalse
+[2m2026-03-07T00:55:37.136162058+05:30[0m [32m INFO[0m [2mzeroclaw[0m[2m:[0m 🧠 Starting ZeroClaw Daemon on 127.0.0.1:42617
+[2m2026-03-07T00:55:37.137949214+05:30[0m [32m INFO[0m [2mzeroclaw::daemon[0m[2m:[0m ZeroClaw daemon already running on 127.0.0.1:42617
+✓ ZeroClaw daemon already running on http://127.0.0.1:42617
+  Use 'zeroclaw restart' to restart, or 'zeroclaw status' to check health.

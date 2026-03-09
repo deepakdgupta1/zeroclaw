@@ -1,0 +1,179 @@
+[2m2026-03-07T00:50:48.625736695+05:30[0m [32m INFO[0m [2mzeroclaw::config::schema[0m[2m:[0m Config loaded [3mpath[0m[2m=[0m/home/deeog/.zeroclaw/.zeroclaw/config.toml [3mworkspace[0m[2m=[0m/home/deeog/.zeroclaw/.zeroclaw/workspace [3msource[0m[2m=[0m"active_workspace.toml" [3minitialized[0m[2m=[0mtrue [3mcreated[0m[2m=[0mfalse
+[2m2026-03-07T00:50:48.625867399+05:30[0m [32m INFO[0m [2mzeroclaw[0m[2m:[0m 🧠 Starting ZeroClaw Daemon on 127.0.0.1:42617
+🧠 ZeroClaw daemon started
+   Gateway:  http://127.0.0.1:42617
+   Components: gateway, channels, heartbeat, scheduler
+   Ctrl+C or SIGTERM to stop
+[2m2026-03-07T00:50:48.627412144+05:30[0m [32m INFO[0m [2mzeroclaw::providers::reliable[0m[2m:[0m Warming up provider connection pool [3mprovider[0m[2m=[0m"gemini"
+🦀 ZeroClaw Gateway listening on http://127.0.0.1:42617
+  🌐 Web Dashboard: http://127.0.0.1:42617/
+  POST /pair      — pair a new client (X-Pairing-Code header)
+  POST /webhook   — {"message": "your prompt"}
+  POST /api/chat  — {"message": "...", "context": [...]} (tools-enabled, OpenClaw compat)
+  POST /v1/chat/completions — OpenAI-compatible (full agent loop)
+  GET  /v1/models — list available models
+  GET  /api/*     — REST API (bearer token required)
+  GET  /ws/chat   — WebSocket agent chat
+  GET  /health    — health check
+  GET  /metrics   — Prometheus metrics
+  🔒 Pairing: ACTIVE (bearer token required)
+  Press Ctrl+C to stop.
+
+[2m2026-03-07T00:50:48.746633615+05:30[0m [33m WARN[0m [2mzeroclaw::providers::reliable[0m[2m:[0m Warmup failed (non-fatal) [3mprovider[0m[2m=[0m"gemini"
+[2m2026-03-07T00:50:48.746859270+05:30[0m [32m INFO[0m [2mzeroclaw::providers::reliable[0m[2m:[0m Warming up provider connection pool [3mprovider[0m[2m=[0m"openrouter"
+[2m2026-03-07T00:50:48.818109474+05:30[0m [33m WARN[0m [2mzeroclaw::providers::reliable[0m[2m:[0m Warmup failed (non-fatal) [3mprovider[0m[2m=[0m"openrouter"
+[2m2026-03-07T00:50:48.818241414+05:30[0m [32m INFO[0m [2mzeroclaw::providers::reliable[0m[2m:[0m Warming up provider connection pool [3mprovider[0m[2m=[0m"gemini:gemini-secondary"
+🦀 ZeroClaw Channel Server
+  🤖 Model:    gemini-3-flash-preview
+  🧠 Memory:   sqlite (auto-save: on)
+  📡 Channels: discord
+
+  Listening for messages... (Ctrl+C to stop)
+
+  🚦 In-flight message limit: 8
+[2m2026-03-07T00:50:49.257673957+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:50:49.825754777+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:50:50.234733899+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:50:50.234866310+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:50:52.592247183+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:50:53.086765431+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:50:53.409477206+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:50:53.409616327+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:50:55.749588409+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:50:56.278087117+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:50:56.686610540+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:50:56.686997765+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:50:59.143770706+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:50:59.629845805+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:50:59.963288401+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:50:59.963424645+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:02.319244087+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:02.832027271+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:03.137102673+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:03.137539523+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:05.595868952+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:06.109579871+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:06.470156281+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:06.470550318+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:08.873987099+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:09.354802322+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:09.690877225+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:09.691222216+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:12.042748270+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:12.519776893+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:12.819686004+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:12.820071640+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:15.165193881+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:15.667592138+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:16.041333082+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:16.041742997+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:18.379752707+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:18.907093348+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:19.317749623+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:19.318116668+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:21.713633813+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:22.286426659+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:22.610463941+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:22.610720292+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:25.052985657+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:25.532096046+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:25.870872640+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:25.871166794+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:28.210858133+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:28.737710445+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:29.147680535+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:29.147816953+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:31.502653306+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:32.015226667+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:32.328998069+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:32.329323121+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:34.671223051+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:35.190110966+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:35.496830212+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:35.496997008+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:37.851535769+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:38.363901123+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:38.720483780+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:38.720872678+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:41.068782965+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:41.561998499+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:41.929024980+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:41.929250963+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:44.303246718+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:44.791763461+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:45.123257085+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:45.123653378+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:47.461000693+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:47.952631432+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:48.296770199+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:48.297139459+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:50.648595380+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:51:51.163601472+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:51:51.464458920+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:51:51.464602226+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:51:53.796658313+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:04.168845168+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:04.480411556+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:04.480568673+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:06.824600555+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:11.839882286+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:12.136445010+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:12.136592698+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:14.511350936+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:19.879301724+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:20.184821742+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:20.185186779+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:22.600860878+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:23.112881021+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:23.522383499+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:23.522527421+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:26.466096082+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:27.003771884+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:27.413687714+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:27.413842538+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:29.778434752+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:30.281081909+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:30.690958327+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:30.691100709+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:33.045897324+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:33.558225718+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:33.967837421+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:33.968002690+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:36.323335684+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:36.834572654+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:37.141605178+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:37.141733204+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:39.599899628+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:40.083106309+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:40.393677720+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:40.393828553+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:42.743868734+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:43.225530049+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:43.609757382+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:43.609904530+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:46.052138551+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:46.563734580+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:46.870453210+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:46.870611830+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:49.225721404+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:49.737762577+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:50.146720286+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:50.146857663+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:52.490439644+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:52.988538500+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:53.298315395+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:53.298457173+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:55.677262976+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:56.175314515+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:56.475157788+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:56.475293545+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:52:58.851078990+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:52:59.364741266+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:52:59.666864453+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:52:59.667016126+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:53:02.025481608+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:53:02.537958519+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified
+[2m2026-03-07T00:53:02.868034463+05:30[0m [33m WARN[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord WebSocket closed: Some(CloseFrame { code: Library(4004), reason: Utf8Bytes(b"Authentication failed.") })
+[2m2026-03-07T00:53:02.868162611+05:30[0m [33m WARN[0m [2mzeroclaw::channels[0m[2m:[0m Channel discord exited unexpectedly; restarting
+[2m2026-03-07T00:53:05.303217716+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connecting to gateway...
+[2m2026-03-07T00:53:05.816077272+05:30[0m [32m INFO[0m [2mzeroclaw::channels::discord[0m[2m:[0m Discord: connected and identified

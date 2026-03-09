@@ -398,6 +398,27 @@ Examples:
         host: Option<String>,
     },
 
+    /// Start the daemon service
+    Start {
+        /// Init system to use: auto (detect), systemd, or openrc
+        #[arg(long, default_value = "auto", value_parser = ["auto", "systemd", "openrc"])]
+        service_init: String,
+    },
+
+    /// Stop the daemon service
+    Stop {
+        /// Init system to use: auto (detect), systemd, or openrc
+        #[arg(long, default_value = "auto", value_parser = ["auto", "systemd", "openrc"])]
+        service_init: String,
+    },
+
+    /// Restart the daemon service to apply latest config
+    Restart {
+        /// Init system to use: auto (detect), systemd, or openrc
+        #[arg(long, default_value = "auto", value_parser = ["auto", "systemd", "openrc"])]
+        service_init: String,
+    },
+
     /// Manage OS service lifecycle (launchd/systemd user service)
     Service {
         /// Init system to use: auto (detect), systemd, or openrc
@@ -440,8 +461,16 @@ Examples:
         force: bool,
 
         /// Show human-friendly update instructions for your installation method
-        #[arg(long, conflicts_with_all = ["check", "force"])]
+        #[arg(long, conflicts_with_all = ["check", "force", "local", "path"])]
         instructions: bool,
+
+        /// Update from a local repository (rebuilds from source)
+        #[arg(long, conflicts_with_all = ["check", "instructions"])]
+        local: bool,
+
+        /// Path to the local repository (defaults to current directory)
+        #[arg(long, requires = "local")]
+        path: Option<std::path::PathBuf>,
     },
 
     /// Engage, inspect, and resume emergency-stop states.
@@ -1291,12 +1320,14 @@ async fn main() -> Result<()> {
             check,
             force,
             instructions,
+            local,
+            path,
         } => {
             if instructions {
                 update::print_update_instructions()?;
                 Ok(())
             } else {
-                update::self_update(force, check).await?;
+                update::self_update(force, check, local, path).await?;
                 Ok(())
             }
         }
@@ -1375,6 +1406,21 @@ async fn main() -> Result<()> {
             println!("\n  custom:<URL>   Any OpenAI-compatible endpoint");
             println!("  anthropic-custom:<URL>  Any Anthropic-compatible endpoint");
             Ok(())
+        }
+
+        Commands::Start { service_init } => {
+            let init_system = service_init.parse()?;
+            service::handle_command(&ServiceCommands::Start, &config, init_system)
+        }
+
+        Commands::Stop { service_init } => {
+            let init_system = service_init.parse()?;
+            service::handle_command(&ServiceCommands::Stop, &config, init_system)
+        }
+
+        Commands::Restart { service_init } => {
+            let init_system = service_init.parse()?;
+            service::handle_command(&ServiceCommands::Restart, &config, init_system)
         }
 
         Commands::Service {

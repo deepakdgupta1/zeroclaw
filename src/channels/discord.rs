@@ -1031,7 +1031,19 @@ impl Channel for DiscordChannel {
                 msg = read.next() => {
                     let msg = match msg {
                         Some(Ok(Message::Text(t))) => t,
-                        Some(Ok(Message::Close(_))) | None => break,
+                        Some(Ok(Message::Close(c))) => {
+                            tracing::warn!("Discord WebSocket closed: {:?}", c);
+                            if let Some(close_frame) = &c {
+                                if close_frame.code == tokio_tungstenite::tungstenite::protocol::frame::coding::CloseCode::Library(4004) {
+                                    return Err(anyhow::anyhow!("Discord authentication failed (token invalid). Please check your DISCORD_TOKEN."));
+                                }
+                            }
+                            break;
+                        }
+                        None => {
+                            tracing::warn!("Discord WebSocket stream ended unexpectedly (None)");
+                            break;
+                        }
                         _ => continue,
                     };
 

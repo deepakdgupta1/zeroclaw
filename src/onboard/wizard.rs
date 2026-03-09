@@ -201,6 +201,8 @@ pub async fn run_wizard_with_migration(
     print_step(2, 11, "AI Provider & API Key");
     let (provider, api_key, model, provider_api_url) = setup_provider(&workspace_dir).await?;
 
+    let fallback = setup_fallback_provider(&provider).await?;
+
     print_step(3, 11, "Channels (How You Talk to ZeroClaw)");
     let channels_config = setup_channels()?;
 
@@ -294,6 +296,14 @@ pub async fn run_wizard_with_migration(
         model_support_vision: None,
         wasm: crate::config::WasmConfig::default(),
     };
+
+    if let Some((f_provider, f_key, f_model)) = fallback {
+        config.reliability.fallback_providers.push(f_provider.clone());
+        if !f_key.trim().is_empty() {
+            config.reliability.fallback_api_keys.insert(f_provider.clone(), f_key);
+        }
+        config.reliability.model_fallbacks.insert(f_provider, vec![f_model]);
+    }
 
     println!(
         "  {} Security: {} | workspace-scoped",
@@ -3360,6 +3370,192 @@ async fn setup_provider(workspace_dir: &Path) -> Result<(String, String, String,
     );
 
     Ok((provider_name.to_string(), api_key, model, provider_api_url))
+}
+
+fn categorize_providers() -> Vec<(&'static str, Vec<(&'static str, &'static str)>)> {
+    vec![
+        (
+            "⭐ Recommended",
+            vec![
+                ("openrouter", "OpenRouter — 200+ models, 1 API key (recommended)"),
+                ("venice", "Venice AI — privacy-first (Llama, Opus)"),
+                ("anthropic", "Anthropic — Claude Sonnet & Opus (direct)"),
+                ("openai", "OpenAI — GPT-4o, o1, GPT-5 (direct)"),
+                ("openai-codex", "OpenAI Codex (ChatGPT subscription OAuth, no API key)"),
+                ("copilot", "GitHub Copilot — OAuth device flow (Copilot subscription)"),
+                ("deepseek", "DeepSeek — V3 & R1 (affordable)"),
+                ("mistral", "Mistral — Large & Codestral"),
+                ("xai", "xAI — Grok 3 & 4"),
+                ("perplexity", "Perplexity — search-augmented AI"),
+                ("gemini", "Google Gemini — Gemini 2.0 Flash & Pro (supports CLI auth)"),
+            ],
+        ),
+        (
+            "⚡ Fast inference",
+            vec![
+                ("groq", "Groq — ultra-fast LPU inference"),
+                ("fireworks", "Fireworks AI — fast open-source inference"),
+                ("novita", "Novita AI — affordable open-source inference"),
+                ("together-ai", "Together AI — open-source model hosting"),
+                ("nvidia", "NVIDIA NIM — DeepSeek, Llama, & more"),
+                ("cerebras", "Cerebras — low-latency hosted inference"),
+                ("sambanova", "SambaNova — enterprise hosted inference"),
+                ("huggingface", "Hugging Face — hosted model router"),
+                ("replicate", "Replicate — hosted open-source models"),
+            ],
+        ),
+        (
+            "🌐 Gateway / proxy",
+            vec![
+                ("vercel", "Vercel AI Gateway"),
+                ("cloudflare", "Cloudflare AI Gateway"),
+                ("astrai", "Astrai — compliant AI routing (PII stripping, cost optimization)"),
+                ("bedrock", "Amazon Bedrock — AWS managed models"),
+            ],
+        ),
+        (
+            "🔬 Specialized",
+            vec![
+                ("kimi-code", "Kimi Code — coding-optimized Kimi API (KimiCLI)"),
+                ("qwen-code", "Qwen Code — OAuth tokens reused from ~/.qwen/oauth_creds.json"),
+                ("moonshot", "Moonshot — Kimi API (China endpoint)"),
+                ("moonshot-intl", "Moonshot — Kimi API (international endpoint)"),
+                ("stepfun", "StepFun — Step AI OpenAI-compatible endpoint"),
+                ("glm", "GLM — ChatGLM / Zhipu (international endpoint)"),
+                ("glm-cn", "GLM — ChatGLM / Zhipu (China endpoint)"),
+                ("minimax", "MiniMax — international endpoint (api.minimax.io)"),
+                ("minimax-cn", "MiniMax — China endpoint (api.minimaxi.com)"),
+                ("qwen", "Qwen — DashScope China endpoint"),
+                ("qwen-coding-plan", "Qwen — DashScope coding plan endpoint (coding.dashscope.aliyuncs.com)"),
+                ("qwen-intl", "Qwen — DashScope international endpoint"),
+                ("qwen-us", "Qwen — DashScope US endpoint"),
+                ("hunyuan", "Hunyuan — Tencent large models (T1, Turbo, Pro)"),
+                ("qianfan", "Qianfan — Baidu AI models (China endpoint)"),
+                ("volcengine", "Volcengine ARK — Doubao model family"),
+                ("siliconflow", "SiliconFlow — OpenAI-compatible hosted models"),
+                ("zai", "Z.AI — global coding endpoint"),
+                ("zai-cn", "Z.AI — China coding endpoint (open.bigmodel.cn)"),
+                ("synthetic", "Synthetic — Synthetic AI models"),
+                ("opencode", "OpenCode Zen — code-focused AI"),
+                ("cohere", "Cohere — Command R+ & embeddings"),
+                ("ai21", "AI21 Labs — Jamba model family"),
+            ],
+        ),
+        (
+            "🏠 Local / private",
+            local_provider_choices(),
+        ),
+    ]
+}
+
+async fn setup_fallback_provider(
+    primary_provider: &str,
+) -> Result<Option<(String, String, String)>> {
+    println!();
+    let setup_fallback = Confirm::with_theme(wizard_theme())
+        .with_prompt("Optional: Setup a fallback model? (Used if primary provider is down)")
+        .default(false)
+        .interact()?;
+
+    if !setup_fallback {
+        return Ok(None);
+    }
+
+    let mut grouped_providers = categorize_providers();
+
+    for group in &mut grouped_providers {
+        group.1.retain(|(id, _)| *id != primary_provider);
+    }
+    grouped_providers.retain(|group| !group.1.is_empty());
+
+    let group_idx = Select::with_theme(wizard_theme())
+        .with_prompt("  Fallback AI Provider Category")
+        .items(&grouped_providers.iter().map(|(label, _)| *label).collect::<Vec<_>>())
+        .default(0)
+        .interact()?;
+
+    let selected_group = &grouped_providers[group_idx].1;
+    let provider_labels: Vec<String> = selected_group
+        .iter()
+        .map(|(id, label)| format!("{id:<15} │ {label}"))
+        .collect();
+
+    let provider_idx = Select::with_theme(wizard_theme())
+        .with_prompt(format!(
+            "  Select a fallback provider (Category: {})",
+            grouped_providers[group_idx].0
+        ))
+        .items(&provider_labels)
+        .default(0)
+        .interact()?;
+
+    let provider_name = selected_group[provider_idx].0;
+
+    let key_url = match canonical_provider_name(provider_name) {
+        "anthropic" => "https://console.anthropic.com/settings/keys",
+        "openrouter" => "https://openrouter.ai/keys",
+        "openai" => "https://platform.openai.com/api-keys",
+        "gemini" => "https://aistudio.google.com/app/apikey",
+        "deepseek" => "https://platform.deepseek.com/api_keys",
+        "groq" => "https://console.groq.com/keys",
+        _ => "",
+    };
+
+    println!();
+    if !key_url.is_empty() {
+        print_bullet(&format!(
+            "Get your API key at: {}",
+            style(key_url).cyan().underlined()
+        ));
+    }
+
+    let key: String = Input::with_theme(wizard_theme())
+        .with_prompt("  Paste API key (or press Enter to skip)")
+        .allow_empty(true)
+        .interact_text()?;
+
+    let canonical_provider = canonical_provider_name(provider_name);
+    let mut model_options: Vec<(String, String)> = curated_models_for_provider(canonical_provider);
+
+    model_options.push((
+        default_model_for_provider(provider_name),
+        "Provider default model".to_string(),
+    ));
+
+    model_options.push((
+        CUSTOM_MODEL_SENTINEL.to_string(),
+        "Custom model ID (type manually)".to_string(),
+    ));
+
+    let model_labels: Vec<String> = model_options
+        .iter()
+        .map(|(model_id, label)| format!("{label} — {}", style(model_id).dim()))
+        .collect();
+
+    let model_idx = Select::with_theme(wizard_theme())
+        .with_prompt("  Select your fallback model")
+        .items(&model_labels)
+        .default(0)
+        .interact()?;
+
+    let selected_model = model_options[model_idx].0.clone();
+    let model = if selected_model == CUSTOM_MODEL_SENTINEL {
+        Input::with_theme(wizard_theme())
+            .with_prompt("  Enter custom model ID")
+            .default(default_model_for_provider(provider_name))
+            .interact_text()?
+    } else {
+        selected_model
+    };
+
+    println!(
+        "  {} Fallback: {} | Model: {}",
+        style("✓").green().bold(),
+        style(provider_name).green(),
+        style(&model).green()
+    );
+
+    Ok(Some((provider_name.to_string(), key, model)))
 }
 
 fn local_provider_choices() -> Vec<(&'static str, &'static str)> {

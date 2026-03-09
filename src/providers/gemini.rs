@@ -300,6 +300,13 @@ const CLOUDCODE_PA_ENDPOINT: &str = "https://cloudcode-pa.googleapis.com/v1inter
 const LOAD_CODE_ASSIST_ENDPOINT: &str =
     "https://cloudcode-pa.googleapis.com/v1internal:loadCodeAssist";
 
+/// Default Client ID for Gemini CLI authentication.
+const DEFAULT_GEMINI_CLI_CLIENT_ID: &str =
+    "764086051850-6un-no-guided6un-no-guided6un-no-guided6un-no-guided.apps.googleusercontent.com";
+
+/// Default Client Secret for Gemini CLI authentication.
+const DEFAULT_GEMINI_CLI_CLIENT_SECRET: &str = "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ded";
+
 /// Public API endpoint for API key users.
 const PUBLIC_API_ENDPOINT: &str = "https://generativelanguage.googleapis.com/v1beta";
 
@@ -645,6 +652,17 @@ impl GeminiProvider {
                 .as_deref()
                 .and_then(Self::normalize_non_empty)
         });
+
+        // If BOTH id and secret are missing, fallback to hardcoded defaults known
+        // to be used by the official Gemini CLI / VS Code extension.
+        let (client_id, client_secret) = if client_id.is_none() && client_secret.is_none() {
+            (
+                Some(DEFAULT_GEMINI_CLI_CLIENT_ID.to_string()),
+                Some(DEFAULT_GEMINI_CLI_CLIENT_SECRET.to_string()),
+            )
+        } else {
+            (client_id, client_secret)
+        };
 
         Some(OAuthTokenState {
             access_token,

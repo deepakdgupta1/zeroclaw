@@ -365,7 +365,16 @@ pub async fn check_for_update() -> Result<Option<String>> {
 }
 
 /// Perform the self-update
-pub async fn self_update(force: bool, check_only: bool) -> Result<()> {
+pub async fn self_update(
+    force: bool,
+    check_only: bool,
+    local: bool,
+    local_path: Option<PathBuf>,
+) -> Result<()> {
+    if local {
+        return local_self_update(force, local_path).await;
+    }
+
     println!("🦀 ZeroClaw Self-Update");
     println!();
 
@@ -440,6 +449,96 @@ pub async fn self_update(force: bool, check_only: bool) -> Result<()> {
     println!();
     println!("Restart ZeroClaw to use the new version.");
 
+    Ok(())
+}
+
+/// Perform a local self-update by rebuilding from source
+async fn local_self_update(_force: bool, path: Option<PathBuf>) -> Result<()> {
+    println!("🦀 ZeroClaw Local Self-Update");
+    println!();
+
+    let repo_path = path.unwrap_or_else(|| {
+        env::current_dir().unwrap_or_else(|_| PathBuf::from("."))
+    });
+
+    println!("Checking readiness at: {}", repo_path.display());
+
+    // 1. Readiness Checks
+    check_command_exists("cargo")?;
+    check_command_exists("rustc")?;
+
+    let cargo_toml_path = repo_path.join("Cargo.toml");
+    if !cargo_toml_path.exists() {
+        bail!(
+            "No Cargo.toml found at {}. Is this a ZeroClaw repository?",
+            repo_path.display()
+        );
+    }
+
+    let cargo_toml_content = fs::read_to_string(&cargo_toml_path)
+        .context("Failed to read Cargo.toml")?;
+    
+    if !cargo_toml_content.contains("name = \"zeroclaw\"") {
+        bail!(
+            "Cargo.toml at {} does not appear to be for ZeroClaw (package name mismatch).",
+            repo_path.display()
+        );
+    }
+
+    let current_exe = get_current_exe()?;
+    println!("Current binary: {}", current_exe.display());
+    println!("Current version: v{}", current_version());
+    println!();
+
+    // 2. Build
+    println!("Building ZeroClaw in release mode...");
+    let build_status = Command::new("cargo")
+        .arg("build")
+        .arg("--release")
+        .current_dir(&repo_path)
+        .status()
+        .context("Failed to execute cargo build")?;
+
+    if !build_status.success() {
+        bail!("Failed to build ZeroClaw locally.");
+    }
+
+    // 3. Locate new binary
+    let target_dir = repo_path.join("target").join("release");
+    let binary_name = get_binary_name();
+    let new_binary = target_dir.join(&binary_name);
+
+    if !new_binary.exists() {
+        bail!(
+            "Built binary not found at {}. Build might have failed silently.",
+            new_binary.display()
+        );
+    }
+
+    println!("Installing update...");
+
+    // 4. Replace binary
+    replace_binary(&new_binary, &current_exe)?;
+
+    println!();
+    println!("✅ Successfully updated from local repository!");
+    println!();
+    println!("Restart ZeroClaw to use the new version.");
+
+    Ok(())
+}
+
+fn check_command_exists(cmd: &str) -> Result<()> {
+    let output = Command::new(if cfg!(windows) { "where" } else { "which" })
+        .arg(cmd)
+        .output()
+        .context(format!("Failed to check for presence of {cmd}"))?;
+
+    if !output.status.success() {
+        bail!(
+            "Pre-requisite missing: `{cmd}` was not found in PATH. Please install Rust/Cargo."
+        );
+    }
     Ok(())
 }
 

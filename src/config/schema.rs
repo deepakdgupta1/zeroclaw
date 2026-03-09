@@ -6834,6 +6834,25 @@ pub(crate) fn resolve_config_dir_for_workspace(workspace_dir: &Path) -> (PathBuf
         );
     }
 
+    // Check if the parent directory itself is already a valid config root.
+    // This handles the common case where workspace is `~/.zeroclaw/workspace`
+    // and the parent `~/.zeroclaw/` already has config.toml or IS the config dir,
+    // preventing nested paths like `~/.zeroclaw/.zeroclaw/.zeroclaw/...`.
+    if let Some(parent) = workspace_dir.parent() {
+        if parent.join("config.toml").exists() {
+            return (parent.to_path_buf(), workspace_config_dir);
+        }
+
+        // If the parent directory is already named ".zeroclaw", treat it as
+        // the config root directly instead of creating a sibling ".zeroclaw".
+        if parent
+            .file_name()
+            .is_some_and(|name| name == std::ffi::OsStr::new(".zeroclaw"))
+        {
+            return (parent.to_path_buf(), workspace_config_dir);
+        }
+    }
+
     let legacy_config_dir = workspace_dir
         .parent()
         .map(|parent| parent.join(".zeroclaw"));
@@ -9107,6 +9126,12 @@ impl Config {
         }
 
         // Deprecated reasoning level alias: ZEROCLAW_REASONING_LEVEL or REASONING_LEVEL
+        if let Ok(token) = std::env::var("ZEROCLAW_TOKEN") {
+            if !token.trim().is_empty() && !self.gateway.paired_tokens.contains(&token) {
+                self.gateway.paired_tokens.push(token);
+            }
+        }
+
         let alias_level = std::env::var("ZEROCLAW_REASONING_LEVEL")
             .ok()
             .map(|value| ("ZEROCLAW_REASONING_LEVEL", value))
@@ -10539,6 +10564,18 @@ ws_url = "ws://127.0.0.1:3002"
             parsed.channels_config.telegram.unwrap().bot_token,
             "123:ABC"
         );
+    }
+
+    #[test]
+    async fn config_apply_env_overrides_token() {
+        let mut config = Config::default();
+        config.gateway.paired_tokens.clear();
+
+        std::env::set_var("ZEROCLAW_TOKEN", "zc_test_env_token");
+        config.apply_env_overrides();
+        std::env::remove_var("ZEROCLAW_TOKEN");
+
+        assert!(config.gateway.paired_tokens.contains(&"zc_test_env_token".to_string()));
     }
 
     #[test]
@@ -13446,6 +13483,94 @@ provider_api = "not-a-real-mode"
         assert_eq!(resolved_workspace_dir, default_workspace_dir);
 
         let _ = fs::remove_dir_all(default_config_dir).await;
+    }
+
+    #[test]
+    async fn resolve_config_dir_for_workspace_default_zeroclaw_workspace_no_nesting() {
+        // Simulates ~/.zeroclaw/workspace — should use parent (~/.zeroclaw/) as config dir,
+        // NOT create ~/.zeroclaw/.zeroclaw/
+        let tmp = std::env::temp_dir().join(format!("zc-test-{}", uuid::Uuid::new_v4()));
+        let zeroclaw_dir = tmp.join(".zeroclaw");
+        let workspace = zeroclaw_dir.join("workspace");
+        fs::create_dir_all(&workspace).await.unwrap();
+
+        let (config_dir, resolved_workspace) = resolve_config_dir_for_workspace(&workspace);
+
+        assert_eq!(
+            config_dir, zeroclaw_dir,
+            "config_dir should be .zeroclaw parent, not a nested .zeroclaw/.zeroclaw"
+        );
+        assert_eq!(resolved_workspace, workspace);
+        // Verify no nested .zeroclaw was created
+        assert!(
+            !zeroclaw_dir.join(".zeroclaw").exists(),
+            "should NOT create nested .zeroclaw/.zeroclaw"
+        );
+
+        let _ = fs::remove_dir_all(&tmp).await;
+    }
+
+    #[test]
+    async fn resolve_config_dir_for_workspace_already_nested_normalizes() {
+        // Edge case: if already nested to ~/.zeroclaw/.zeroclaw/workspace,
+        // should use ~/.zeroclaw/.zeroclaw/ (the parent) as config dir
+        let tmp = std::env::temp_dir().join(format!("zc-test-{}", uuid::Uuid::new_v4()));
+        let nested = tmp.join(".zeroclaw").join(".zeroclaw");
+        let workspace = nested.join("workspace");
+        fs::create_dir_all(&workspace).await.unwrap();
+
+        let (config_dir, resolved_workspace) = resolve_config_dir_for_workspace(&workspace);
+
+        assert_eq!(
+            config_dir, nested,
+            "config_dir should be the immediate .zeroclaw parent, not nest further"
+        );
+        assert_eq!(resolved_workspace, workspace);
+
+        let _ = fs::remove_dir_all(&tmp).await;
+    }
+
+    #[test]
+    async fn resolve_config_dir_for_workspace_external_project_uses_legacy_sibling() {
+        // External workspace like ~/projects/mybot/workspace should create
+        // ~/projects/mybot/.zeroclaw as the config dir (legacy sibling behavior)
+        let tmp = std::env::temp_dir().join(format!("zc-test-{}", uuid::Uuid::new_v4()));
+        let project = tmp.join("mybot");
+        let workspace = project.join("workspace");
+        fs::create_dir_all(&workspace).await.unwrap();
+
+        let (config_dir, resolved_workspace) = resolve_config_dir_for_workspace(&workspace);
+
+        assert_eq!(
+            config_dir,
+            project.join(".zeroclaw"),
+            "external workspace should use legacy .zeroclaw sibling"
+        );
+        assert_eq!(resolved_workspace, workspace);
+
+        let _ = fs::remove_dir_all(&tmp).await;
+    }
+
+    #[test]
+    async fn resolve_config_dir_for_workspace_parent_config_toml_takes_priority() {
+        // If parent already has config.toml, use parent as config dir
+        let tmp = std::env::temp_dir().join(format!("zc-test-{}", uuid::Uuid::new_v4()));
+        let parent = tmp.join("custom-config");
+        let workspace = parent.join("workspace");
+        fs::create_dir_all(&workspace).await.unwrap();
+        fs::write(parent.join("config.toml"), "[memory]\nbackend = \"sqlite\"\n")
+            .await
+            .unwrap();
+
+        let (config_dir, resolved_workspace) = resolve_config_dir_for_workspace(&workspace);
+
+        assert_eq!(
+            config_dir, parent,
+            "should use parent that has config.toml"
+        );
+        assert_eq!(resolved_workspace, workspace);
+
+        let _ = fs::remove_dir_all(&tmp).await;
     }
 
     #[test]
