@@ -9,6 +9,8 @@ use std::path::Path;
 
 const BOOTSTRAP_MAX_CHARS: usize = 20_000;
 const DATETIME_HEADER: &str = "## Current Date & Time\n\n";
+const BOOTSTRAP_FILES_ALREADY_LOADED_NOTICE: &str =
+    "The workspace files below are already loaded into this prompt. Treat them as already read for this session. Do not re-open them with file-reading tools unless you need to verify they changed during this turn or the user explicitly asks.\n\n";
 
 /// Refresh the `## Current Date & Time` section in an existing system prompt.
 /// Long-lived sessions keep a stable system prompt; this updates only the
@@ -119,6 +121,7 @@ impl PromptSection for IdentitySection {
                 "The following workspace files define your identity, behavior, and context.\n\n",
             );
         }
+        prompt.push_str(BOOTSTRAP_FILES_ALREADY_LOADED_NOTICE);
         for file in [
             "AGENTS.md",
             "SOUL.md",
@@ -670,5 +673,37 @@ mod tests {
         assert!(prompt.contains(
             "<instruction>Use &lt;tool_call&gt; and &amp; keep output &quot;safe&quot;</instruction>"
         ));
+    }
+
+    #[test]
+    fn identity_section_marks_workspace_files_as_already_loaded() {
+        let workspace = std::env::temp_dir().join(format!(
+            "zeroclaw_prompt_already_loaded_test_{}",
+            uuid::Uuid::new_v4()
+        ));
+        std::fs::create_dir_all(&workspace).unwrap();
+        std::fs::write(workspace.join("AGENTS.md"), "agent baseline").unwrap();
+        std::fs::write(workspace.join("SOUL.md"), "soul baseline").unwrap();
+        std::fs::write(workspace.join("TOOLS.md"), "tools baseline").unwrap();
+        std::fs::write(workspace.join("IDENTITY.md"), "identity baseline").unwrap();
+        std::fs::write(workspace.join("USER.md"), "user baseline").unwrap();
+
+        let tools: Vec<Box<dyn Tool>> = vec![];
+        let ctx = PromptContext {
+            workspace_dir: &workspace,
+            model_name: "test-model",
+            tools: &tools,
+            skills: &[],
+            skills_prompt_mode: crate::config::SkillsPromptInjectionMode::Full,
+            identity_config: None,
+            dispatcher_instructions: "",
+        };
+
+        let output = IdentitySection.build(&ctx).unwrap();
+
+        assert!(output.contains("already loaded into this prompt"));
+        assert!(output.contains("Treat them as already read for this session"));
+
+        let _ = std::fs::remove_dir_all(workspace);
     }
 }

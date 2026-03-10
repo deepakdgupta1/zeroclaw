@@ -909,6 +909,52 @@ async fn turn_handles_multiple_tools_in_one_response() {
     );
 }
 
+#[tokio::test]
+async fn turn_deduplicates_repeated_native_tool_calls_in_single_response() {
+    let (counting_tool, count) = CountingTool::new();
+
+    let provider = Box::new(ScriptedProvider::new(vec![
+        tool_response(vec![
+            ToolCall {
+                id: "tc1".into(),
+                name: "counter".into(),
+                arguments: r#"{"value":"A"}"#.into(),
+            },
+            ToolCall {
+                id: "tc2".into(),
+                name: "counter".into(),
+                arguments: r#"{"value":"A"}"#.into(),
+            },
+        ]),
+        text_response("Done"),
+    ]));
+
+    let mut agent = build_agent_with(
+        provider,
+        vec![Box::new(counting_tool)],
+        Box::new(NativeToolDispatcher),
+    );
+
+    let response = agent.turn("run duplicates").await.unwrap();
+    assert_eq!(response, "Done");
+    assert_eq!(
+        *count.lock().unwrap(),
+        1,
+        "duplicate tool call with identical arguments should not execute twice"
+    );
+
+    let duplicate_recorded = agent.history().iter().any(|msg| match msg {
+        ConversationMessage::ToolResults(results) => results
+            .iter()
+            .any(|result| result.content.contains("Skipped duplicate tool call")),
+        _ => false,
+    });
+    assert!(
+        duplicate_recorded,
+        "duplicate tool calls should be reflected in tool results"
+    );
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // 14. System prompt generation & tool instructions
 // ═══════════════════════════════════════════════════════════════════════════

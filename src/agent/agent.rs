@@ -14,12 +14,41 @@ use crate::runtime;
 use crate::security::SecurityPolicy;
 use crate::tools::{self, Tool, ToolSpec};
 use anyhow::Result;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::io::Write as IoWrite;
 use std::sync::Arc;
 use std::time::Instant;
 
 const AUTOSAVE_MIN_MESSAGE_CHARS: usize = 20;
+
+fn canonicalize_json_for_tool_signature(value: &serde_json::Value) -> serde_json::Value {
+    match value {
+        serde_json::Value::Object(map) => {
+            let mut keys: Vec<String> = map.keys().cloned().collect();
+            keys.sort_unstable();
+            let mut ordered = serde_json::Map::new();
+            for key in keys {
+                if let Some(child) = map.get(&key) {
+                    ordered.insert(key, canonicalize_json_for_tool_signature(child));
+                }
+            }
+            serde_json::Value::Object(ordered)
+        }
+        serde_json::Value::Array(items) => serde_json::Value::Array(
+            items
+                .iter()
+                .map(canonicalize_json_for_tool_signature)
+                .collect(),
+        ),
+        _ => value.clone(),
+    }
+}
+
+fn tool_call_signature(call: &ParsedToolCall) -> (String, String) {
+    let canonical_args = canonicalize_json_for_tool_signature(&call.arguments);
+    let args_json = serde_json::to_string(&canonical_args).unwrap_or_else(|_| "{}".to_string());
+    (call.name.trim().to_ascii_lowercase(), args_json)
+}
 
 pub struct Agent {
     provider: Box<dyn Provider>,
@@ -703,12 +732,48 @@ impl Agent {
             }
 
             self.history.push(ConversationMessage::AssistantToolCalls {
-                text: response.text.clone(),
+                text: if self.tool_dispatcher.should_send_tool_specs() {
+                    Some(text.clone())
+                } else {
+                    response.text.clone()
+                },
                 tool_calls: response.tool_calls.clone(),
                 reasoning_content: response.reasoning_content.clone(),
             });
 
-            let results = self.execute_tools(&calls).await;
+            let mut seen_tool_signatures = HashSet::new();
+            let mut ordered_results: Vec<Option<ToolExecutionResult>> =
+                (0..calls.len()).map(|_| None).collect();
+            let mut executable_indices = Vec::new();
+            let mut executable_calls = Vec::new();
+
+            for (idx, call) in calls.iter().enumerate() {
+                if !seen_tool_signatures.insert(tool_call_signature(call)) {
+                    ordered_results[idx] = Some(ToolExecutionResult {
+                        name: call.name.clone(),
+                        output: format!(
+                            "Skipped duplicate tool call '{}' with identical arguments in this turn.",
+                            call.name
+                        ),
+                        success: false,
+                        tool_call_id: call.tool_call_id.clone(),
+                    });
+                    continue;
+                }
+
+                executable_indices.push(idx);
+                executable_calls.push(call.clone());
+            }
+
+            let executed_results = self.execute_tools(&executable_calls).await;
+            for (idx, result) in executable_indices.into_iter().zip(executed_results) {
+                ordered_results[idx] = Some(result);
+            }
+
+            let results: Vec<ToolExecutionResult> = ordered_results
+                .into_iter()
+                .map(|result| result.expect("tool result should exist for each parsed call"))
+                .collect();
 
             // ── Loop detection: record calls ─────────────────────
             for (call, result) in calls.iter().zip(results.iter()) {

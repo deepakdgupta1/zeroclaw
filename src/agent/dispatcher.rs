@@ -169,9 +169,36 @@ impl ToolDispatcher for XmlToolDispatcher {
 
 pub struct NativeToolDispatcher;
 
+fn native_tool_text_is_structured_echo(text: &str) -> bool {
+    let trimmed = text.trim();
+    if trimmed.is_empty() {
+        return false;
+    }
+
+    let (remaining_text, xml_calls) = XmlToolDispatcher::parse_xml_tool_calls(trimmed);
+    if !xml_calls.is_empty() && remaining_text.trim().is_empty() {
+        return true;
+    }
+
+    let Ok(value) = serde_json::from_str::<Value>(trimmed) else {
+        return false;
+    };
+    let has_tool_calls = value
+        .get("tool_calls")
+        .and_then(Value::as_array)
+        .is_some_and(|calls| !calls.is_empty());
+    if !has_tool_calls {
+        return false;
+    }
+
+    match value.get("content").and_then(Value::as_str) {
+        Some(content) => content.trim().is_empty(),
+        None => true,
+    }
+}
+
 impl ToolDispatcher for NativeToolDispatcher {
     fn parse_response(&self, response: &ChatResponse) -> (String, Vec<ParsedToolCall>) {
-        let text = response.text.clone().unwrap_or_default();
         let calls = response
             .tool_calls
             .iter()
@@ -188,6 +215,14 @@ impl ToolDispatcher for NativeToolDispatcher {
                 tool_call_id: Some(tc.id.clone()),
             })
             .collect();
+        let text = response
+            .text
+            .as_deref()
+            .filter(|text| {
+                !(response.has_tool_calls() && native_tool_text_is_structured_echo(text))
+            })
+            .unwrap_or_default()
+            .to_string();
         (text, calls)
     }
 
@@ -393,6 +428,36 @@ mod tests {
 
         let payload: serde_json::Value = serde_json::from_str(&messages[0].content).unwrap();
         assert!(payload.get("reasoning_content").is_none());
+    }
+
+    #[test]
+    fn native_parse_response_suppresses_xml_tool_echo_when_structured_calls_present() {
+        let dispatcher = NativeToolDispatcher;
+        let response = ChatResponse {
+            text: Some(
+                r#"<tool_call>
+{"name":"shell","arguments":{"command":"pwd"}}
+</tool_call>"#
+                    .into(),
+            ),
+            tool_calls: vec![crate::providers::ToolCall {
+                id: "tc_1".into(),
+                name: "shell".into(),
+                arguments: r#"{"command":"pwd"}"#.into(),
+            }],
+            usage: None,
+            reasoning_content: None,
+            quota_metadata: None,
+            stop_reason: None,
+            raw_stop_reason: None,
+            actual_provider: None,
+            actual_model: None,
+        };
+
+        let (text, calls) = dispatcher.parse_response(&response);
+        assert!(text.is_empty());
+        assert_eq!(calls.len(), 1);
+        assert_eq!(calls[0].name, "shell");
     }
 
     #[test]
