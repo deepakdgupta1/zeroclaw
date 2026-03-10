@@ -10575,7 +10575,10 @@ ws_url = "ws://127.0.0.1:3002"
         config.apply_env_overrides();
         std::env::remove_var("ZEROCLAW_TOKEN");
 
-        assert!(config.gateway.paired_tokens.contains(&"zc_test_env_token".to_string()));
+        assert!(config
+            .gateway
+            .paired_tokens
+            .contains(&"zc_test_env_token".to_string()));
     }
 
     #[test]
@@ -13558,16 +13561,16 @@ provider_api = "not-a-real-mode"
         let parent = tmp.join("custom-config");
         let workspace = parent.join("workspace");
         fs::create_dir_all(&workspace).await.unwrap();
-        fs::write(parent.join("config.toml"), "[memory]\nbackend = \"sqlite\"\n")
-            .await
-            .unwrap();
+        fs::write(
+            parent.join("config.toml"),
+            "[memory]\nbackend = \"sqlite\"\n",
+        )
+        .await
+        .unwrap();
 
         let (config_dir, resolved_workspace) = resolve_config_dir_for_workspace(&workspace);
 
-        assert_eq!(
-            config_dir, parent,
-            "should use parent that has config.toml"
-        );
+        assert_eq!(config_dir, parent, "should use parent that has config.toml");
         assert_eq!(resolved_workspace, workspace);
 
         let _ = fs::remove_dir_all(&tmp).await;

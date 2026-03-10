@@ -289,8 +289,8 @@ mod tests {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+            actual_provider: None,
+            actual_model: None,
         };
         let dispatcher = NativeToolDispatcher;
         let (_, calls) = dispatcher.parse_response(&response);

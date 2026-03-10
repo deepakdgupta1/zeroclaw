@@ -991,8 +991,8 @@ fn parse_responses_chat_response(response: ResponsesResponse) -> ProviderChatRes
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+        actual_provider: None,
+        actual_model: None,
     }
 }
 
@@ -1905,8 +1905,8 @@ impl OpenAiCompatibleProvider {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+            actual_provider: None,
+            actual_model: None,
         })
     }
 }
@@ -2258,8 +2258,8 @@ impl Provider for OpenAiCompatibleProvider {
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+                    actual_provider: None,
+                    actual_model: None,
                 });
             }
         };

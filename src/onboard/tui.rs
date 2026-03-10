@@ -1304,8 +1304,11 @@ impl TuiState {
                 self.plan.enable_fallback = !self.plan.enable_fallback;
             }
             FieldKey::FallbackProvider => {
-                self.plan.fallback_provider_idx =
-                    advance_index(self.plan.fallback_provider_idx, PROVIDER_OPTIONS.len(), direction);
+                self.plan.fallback_provider_idx = advance_index(
+                    self.plan.fallback_provider_idx,
+                    PROVIDER_OPTIONS.len(),
+                    direction,
+                );
             }
             _ => {}
         }

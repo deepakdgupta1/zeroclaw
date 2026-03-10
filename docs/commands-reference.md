@@ -120,6 +120,19 @@ Notes:
 - `zeroclaw service status`
 - `zeroclaw service uninstall`
 
+### `uninstall`
+
+- `zeroclaw uninstall`
+- `zeroclaw uninstall --instructions`
+- `zeroclaw uninstall --service-init <auto|systemd|openrc>`
+
+Notes:
+
+- `uninstall` first attempts `zeroclaw service uninstall` so background services are removed before binary cleanup.
+- Homebrew-managed installs are delegated to `brew uninstall zeroclaw`.
+- Self-managed binaries in `~/.cargo/bin`, `~/.local/bin`, and `/usr/local/bin` are removed directly.
+- Runtime data is retained; use `--instructions` to see the remaining paths.
+
 ### `update`
 
 - `zeroclaw update --check` (check for new release, no install)

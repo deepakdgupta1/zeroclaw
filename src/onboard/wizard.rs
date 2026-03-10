@@ -298,11 +298,20 @@ pub async fn run_wizard_with_migration(
     };
 
     if let Some((f_provider, f_key, f_model)) = fallback {
-        config.reliability.fallback_providers.push(f_provider.clone());
+        config
+            .reliability
+            .fallback_providers
+            .push(f_provider.clone());
         if !f_key.trim().is_empty() {
-            config.reliability.fallback_api_keys.insert(f_provider.clone(), f_key);
+            config
+                .reliability
+                .fallback_api_keys
+                .insert(f_provider.clone(), f_key);
         }
-        config.reliability.model_fallbacks.insert(f_provider, vec![f_model]);
+        config
+            .reliability
+            .model_fallbacks
+            .insert(f_provider, vec![f_model]);
     }
 
     println!(
@@ -3377,17 +3386,29 @@ fn categorize_providers() -> Vec<(&'static str, Vec<(&'static str, &'static str)
         (
             "⭐ Recommended",
             vec![
-                ("openrouter", "OpenRouter — 200+ models, 1 API key (recommended)"),
+                (
+                    "openrouter",
+                    "OpenRouter — 200+ models, 1 API key (recommended)",
+                ),
                 ("venice", "Venice AI — privacy-first (Llama, Opus)"),
                 ("anthropic", "Anthropic — Claude Sonnet & Opus (direct)"),
                 ("openai", "OpenAI — GPT-4o, o1, GPT-5 (direct)"),
-                ("openai-codex", "OpenAI Codex (ChatGPT subscription OAuth, no API key)"),
-                ("copilot", "GitHub Copilot — OAuth device flow (Copilot subscription)"),
+                (
+                    "openai-codex",
+                    "OpenAI Codex (ChatGPT subscription OAuth, no API key)",
+                ),
+                (
+                    "copilot",
+                    "GitHub Copilot — OAuth device flow (Copilot subscription)",
+                ),
                 ("deepseek", "DeepSeek — V3 & R1 (affordable)"),
                 ("mistral", "Mistral — Large & Codestral"),
                 ("xai", "xAI — Grok 3 & 4"),
                 ("perplexity", "Perplexity — search-augmented AI"),
-                ("gemini", "Google Gemini — Gemini 2.0 Flash & Pro (supports CLI auth)"),
+                (
+                    "gemini",
+                    "Google Gemini — Gemini 2.0 Flash & Pro (supports CLI auth)",
+                ),
             ],
         ),
         (
@@ -3409,30 +3430,51 @@ fn categorize_providers() -> Vec<(&'static str, Vec<(&'static str, &'static str)
             vec![
                 ("vercel", "Vercel AI Gateway"),
                 ("cloudflare", "Cloudflare AI Gateway"),
-                ("astrai", "Astrai — compliant AI routing (PII stripping, cost optimization)"),
+                (
+                    "astrai",
+                    "Astrai — compliant AI routing (PII stripping, cost optimization)",
+                ),
                 ("bedrock", "Amazon Bedrock — AWS managed models"),
             ],
         ),
         (
             "🔬 Specialized",
             vec![
-                ("kimi-code", "Kimi Code — coding-optimized Kimi API (KimiCLI)"),
-                ("qwen-code", "Qwen Code — OAuth tokens reused from ~/.qwen/oauth_creds.json"),
+                (
+                    "kimi-code",
+                    "Kimi Code — coding-optimized Kimi API (KimiCLI)",
+                ),
+                (
+                    "qwen-code",
+                    "Qwen Code — OAuth tokens reused from ~/.qwen/oauth_creds.json",
+                ),
                 ("moonshot", "Moonshot — Kimi API (China endpoint)"),
-                ("moonshot-intl", "Moonshot — Kimi API (international endpoint)"),
+                (
+                    "moonshot-intl",
+                    "Moonshot — Kimi API (international endpoint)",
+                ),
                 ("stepfun", "StepFun — Step AI OpenAI-compatible endpoint"),
                 ("glm", "GLM — ChatGLM / Zhipu (international endpoint)"),
                 ("glm-cn", "GLM — ChatGLM / Zhipu (China endpoint)"),
-                ("minimax", "MiniMax — international endpoint (api.minimax.io)"),
+                (
+                    "minimax",
+                    "MiniMax — international endpoint (api.minimax.io)",
+                ),
                 ("minimax-cn", "MiniMax — China endpoint (api.minimaxi.com)"),
                 ("qwen", "Qwen — DashScope China endpoint"),
-                ("qwen-coding-plan", "Qwen — DashScope coding plan endpoint (coding.dashscope.aliyuncs.com)"),
+                (
+                    "qwen-coding-plan",
+                    "Qwen — DashScope coding plan endpoint (coding.dashscope.aliyuncs.com)",
+                ),
                 ("qwen-intl", "Qwen — DashScope international endpoint"),
                 ("qwen-us", "Qwen — DashScope US endpoint"),
                 ("hunyuan", "Hunyuan — Tencent large models (T1, Turbo, Pro)"),
                 ("qianfan", "Qianfan — Baidu AI models (China endpoint)"),
                 ("volcengine", "Volcengine ARK — Doubao model family"),
-                ("siliconflow", "SiliconFlow — OpenAI-compatible hosted models"),
+                (
+                    "siliconflow",
+                    "SiliconFlow — OpenAI-compatible hosted models",
+                ),
                 ("zai", "Z.AI — global coding endpoint"),
                 ("zai-cn", "Z.AI — China coding endpoint (open.bigmodel.cn)"),
                 ("synthetic", "Synthetic — Synthetic AI models"),
@@ -3441,10 +3483,7 @@ fn categorize_providers() -> Vec<(&'static str, Vec<(&'static str, &'static str)
                 ("ai21", "AI21 Labs — Jamba model family"),
             ],
         ),
-        (
-            "🏠 Local / private",
-            local_provider_choices(),
-        ),
+        ("🏠 Local / private", local_provider_choices()),
     ]
 }
 
@@ -3470,7 +3509,12 @@ async fn setup_fallback_provider(
 
     let group_idx = Select::with_theme(wizard_theme())
         .with_prompt("  Fallback AI Provider Category")
-        .items(&grouped_providers.iter().map(|(label, _)| *label).collect::<Vec<_>>())
+        .items(
+            &grouped_providers
+                .iter()
+                .map(|(label, _)| *label)
+                .collect::<Vec<_>>(),
+        )
         .default(0)
         .interact()?;
 

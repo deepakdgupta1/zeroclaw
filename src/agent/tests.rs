@@ -340,8 +340,8 @@ fn tool_response(calls: Vec<ToolCall>) -> ChatResponse {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+        actual_provider: None,
+        actual_model: None,
     }
 }
 
@@ -355,8 +355,8 @@ fn text_response(text: &str) -> ChatResponse {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+        actual_provider: None,
+        actual_model: None,
     }
 }
 
@@ -372,8 +372,8 @@ fn xml_tool_response(name: &str, args: &str) -> ChatResponse {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+        actual_provider: None,
+        actual_model: None,
     }
 }
 
@@ -786,8 +786,8 @@ async fn turn_handles_empty_text_response() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+        actual_provider: None,
+        actual_model: None,
     }]));
 
     let mut agent = build_agent_with(provider, vec![], Box::new(NativeToolDispatcher));
@@ -806,8 +806,8 @@ async fn turn_handles_none_text_response() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+        actual_provider: None,
+        actual_model: None,
     }]));
 
     let mut agent = build_agent_with(provider, vec![], Box::new(NativeToolDispatcher));
@@ -836,8 +836,8 @@ async fn turn_preserves_text_alongside_tool_calls() {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+            actual_provider: None,
+            actual_model: None,
         },
         text_response("Here are the results"),
     ]));
@@ -1111,8 +1111,8 @@ async fn native_dispatcher_handles_stringified_arguments() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     let (_, calls) = dispatcher.parse_response(&response);
@@ -1143,8 +1143,8 @@ fn xml_dispatcher_handles_nested_json() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     let dispatcher = XmlToolDispatcher;
@@ -1167,8 +1167,8 @@ fn xml_dispatcher_handles_empty_tool_call_tag() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     let dispatcher = XmlToolDispatcher;
@@ -1187,8 +1187,8 @@ fn xml_dispatcher_handles_unclosed_tool_call() {
         quota_metadata: None,
         stop_reason: None,
         raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+        actual_provider: None,
+        actual_model: None,
     };
 
     let dispatcher = XmlToolDispatcher;

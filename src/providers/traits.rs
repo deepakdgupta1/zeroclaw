@@ -452,8 +452,8 @@ pub trait Provider: Send + Sync {
                     quota_metadata: None,
                     stop_reason: None,
                     raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+                    actual_provider: None,
+                    actual_model: None,
                 });
             }
         }
@@ -469,8 +469,8 @@ pub trait Provider: Send + Sync {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+            actual_provider: None,
+            actual_model: None,
         })
     }
 
@@ -509,8 +509,8 @@ pub trait Provider: Send + Sync {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+            actual_provider: None,
+            actual_model: None,
         })
     }
 
@@ -643,8 +643,8 @@ mod tests {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+            actual_provider: None,
+            actual_model: None,
         };
         assert!(!empty.has_tool_calls());
         assert_eq!(empty.text_or_empty(), "");
@@ -661,8 +661,8 @@ mod tests {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+            actual_provider: None,
+            actual_model: None,
         };
         assert!(with_tools.has_tool_calls());
         assert_eq!(with_tools.text_or_empty(), "Let me check");
@@ -689,8 +689,8 @@ mod tests {
             quota_metadata: None,
             stop_reason: None,
             raw_stop_reason: None,
-                actual_provider: None,
-                actual_model: None,
+            actual_provider: None,
+            actual_model: None,
         };
         assert_eq!(resp.usage.as_ref().unwrap().input_tokens, Some(100));
         assert_eq!(resp.usage.as_ref().unwrap().output_tokens, Some(50));

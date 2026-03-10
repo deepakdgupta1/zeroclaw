@@ -21,3 +21,4 @@
 
 - `zeroclaw gateway` は `--new-pairing` をサポートし、既存のペアリングトークンを消去して新しいペアリングコードを生成できます。
 - OpenClaw 移行関連の英語原文が更新されました: `zeroclaw onboard --migrate-openclaw`、`zeroclaw migrate openclaw`、およびエージェントツール `openclaw_migration`（ローカライズ追従は継続中）。
+- 英語版原文にアンインストール入口 `zeroclaw uninstall` と `zeroclaw uninstall --instructions` が追加されました。まず background service の削除を試み、その後インストール方式に応じて binary を削除します。

@@ -21,3 +21,4 @@
 
 - `zeroclaw gateway` 新增 `--new-pairing` 参数，可清空已配对 token 并在网关启动时生成新的配对码。
 - OpenClaw 迁移相关命令已加入英文原文：`zeroclaw onboard --migrate-openclaw`、`zeroclaw migrate openclaw`，并新增 agent 工具 `openclaw_migration`（本地化条目待补全，先以英文原文为准）。
+- 英文原文已新增卸载入口：`zeroclaw uninstall`、`zeroclaw uninstall --instructions`。该命令会先尝试移除后台 service，再按安装方式执行二进制卸载。

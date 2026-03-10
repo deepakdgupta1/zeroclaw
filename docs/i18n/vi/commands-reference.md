@@ -2,7 +2,7 @@
 
 Dựa trên CLI hiện tại (`zeroclaw --help`).
 
-Xác minh lần cuối: **2026-03-04**.
+Xác minh lần cuối: **2026-03-10**.
 
 ## Lệnh cấp cao nhất
 
@@ -15,6 +15,7 @@ Xác minh lần cuối: **2026-03-04**.
 | `service` | Quản lý vòng đời dịch vụ cấp hệ điều hành |
 | `doctor` | Chạy chẩn đoán và kiểm tra trạng thái |
 | `status` | Hiển thị cấu hình và tóm tắt hệ thống |
+| `uninstall` | Gỡ ZeroClaw khỏi máy hiện tại theo kiểu cài đặt đang dùng |
 | `security` | Chạy tác vụ bảo trì bảo mật (cập nhật corpus semantic guard) |
 | `cron` | Quản lý tác vụ định kỳ |
 | `models` | Làm mới danh mục model của provider |
@@ -62,6 +63,19 @@ Xác minh lần cuối: **2026-03-04**.
 - `zeroclaw service restart`
 - `zeroclaw service status`
 - `zeroclaw service uninstall`
+
+### `uninstall`
+
+- `zeroclaw uninstall`
+- `zeroclaw uninstall --instructions`
+- `zeroclaw uninstall --service-init <auto|systemd|openrc>`
+
+Ghi chú:
+
+- `uninstall` sẽ thử chạy `zeroclaw service uninstall` trước để dọn service nền rồi mới xử lý binary.
+- Bản cài qua Homebrew sẽ được chuyển sang `brew uninstall zeroclaw`.
+- Binary tự quản lý trong `~/.cargo/bin`, `~/.local/bin`, hoặc `/usr/local/bin` sẽ bị xóa trực tiếp.
+- Dữ liệu runtime vẫn được giữ lại; dùng `--instructions` để xem các đường dẫn còn lại.
 
 ### `security`
 

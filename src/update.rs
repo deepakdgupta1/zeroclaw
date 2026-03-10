@@ -3,6 +3,7 @@
 //! Downloads and installs the latest release from GitHub.
 
 use anyhow::{bail, Context, Result};
+use directories::UserDirs;
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -27,9 +28,9 @@ struct Asset {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum InstallMethod {
+pub(crate) enum InstallMethod {
     Homebrew,
-    CargoOrLocal,
+    SelfManaged,
     Unknown,
 }
 
@@ -216,8 +217,21 @@ fn extract_zip(archive_path: &Path, dest_dir: &Path) -> Result<()> {
 }
 
 /// Get the path to the current executable
-fn get_current_exe() -> Result<PathBuf> {
+pub(crate) fn get_current_exe() -> Result<PathBuf> {
     env::current_exe().context("Failed to get current executable path")
+}
+
+fn is_self_managed_install_path(resolved_path: &Path, home_dir: Option<&Path>) -> bool {
+    if let Some(home) = home_dir {
+        if resolved_path.starts_with(home.join(".cargo").join("bin"))
+            || resolved_path.starts_with(home.join(".local").join("bin"))
+        {
+            return true;
+        }
+    }
+
+    resolved_path.starts_with(Path::new("/usr/local/bin"))
+        || resolved_path.starts_with(Path::new("/usr/local/sbin"))
 }
 
 fn detect_install_method_for_path(resolved_path: &Path, home_dir: Option<&Path>) -> InstallMethod {
@@ -226,20 +240,16 @@ fn detect_install_method_for_path(resolved_path: &Path, home_dir: Option<&Path>)
         return InstallMethod::Homebrew;
     }
 
-    if let Some(home) = home_dir {
-        if resolved_path.starts_with(home.join(".cargo").join("bin"))
-            || resolved_path.starts_with(home.join(".local").join("bin"))
-        {
-            return InstallMethod::CargoOrLocal;
-        }
+    if is_self_managed_install_path(resolved_path, home_dir) {
+        return InstallMethod::SelfManaged;
     }
 
     InstallMethod::Unknown
 }
 
-fn detect_install_method(current_exe: &Path) -> InstallMethod {
+pub(crate) fn detect_install_method(current_exe: &Path) -> InstallMethod {
     let resolved = fs::canonicalize(current_exe).unwrap_or_else(|_| current_exe.to_path_buf());
-    let home_dir = env::var_os("HOME").map(PathBuf::from);
+    let home_dir = UserDirs::new().map(|dirs| dirs.home_dir().to_path_buf());
     detect_install_method_for_path(&resolved, home_dir.as_deref())
 }
 
@@ -267,8 +277,10 @@ pub fn print_update_instructions() -> Result<()> {
                 "Tip: avoid `zeroclaw update` on Homebrew installs unless you intentionally want to override the managed binary."
             );
         }
-        InstallMethod::CargoOrLocal => {
-            println!("Detected install method: local binary (~/.cargo/bin or ~/.local/bin)");
+        InstallMethod::SelfManaged => {
+            println!(
+                "Detected install method: self-managed binary (~/.cargo/bin, ~/.local/bin, or /usr/local/bin)"
+            );
             println!("Recommended update command:");
             println!("  zeroclaw update");
             println!("Optional force reinstall:");
@@ -457,9 +469,8 @@ async fn local_self_update(_force: bool, path: Option<PathBuf>) -> Result<()> {
     println!("🦀 ZeroClaw Local Self-Update");
     println!();
 
-    let repo_path = path.unwrap_or_else(|| {
-        env::current_dir().unwrap_or_else(|_| PathBuf::from("."))
-    });
+    let repo_path =
+        path.unwrap_or_else(|| env::current_dir().unwrap_or_else(|_| PathBuf::from(".")));
 
     println!("Checking readiness at: {}", repo_path.display());
 
@@ -475,9 +486,9 @@ async fn local_self_update(_force: bool, path: Option<PathBuf>) -> Result<()> {
         );
     }
 
-    let cargo_toml_content = fs::read_to_string(&cargo_toml_path)
-        .context("Failed to read Cargo.toml")?;
-    
+    let cargo_toml_content =
+        fs::read_to_string(&cargo_toml_path).context("Failed to read Cargo.toml")?;
+
     if !cargo_toml_content.contains("name = \"zeroclaw\"") {
         bail!(
             "Cargo.toml at {} does not appear to be for ZeroClaw (package name mismatch).",
@@ -535,9 +546,7 @@ fn check_command_exists(cmd: &str) -> Result<()> {
         .context(format!("Failed to check for presence of {cmd}"))?;
 
     if !output.status.success() {
-        bail!(
-            "Pre-requisite missing: `{cmd}` was not found in PATH. Please install Rust/Cargo."
-        );
+        bail!("Pre-requisite missing: `{cmd}` was not found in PATH. Please install Rust/Cargo.");
     }
     Ok(())
 }
@@ -573,12 +582,19 @@ mod tests {
 
         assert_eq!(
             detect_install_method_for_path(cargo_path, Some(home)),
-            InstallMethod::CargoOrLocal
+            InstallMethod::SelfManaged
         );
         assert_eq!(
             detect_install_method_for_path(local_path, Some(home)),
-            InstallMethod::CargoOrLocal
+            InstallMethod::SelfManaged
         );
+    }
+
+    #[test]
+    fn detect_install_method_identifies_usr_local_bin_paths_as_self_managed() {
+        let path = Path::new("/usr/local/bin/zeroclaw");
+        let method = detect_install_method_for_path(path, None);
+        assert_eq!(method, InstallMethod::SelfManaged);
     }
 
     #[test]

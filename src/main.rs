@@ -177,6 +177,7 @@ mod skills;
 mod test_locks;
 mod tools;
 mod tunnel;
+mod uninstall;
 mod update;
 mod util;
 
@@ -471,6 +472,28 @@ Examples:
         /// Path to the local repository (defaults to current directory)
         #[arg(long, requires = "local")]
         path: Option<std::path::PathBuf>,
+    },
+
+    /// Uninstall ZeroClaw from the current machine
+    #[command(long_about = "\
+Uninstall ZeroClaw from the current machine.
+
+This command first removes the background service when possible, then
+uninstalls the current binary for supported self-managed installs.
+Homebrew-managed installs are delegated to `brew uninstall zeroclaw`.
+
+Examples:
+  zeroclaw uninstall
+  zeroclaw uninstall --instructions
+  zeroclaw uninstall --service-init openrc")]
+    Uninstall {
+        /// Show install-method-specific uninstall instructions without changing anything
+        #[arg(long)]
+        instructions: bool,
+
+        /// Init system to use for service cleanup: auto (detect), systemd, or openrc
+        #[arg(long, default_value = "auto", value_parser = ["auto", "systemd", "openrc"])]
+        service_init: String,
     },
 
     /// Engage, inspect, and resume emergency-stop states.
@@ -1329,6 +1352,18 @@ async fn main() -> Result<()> {
             } else {
                 update::self_update(force, check, local, path).await?;
                 Ok(())
+            }
+        }
+        Commands::Uninstall {
+            instructions,
+            service_init,
+        } => {
+            if instructions {
+                uninstall::print_uninstall_instructions(&config)?;
+                Ok(())
+            } else {
+                let init_system = service_init.parse()?;
+                uninstall::run(&config, init_system)
             }
         }
 
@@ -2990,12 +3025,49 @@ mod tests {
                 check,
                 force,
                 instructions,
+                ..
             } => {
                 assert!(!check);
                 assert!(!force);
                 assert!(instructions);
             }
             other => panic!("expected update command, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn uninstall_help_mentions_instructions_flag() {
+        let cmd = Cli::command();
+        let uninstall_cmd = cmd
+            .get_subcommands()
+            .find(|subcommand| subcommand.get_name() == "uninstall")
+            .expect("uninstall subcommand must exist");
+
+        let mut output = Vec::new();
+        uninstall_cmd
+            .clone()
+            .write_long_help(&mut output)
+            .expect("help generation should succeed");
+        let help = String::from_utf8(output).expect("help output should be utf-8");
+
+        assert!(help.contains("--instructions"));
+        assert!(help.contains("--service-init"));
+    }
+
+    #[test]
+    fn uninstall_cli_parses_instructions_flag() {
+        let cli = Cli::try_parse_from(["zeroclaw", "uninstall", "--instructions"])
+            .expect("uninstall --instructions should parse");
+
+        match cli.command {
+            Commands::Uninstall {
+                instructions,
+                service_init,
+            } => {
+                assert!(instructions);
+                assert_eq!(service_init, "auto");
+            }
+            other => panic!("expected uninstall command, got {other:?}"),
         }
     }
 }
