@@ -1,8 +1,13 @@
-# Canonical analysis-scope exclusions for AI agents working in this repository.
+# Default lean analysis-scope exclusions for AI agents working in this
+# repository.
 #
 # These rules are for codebase discovery and reading only. They do not authorize
 # deleting support or skipping validation when a task explicitly touches an
 # excluded area.
+#
+# Apply this lean profile by default. Cross the boundary only when the current
+# task explicitly requires it or a shared dependency cannot be understood
+# without it.
 #
 # Keep shared core files in scope even when they mention excluded features, for
 # example:

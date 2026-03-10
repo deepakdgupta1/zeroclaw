@@ -4,9 +4,10 @@ This style guide provides instructions for Gemini Code Assist when reviewing pul
 
 ## Default Analysis Scope
 
-- When repository analysis should stay narrow, consult `.llmignore` before broad file discovery.
+- Lean scope is the default for all work in this repository.
+- Consult `.llmignore` before broad file discovery.
 - Default focus for this fork is English-only docs, Gemini/OpenRouter providers, Discord/WhatsApp channels, and non-hardware Linux/macOS paths.
-- Skip excluded provider/channel implementations, OpenClaw migration paths, hardware/firmware paths, and Android/Windows-specific branches unless the task explicitly needs them.
+- Step into excluded provider/channel implementations, OpenClaw migration paths, hardware/firmware paths, or Android/Windows-specific branches only when the task explicitly needs them.
 
 ## Project Overview
 
