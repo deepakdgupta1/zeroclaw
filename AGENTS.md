@@ -19,6 +19,14 @@ Scope: entire repository.
 - If the current location is dirty, stop and bootstrap a clean worktree/branch first.
 - If worktree bootstrap fails, stop and report the blocker; do not continue in-place.
 
+## 0.2) Lean Analysis Scope Profile (Required When Operator Requests Narrow Scope)
+
+- When the operator asks to reduce codebase-analysis span or token usage, treat `.llmignore` as the canonical path exclusion manifest for repository discovery, search, and file reads.
+- The current lean profile is English-only docs, Gemini/OpenRouter provider work, Discord/WhatsApp channel work, no OpenClaw migration work, no hardware/peripheral/firmware work, and no Android/Windows-specific investigation unless explicitly requested.
+- Do not explore excluded paths proactively. Only cross the boundary when the current task explicitly requires it or a shared dependency cannot be understood without it.
+- For mixed files that remain in scope, read only the relevant sections and skip unrelated provider/channel cases plus Windows/Android branches whenever possible.
+- These exclusions are analysis-only. They do not authorize removing features or weakening tests outside the task scope.
+
 ## 1) Project Snapshot (Read First)
 
 ZeroClaw is a Rust-first autonomous agent runtime optimized for:

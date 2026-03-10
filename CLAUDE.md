@@ -3,6 +3,14 @@
 This file defines the default working protocol for Claude agents in this repository.
 Scope: entire repository.
 
+## 0) Lean Analysis Scope Profile
+
+- When the operator asks to reduce codebase-analysis span or token usage, use `.llmignore` as the canonical path exclusion manifest for discovery, search, and file reads.
+- The current lean profile is English-only docs, Gemini/OpenRouter provider work, Discord/WhatsApp channel work, no OpenClaw migration work, no hardware/peripheral/firmware work, and no Android/Windows-specific investigation unless explicitly requested.
+- Do not read excluded paths proactively. Cross the boundary only when the task explicitly requires it or a shared dependency cannot be understood without it.
+- For mixed files that remain in scope, read only the relevant sections and skip unrelated provider/channel branches plus Windows/Android branches whenever possible.
+- These exclusions are analysis-only. They do not authorize removing support or skipping validation outside the task scope.
+
 ## 1) Project Snapshot (Read First)
 
 ZeroClaw is a Rust-first autonomous agent runtime optimized for:

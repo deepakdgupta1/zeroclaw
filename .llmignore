@@ -1,0 +1,97 @@
+# Canonical analysis-scope exclusions for AI agents working in this repository.
+#
+# These rules are for codebase discovery and reading only. They do not authorize
+# deleting support or skipping validation when a task explicitly touches an
+# excluded area.
+#
+# Keep shared core files in scope even when they mention excluded features, for
+# example:
+# - Cargo.toml
+# - src/config/**
+# - src/providers/mod.rs
+# - src/channels/mod.rs
+# - src/channels/traits.rs
+# - docs/providers-reference.md
+# - docs/channels-reference.md
+#
+# For mixed files that remain in scope, prefer the relevant Gemini/OpenRouter,
+# Discord/WhatsApp, and Linux/macOS paths. Skip unrelated Windows/Android
+# branches unless the task explicitly requires them.
+
+# English-only docs profile
+CONTRIBUTING.el.md
+docs/i18n/**
+docs/vi/**
+docs/SUMMARY.zh-CN.md
+docs/SUMMARY.ja.md
+docs/SUMMARY.ru.md
+docs/SUMMARY.fr.md
+docs/SUMMARY.vi.md
+docs/SUMMARY.el.md
+docs/commands-reference.vi.md
+docs/config-reference.vi.md
+docs/one-click-bootstrap.vi.md
+docs/troubleshooting.vi.md
+docs/i18n-guide.md
+docs/i18n-coverage.md
+docs/i18n-gap-backlog.md
+
+# OpenClaw migration surfaces
+docs/migration/openclaw-migration-guide.md
+scripts/convert-openclaw-config.py
+src/gateway/openclaw_compat.rs
+src/tools/openclaw_migration.rs
+
+# Hardware, peripherals, and board-specific docs/firmware
+docs/hardware/**
+docs/hardware-peripherals-design.md
+docs/datasheets/**
+docs/arduino-uno-q-setup.md
+docs/nucleo-setup.md
+firmware/**
+src/hardware/**
+src/peripherals/**
+
+# Unneeded provider implementations; shared provider core remains in scope
+docs/custom-providers.md
+docs/qwen-provider-test-report.md
+src/auth/anthropic_token.rs
+src/auth/openai_oauth.rs
+src/gateway/openai_compat.rs
+src/providers/anthropic.rs
+src/providers/bedrock.rs
+src/providers/compatible.rs
+src/providers/copilot.rs
+src/providers/cursor.rs
+src/providers/glm.rs
+src/providers/ollama.rs
+src/providers/openai.rs
+src/providers/openai_codex.rs
+src/providers/telnyx.rs
+
+# Unneeded channel implementations; shared channel core remains in scope
+docs/android-setup.md
+docs/mattermost-setup.md
+docs/matrix-e2ee-guide.md
+docs/nextcloud-talk-setup.md
+src/channels/acp.rs
+src/channels/bluebubbles.rs
+src/channels/clawdtalk.rs
+src/channels/dingtalk.rs
+src/channels/email_channel.rs
+src/channels/github.rs
+src/channels/imessage.rs
+src/channels/irc.rs
+src/channels/lark.rs
+src/channels/linq.rs
+src/channels/matrix.rs
+src/channels/mattermost.rs
+src/channels/mqtt.rs
+src/channels/napcat.rs
+src/channels/nextcloud_talk.rs
+src/channels/nostr.rs
+src/channels/qq.rs
+src/channels/signal.rs
+src/channels/slack.rs
+src/channels/telegram.rs
+src/channels/wati.rs
